@@ -4,6 +4,7 @@ import { Controlled } from "@/examples/controlled";
 import { Detents } from "@/examples/detents";
 import { Disabled } from "@/examples/disabled";
 import { Gearing } from "@/examples/gearing";
+import { Inertia } from "@/examples/inertia";
 import { PlainHub } from "@/examples/plain-hub";
 
 /** Live previews, keyed by the id the docs content uses. */
@@ -11,6 +12,7 @@ export const EXAMPLES = {
   basic: Basic,
   gearing: Gearing,
   detents: Detents,
+  inertia: Inertia,
   controlled: Controlled,
   "plain-hub": PlainHub,
   arc: Arc,

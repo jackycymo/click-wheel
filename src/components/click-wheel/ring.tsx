@@ -42,7 +42,7 @@ export function Ring(props: RingProps) {
     onPointerDown: ctx.onPointerDown,
     onPointerMove: ctx.onPointerMove,
     onPointerUp: ctx.onPointerUp,
-    onPointerCancel: ctx.onPointerUp,
+    onPointerCancel: ctx.onPointerCancel,
     onKeyDown: ctx.onKeyDown,
   });
 }

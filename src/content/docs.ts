@@ -62,6 +62,10 @@ const STYLE_CSS = `/* The value as an arc, no JavaScript. */
   rotate: var(--click-wheel-rotation, 0deg);
 }`;
 
+const STYLE_SMOOTH = `.rotor {
+  transition: rotate 50ms linear;
+}`;
+
 const STYLE_FUNCTION = `<ClickWheel.Ring
   className={(state) => (state.turning ? "ring ring-active" : "ring")}
   style={(state) => ({ opacity: state.disabled ? 0.5 : 1 })}
@@ -144,7 +148,7 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: "Every part carries `data-turning` while a pointer turns the ring and `data-disabled` when the wheel is disabled. Works with Tailwind variants or attribute selectors.",
+            text: "Every part carries `data-turning` while the ring turns, by a finger or by inertia, and `data-disabled` when the wheel is disabled. Works with Tailwind variants or attribute selectors.",
           },
           { type: "code", code: STYLE_TAILWIND, lang: "tsx", title: "Tailwind" },
         ],
@@ -158,6 +162,11 @@ export const PAGES: DocPageDef[] = [
             text: "`Root` sets `--click-wheel-fraction`, the value as a number from 0 to 1, and `--click-wheel-rotation`, the cumulative angle of the rotor in degrees. Both update without a React render.",
           },
           { type: "code", code: STYLE_CSS, lang: "css", title: "wheel.css" },
+          {
+            type: "p",
+            text: "The `Rotor` sets `will-change: transform`, so a turn moves a cached layer instead of repainting the texture on every pointer sample. Touch input often arrives at 60 Hz even on 120 Hz screens; a short transition on `rotate` lets the compositor fill in the frames between samples.",
+          },
+          { type: "code", code: STYLE_SMOOTH, lang: "css", title: "smooth on 120 Hz screens" },
         ],
       },
       {
@@ -263,11 +272,13 @@ export const PAGES: DocPageDef[] = [
               ["unitsPerTurn", "number", "100", "The gearing: how far one full revolution moves the value."],
               ["detent", "number", "0", "Units between detents. Each crossing pulses haptics and fires onTick. 0 disables detents."],
               ["haptics", "boolean", "true", "Pulse the motor on each detent where the platform allows it."],
+              ["inertia", "boolean", "false", "Keep spinning after a flick and slow down like an iOS scroll. A touch grabs the wheel; scroll and keys stop it."],
+              ["decelerationRate", "number", "0.998", "Velocity kept per millisecond while coasting. 0.998 is the iOS default; 0.99 stops fast."],
               ["disabled", "boolean", "false", "Inert. Sets data-disabled on every part."],
               ["name", "string", "—", "Renders a hidden input with this name, for forms."],
-              ["onValueChange", "(value: number) => void", "—", "Fires on every change while turning, scrolling or keying."],
-              ["onValueCommitted", "(value: number) => void", "—", "Fires once when an interaction ends."],
-              ["onTurningChange", "(turning: boolean) => void", "—", "Fires when a pointer starts or stops turning the ring. Pause a playhead here."],
+              ["onValueChange", "(value: number) => void", "—", "Fires on every change while turning, coasting, scrolling or keying."],
+              ["onValueCommitted", "(value: number) => void", "—", "Fires once when an interaction ends. With inertia, that is when the wheel settles."],
+              ["onTurningChange", "(turning: boolean) => void", "—", "Fires when the ring starts turning and when it stops, including the coast after a flick. Pause a playhead here."],
               ["onTick", "(direction: 1 | -1) => void", "—", "Fires per detent crossing. Wire up a click sound."],
             ],
           },
@@ -343,7 +354,7 @@ export const PAGES: DocPageDef[] = [
             mono: [0, 1],
             rows: [
               ["value", "number", "The current value."],
-              ["turning", "boolean", "A pointer is turning the ring."],
+              ["turning", "boolean", "The ring is turning: a pointer is on it, or it is still spinning after a flick."],
               ["disabled", "boolean", "The wheel is disabled."],
             ],
           },
@@ -428,6 +439,17 @@ export const PAGES: DocPageDef[] = [
             text: "`detent` sets the units between clicks. Each crossing pulses the motor and fires `onTick`, which here plays a short blip.",
           },
           { type: "example", id: "detents", file: "detents.tsx" },
+        ],
+      },
+      {
+        id: "inertia",
+        title: "Inertia",
+        blocks: [
+          {
+            type: "p",
+            text: "Opt in with `inertia` and a flick keeps the wheel spinning, slowing like an iOS scroll. Detents keep clicking as it coasts, a touch grabs it, and `onTurningChange` waits until it settles. `decelerationRate` is the velocity kept per millisecond: 0.998 is the iOS default, 0.99 stops fast.",
+          },
+          { type: "example", id: "inertia", file: "inertia.tsx" },
         ],
       },
       {

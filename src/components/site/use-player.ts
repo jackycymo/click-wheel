@@ -39,6 +39,7 @@ export function usePlayer(options: { mode?: Mode } = {}) {
   const [volume, setVolume] = React.useState(64);
   const [unitsPerTurn, setUnitsPerTurn] = React.useState(60);
   const [clicker, setClicker] = React.useState(false);
+  const [inertia, setInertia] = React.useState(true);
 
   // Simulated playback; pauses while the wheel is being turned.
   React.useEffect(() => {
@@ -62,6 +63,7 @@ export function usePlayer(options: { mode?: Mode } = {}) {
           step: 1,
           unitsPerTurn,
           detent: 5,
+          inertia,
           onValueChange: setPosition,
           onTurningChange: setScrubbing,
           onTick: tick,
@@ -73,6 +75,7 @@ export function usePlayer(options: { mode?: Mode } = {}) {
           step: 1,
           unitsPerTurn: 120,
           detent: 5,
+          inertia,
           onValueChange: setVolume,
           onTick: tick,
         };
@@ -89,6 +92,8 @@ export function usePlayer(options: { mode?: Mode } = {}) {
     setUnitsPerTurn,
     clicker,
     setClicker,
+    inertia,
+    setInertia,
     track: TRACK,
     wheel,
   };

@@ -10,6 +10,8 @@ precision are a prop you choose, not a function of screen space.
   `--click-wheel-fraction` and `--click-wheel-rotation`, and `className` /
   `style` functions of state. Every part takes a `render` prop.
 - Pointer drag, scroll wheel, and full keyboard support. Announced as a slider.
+- Opt-in inertia: flick it and it coasts like an iOS scroll, detents clicking
+  as it slows. A touch grabs it again.
 - Haptics on detents: Vibration API on Android, the switch trick on iOS 17.4
   to 26.4, and `<HapticTap />` for real taps on iOS 26.5+.
 - Zero dependencies beyond React 19. Copy `src/components/click-wheel`.

@@ -77,7 +77,7 @@ ${ANATOMY}
 \`\`\`
 
 - Style with anything: parts have no classes. State: \`data-turning\`, \`data-disabled\`, \`--click-wheel-fraction\` (0–1), \`--click-wheel-rotation\` (deg). \`className\` and \`style\` may be functions of \`{ value, turning, disabled }\`. Every part takes a \`render\` prop.
-- Gearing: \`unitsPerTurn\` sets how far one revolution moves the value. \`detent\` sets the units between haptic ticks.
+- Gearing: \`unitsPerTurn\` sets how far one revolution moves the value. \`detent\` sets the units between haptic ticks. \`inertia\` (off by default) keeps the wheel spinning after a flick; \`decelerationRate\` (0.998) is the velocity kept per millisecond.
 - Callbacks: \`onValueChange\` on every change, \`onValueCommitted\` once per gesture, \`onTurningChange\` when a drag starts or ends, \`onTick\` per detent.
 - Haptics: Vibration API on Android; the switch trick on iOS 17.4–26.4; on iOS 26.5+ only real taps vibrate, so put \`<HapticTap />\` inside the center button.
 `;

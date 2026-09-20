@@ -40,8 +40,9 @@ export function Wheel({
         getAriaValueText={getAriaValueText}
         className="absolute inset-2 cursor-grab rounded-full border border-border bg-muted shadow-sm outline-none ring-offset-2 ring-offset-background focus-visible:ring-2 focus-visible:ring-ring data-[turning]:cursor-grabbing data-[disabled]:cursor-default data-[disabled]:opacity-50"
       >
-        {/* Tick texture that turns with the finger. */}
-        <ClickWheel.Rotor className="absolute inset-0 rounded-full opacity-25 transition-opacity [background:repeating-conic-gradient(var(--color-foreground)_0_1deg,transparent_1deg_15deg)] [mask:radial-gradient(circle_closest-side,transparent_56%,black_57%_82%,transparent_83%)] data-[turning]:opacity-60" />
+        {/* Tick texture that turns with the finger. The short rotate transition lets the
+            compositor fill in frames between touch samples on 120 Hz screens. */}
+        <ClickWheel.Rotor className="absolute inset-0 rounded-full opacity-25 [transition:opacity_150ms,rotate_50ms_linear] [background:repeating-conic-gradient(var(--color-foreground)_0_1deg,transparent_1deg_15deg)] [mask:radial-gradient(circle_closest-side,transparent_56%,black_57%_82%,transparent_83%)] data-[turning]:opacity-60" />
       </ClickWheel.Ring>
       <ClickWheel.Center
         aria-label={centerLabel}

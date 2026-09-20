@@ -5,7 +5,7 @@ import * as React from "react";
 export interface ClickWheelState {
   /** The current value. */
   value: number;
-  /** Whether a pointer is turning the ring. */
+  /** Whether the ring is turning: a pointer is on it, or it is still spinning after a flick. */
   turning: boolean;
   /** Whether the wheel is disabled. */
   disabled: boolean;
@@ -20,6 +20,7 @@ export interface ClickWheelContextValue {
   onPointerDown: (event: React.PointerEvent) => void;
   onPointerMove: (event: React.PointerEvent) => void;
   onPointerUp: (event: React.PointerEvent) => void;
+  onPointerCancel: (event: React.PointerEvent) => void;
   onKeyDown: (event: React.KeyboardEvent) => void;
 }
 

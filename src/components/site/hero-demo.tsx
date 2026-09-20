@@ -64,6 +64,16 @@ export function HeroDemo() {
             ) : null}
             <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
               <Switch.Root
+                checked={p.inertia}
+                onCheckedChange={p.setInertia}
+                className="relative h-5 w-8 rounded-full bg-muted outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring data-[checked]:bg-primary"
+              >
+                <Switch.Thumb className="block size-4 translate-x-0.5 rounded-full bg-background shadow-xs transition-transform data-[checked]:translate-x-3.5" />
+              </Switch.Root>
+              Inertia
+            </label>
+            <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+              <Switch.Root
                 checked={p.clicker}
                 onCheckedChange={p.setClicker}
                 className="relative h-5 w-8 rounded-full bg-muted outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring data-[checked]:bg-primary"

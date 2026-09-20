@@ -64,6 +64,7 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
+  transition: rotate 50ms linear;
 }
 
 .te-rotor::after {
