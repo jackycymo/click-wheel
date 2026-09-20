@@ -1,6 +1,6 @@
 # Click Wheel
 
-An unstyled, iPod-style click wheel for React. A slider with gearing instead
+An unstyled, iPod-style click wheel for React and React Native. A slider with gearing instead
 of length: one revolution moves the value by `unitsPerTurn`, so range and
 precision are a prop you choose, not a function of screen space.
 
@@ -14,12 +14,24 @@ precision are a prop you choose, not a function of screen space.
   as it slows. A touch grabs it again.
 - Haptics on detents: Vibration API on Android, the switch trick on iOS 17.4
   to 26.4, and `<HapticTap />` for real taps on iOS 26.5+.
-- Zero dependencies beyond React 19. Copy `src/components/click-wheel`.
+- Zero dependencies beyond React 19 on the web. Copy the files from the
+  registry, or import `click-wheel` and `click-wheel/native` from the package.
 
 ```bash
 bun install
 bun dev   # http://localhost:3000 — best tried on a phone
 ```
+
+## Layout
+
+```
+packages/click-wheel   the publishable package: src/core.ts, src/web, src/native
+website                the docs site, a Next.js app that depends on the package
+```
+
+`bun install` at the root links the workspace. `bun run check` type-checks
+the package for both targets, `bun run dev` starts the site, `bun run build`
+builds it.
 
 ## Usage
 
@@ -41,6 +53,14 @@ import { ClickWheel } from "@/components/click-wheel";
   </ClickWheel.Center>
 </ClickWheel.Root>
 ```
+
+## React Native
+
+`packages/click-wheel/src/native` holds the React Native version: the same
+four parts and the same `core.ts` math, with the pan gesture and the coast on
+the UI thread through Gesture Handler 3 and Reanimated, and haptics through
+expo-haptics. Install it with `npx shadcn@latest add <site>/r/click-wheel-native.json`
+or import `click-wheel/native`. See `/docs/react-native`.
 
 ## Themes
 
@@ -76,6 +96,6 @@ Next.js App Router, Tailwind CSS v4, Base UI for the small controls, shiki
 for code. The home page is the hero demo and the theme gallery. The docs
 (`/docs`, `/docs/styling`, `/docs/haptics`, `/docs/api`) and the examples
 (`/examples/default`, `/examples/themes`, `/examples/other`) all render from
-one content file, `src/content/docs.ts`. Example previews live in
-`src/examples/`; the page reads each file from disk, so the code shown is the
-code that runs.
+one content file, `website/src/content/docs.ts`. Example previews live in
+`website/src/examples/`; the page reads each file from disk, so the code shown
+is the code that runs.
