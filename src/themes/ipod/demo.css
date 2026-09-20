@@ -1,0 +1,127 @@
+/* Demo chrome only: the iPod body and its mono LCD. */
+.ipod-body {
+  --ipod-body: #f6f6f4;
+  --ipod-body-2: #e9e9e6;
+  --ipod-edge: rgba(0, 0, 0, 0.12);
+  --ipod-lcd: #cdd5c9;
+  --ipod-lcd-ink: #1e2a22;
+  --ipod-lcd-dim: rgba(30, 42, 34, 0.5);
+  width: min(100%, 250px);
+  margin: 0 auto;
+  padding: 20px 20px 26px;
+  border-radius: 26px;
+  background: linear-gradient(180deg, #fcfcfb 0%, var(--ipod-body) 30%, var(--ipod-body-2) 100%);
+  border: 1px solid var(--ipod-edge);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 14px 30px -18px rgba(0, 0, 0, 0.4);
+}
+
+.dark .ipod-body {
+  --ipod-body: #212123;
+  --ipod-body-2: #161618;
+  --ipod-edge: rgba(255, 255, 255, 0.1);
+  --ipod-lcd: #1a2834;
+  --ipod-lcd-ink: #bdd5e8;
+  --ipod-lcd-dim: rgba(189, 213, 232, 0.5);
+  background: linear-gradient(180deg, #2c2c2f 0%, var(--ipod-body) 30%, var(--ipod-body-2) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 14px 30px -18px rgba(0, 0, 0, 0.9);
+}
+
+.ipod-screen {
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 4 / 3.1;
+  padding: 5px 8px 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  background: var(--ipod-lcd);
+  color: var(--ipod-lcd-ink);
+  font-family: var(--font-pixel);
+  font-size: 13px;
+  line-height: 1.25;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+.ipod-bar {
+  display: grid;
+  grid-template-columns: 22px 1fr 22px;
+  align-items: center;
+  text-align: center;
+  font-weight: 700;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--ipod-lcd-ink);
+}
+
+.ipod-play {
+  font-size: 9px;
+  text-align: left;
+}
+
+.ipod-batt {
+  position: relative;
+  justify-self: end;
+  width: 18px;
+  height: 9px;
+  padding: 1px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+
+.ipod-batt::after {
+  content: "";
+  position: absolute;
+  right: -3px;
+  top: 2px;
+  width: 2px;
+  height: 3px;
+  background: currentColor;
+}
+
+.ipod-batt i {
+  display: block;
+  height: 100%;
+  width: 72%;
+  background: currentColor;
+}
+
+.ipod-meta {
+  flex: 1;
+  padding-top: 8px;
+  text-align: center;
+}
+
+.ipod-title {
+  font-weight: 700;
+}
+
+.ipod-meta p + p {
+  color: var(--ipod-lcd-dim);
+}
+
+.ipod-progress {
+  height: 9px;
+  padding: 1px;
+  border: 1px solid var(--ipod-lcd-ink);
+  border-radius: 2px;
+}
+
+.ipod-progress i {
+  display: block;
+  height: 100%;
+  background: var(--ipod-lcd-ink);
+}
+
+.ipod-times {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 3px;
+  font-size: 12px;
+}
+
+.ipod-slot {
+  width: 78%;
+  margin: 22px auto 0;
+}

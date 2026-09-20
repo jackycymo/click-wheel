@@ -1,0 +1,113 @@
+/* Teenage engineering inspired: flat, matte, one accent. */
+.te-wheel {
+  --te-ink: #161616;
+  --te-face: #ecece9;
+  --te-face-2: #d9d9d5;
+  --te-hub: #161616;
+  --te-hub-ink: #f4f4f1;
+  --te-orange: #ff5a1f;
+  position: relative;
+  aspect-ratio: 1;
+}
+
+.dark .te-wheel {
+  --te-ink: #ececea;
+  --te-face: #2a2a2a;
+  --te-face-2: #1c1c1c;
+  --te-hub: #ececea;
+  --te-hub-ink: #161616;
+}
+
+/* Printed tick scale. Ticks turn orange up to the current value. */
+.te-scale {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--te-orange) calc(var(--click-wheel-fraction) * 360deg),
+    var(--te-ink) 0
+  );
+  mask:
+    repeating-conic-gradient(#000 0 1.4deg, transparent 1.4deg 15deg),
+    radial-gradient(circle closest-side, transparent 90%, #000 91%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+}
+
+.te-ring {
+  position: absolute;
+  inset: 9%;
+  border-radius: 50%;
+  cursor: grab;
+  outline: none;
+  background: var(--te-face);
+  border: 2px solid var(--te-ink);
+}
+
+.te-ring:focus-visible {
+  outline: 2px solid var(--te-orange);
+  outline-offset: 4px;
+}
+
+.te-ring[data-turning] {
+  cursor: grabbing;
+  background: var(--te-face-2);
+}
+
+.te-ring[data-disabled] {
+  cursor: default;
+  opacity: 0.5;
+}
+
+/* The knob face: one index dot, turning 1:1 with the finger. */
+.te-rotor {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.te-rotor::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 7%;
+  width: 9%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--te-orange);
+  translate: -50% 0;
+}
+
+.te-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  width: 34%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--te-hub);
+  color: var(--te-hub-ink);
+  cursor: pointer;
+  outline: none;
+  transition: scale 0.08s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.te-center:active {
+  scale: 0.94;
+}
+
+.te-center:focus-visible {
+  outline: 2px solid var(--te-orange);
+  outline-offset: 3px;
+}
+
+.te-center:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
