@@ -1,6 +1,6 @@
 import { llmsFullTxt } from "@/content/markdown";
 import { readExample, readNativeExample } from "@/lib/examples";
-import { readComponentFiles, readNativeFiles, readThemeFiles } from "@/lib/registry";
+import { readComponentFiles, readThemeFiles } from "@/lib/registry";
 import { THEME_IDS } from "@/lib/site";
 
 export const dynamic = "force-static";
@@ -10,7 +10,6 @@ export async function GET() {
   const files = [
     ...(await readComponentFiles()),
     ...(await Promise.all(THEME_IDS.map(readThemeFiles))).flat(),
-    ...(await readNativeFiles()),
   ];
   return new Response(await llmsFullTxt(files, { example: readExample, native: readNativeExample }), {
     headers: { "content-type": "text/markdown; charset=utf-8" },

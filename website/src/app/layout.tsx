@@ -11,7 +11,7 @@ const archivo = Archivo({ variable: "--font-archivo", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Click Wheel",
-  description: "An iPod-style click wheel React Native component",
+  description: "An iPod-style click wheel component for React",
 };
 
 export const viewport: Viewport = {

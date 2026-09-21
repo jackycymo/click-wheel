@@ -152,12 +152,6 @@ export function registryIndex() {
         title: THEME_META[t].title,
         description: THEME_META[t].description,
       })),
-      {
-        name: "click-wheel-native",
-        type: "registry:component",
-        title: `${SITE_NAME} — React Native`,
-        description: "Same parts and math for React Native. Gesture Handler 3, Reanimated, expo-haptics.",
-      },
     ],
   };
 }

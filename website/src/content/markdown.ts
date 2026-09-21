@@ -66,7 +66,6 @@ export function llmsTxt(): string {
 
 - \`npx shadcn@latest add ${site}/r/click-wheel.json\` — the web component: ten files under components/click-wheel, React 19, no dependencies
 ${THEME_IDS.map((t) => `- \`npx shadcn@latest add ${site}/r/click-wheel-${t}.json\` — the ${t} skin (depends on click-wheel)`).join("\n")}
-- \`npx shadcn@latest add ${site}/r/click-wheel-native.json\` — the React Native version (Gesture Handler 3, Reanimated, expo-haptics)
 - Or copy the files from ${site}/llms-full.txt
 
 ## Docs
@@ -85,8 +84,7 @@ ${ANATOMY}
 - Style with anything: parts have no classes. State: \`data-dragging\` (a pointer holds the ring), \`data-coasting\` (spinning on after a flick), \`data-disabled\`, \`--click-wheel-fraction\` (0–1), \`--click-wheel-turns\` (laps from min), \`--click-wheel-rotation\` (deg). \`className\` and \`style\` may be functions of \`{ value, dragging, coasting, disabled }\`. Every part takes a \`render\` prop.
 - Gearing: \`unitsPerTurn\` sets how far one revolution moves the value. \`detent\` sets the units between haptic ticks. \`inertia\` (off by default) keeps the wheel spinning after a flick; \`decelerationRate\` (0.998) is the velocity kept per millisecond.
 - Callbacks: \`onValueChange\` on every change, \`onValueCommitted\` once per gesture, \`onDraggingChange\` when a hand takes or leaves the ring, \`onTick\` per detent.
-- Haptics: Vibration API on Android; the switch trick on iOS 17.4–26.4; on iOS 26.5+ only real taps vibrate, so put \`<HapticTap />\` inside the center button. On React Native, expo-haptics ticks every detent.
-- React Native: install \`click-wheel-native\`, import from \`@/components/click-wheel-native\`. Same parts and props; \`style\` is an object or a function of state; \`useClickWheel()\` returns \`rotation\` and \`fraction\` as shared values. Needs Gesture Handler 3, Reanimated 3.16+, expo-haptics.
+- Haptics: Vibration API on Android; the switch trick on iOS 17.4–26.4; on iOS 26.5+ only real taps vibrate, so put \`<HapticTap />\` inside the center button.
 `;
 }
 

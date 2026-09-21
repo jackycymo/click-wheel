@@ -34,8 +34,7 @@ export default function Home() {
         <div className="mx-auto w-full max-w-5xl px-5 pb-24">
           <div className="border-b py-8">
             <div className="min-w-0 space-y-2">
-              <InstallCommand label="web" />
-              <InstallCommand item="click-wheel-native" label="native" />
+              <InstallCommand />
             </div>
           </div>
 

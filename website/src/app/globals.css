@@ -115,6 +115,10 @@
     text-rendering: optimizeLegibility;
   }
 
+  :where(button, [role="button"], [role="tab"], [role="switch"], [role="checkbox"], input[type="button"], input[type="submit"], input[type="reset"], input[type="checkbox"], input[type="radio"]):not(:disabled):not([aria-disabled="true"]):not([data-disabled]) {
+    cursor: pointer;
+  }
+
   ::selection {
     background: var(--foreground);
     color: var(--background);

@@ -109,14 +109,14 @@ function Needle() {
   return <Animated.View style={[styles.needle, style]} />;
 }`;
 
-export const PAGES: DocPageDef[] = [
+const ALL_PAGES: DocPageDef[] = [
   {
     slug: "getting-started",
     href: "/docs",
     group: "Basics",
     title: "Getting Started",
     description:
-      "Click Wheel is a rotary input component for React and React Native. A slider with gearing instead of length: one revolution moves the value by exactly as much as you say. It ships unstyled; you bring the styles.",
+      "Click Wheel is a rotary input component for React. A slider with gearing instead of length: one revolution moves the value by exactly as much as you say. It ships unstyled; you bring the styles.",
     sections: [
       {
         id: "installation",
@@ -125,12 +125,7 @@ export const PAGES: DocPageDef[] = [
           { type: "install" },
           {
             type: "p",
-            text: "The command copies ten files into `components/click-wheel`, including `core.ts`, the math shared with the React Native version. On the web there are no dependencies beyond React 19. You can also copy the folder by hand.",
-          },
-          { type: "install", item: "click-wheel-native" },
-          {
-            type: "p",
-            text: "For React Native, install this item instead. It needs Gesture Handler 3, Reanimated 3.16 or newer, and expo-haptics. The React Native page has the details.",
+            text: "The command copies ten files into `components/click-wheel`, including `core.ts`, the wheel math. There are no dependencies beyond React 19. You can also copy the folder by hand.",
           },
         ],
       },
@@ -142,10 +137,6 @@ export const PAGES: DocPageDef[] = [
           {
             type: "p",
             text: "`Root` owns the value and the gestures. `Ring` is the slider: drag around it, scroll over it, focus it. `Rotor` is decoration that rotates 1:1 with the finger. `Center` is a button; presses there never start a turn. Controlled with `value`, uncontrolled with `defaultValue`.",
-          },
-          {
-            type: "p",
-            text: "On React Native, import the same parts from `@/components/click-wheel-native`. The props match; styles are objects or functions of state instead of classes.",
           },
         ],
       },
@@ -168,7 +159,7 @@ export const PAGES: DocPageDef[] = [
     group: "Basics",
     title: "Styling",
     description:
-      "Parts render plain elements with no classes and no visual styles. State reaches your CSS three ways. This page is the web; on React Native, styles are functions of state and Reanimated shared values. See React Native.",
+      "Parts render plain elements with no classes and no visual styles. State reaches your CSS three ways.",
     sections: [
       {
         id: "data-attributes",
@@ -242,12 +233,11 @@ export const PAGES: DocPageDef[] = [
               ["iOS 17.4 – 26.4 · Safari", "Hidden switch toggled from script", "Yes", "Yes"],
               ["iOS 26.5+ · Safari", "Real taps on a switch only", "No", "With <HapticTap />"],
               ["Desktop", "No motor", "Silent", "Silent"],
-              ["React Native · iOS and Android", "expo-haptics selectionAsync", "Yes", "Yes"],
             ],
           },
           {
             type: "p",
-            text: 'On React Native every detent ticks through expo-haptics on both platforms, coasting included. The web is harder. Safari never shipped the Vibration API. Since 17.4 it renders `<input type="checkbox" switch>` as a native switch that ticks the Taptic engine when toggled, and until 26.4 a script could toggle it. iOS 26.5 closed that, so on current iPhones only a real tap on a switch vibrates. `HapticTap` is an invisible switch that covers a button; the tap ticks, the click still bubbles. A detent sound, like the clicker in the Detents example, covers the rest.',
+            text: 'Safari never shipped the Vibration API. Since 17.4 it renders `<input type="checkbox" switch>` as a native switch that ticks the Taptic engine when toggled, and until 26.4 a script could toggle it. iOS 26.5 closed that, so on current iPhones only a real tap on a switch vibrates. `HapticTap` is an invisible switch that covers a button; the tap ticks, the click still bubbles. A detent sound, like the clicker in the Detents example, covers the rest.',
           },
         ],
       },
@@ -274,7 +264,7 @@ export const PAGES: DocPageDef[] = [
     href: "/docs/api",
     group: "Basics",
     title: "API Reference",
-    description: "Four parts, one namespace, on the web and on React Native. Every part also takes the common props at the end; the React Native page lists the few names that differ.",
+    description: "Four parts, one namespace. Every part also takes the common props at the end.",
     sections: [
       {
         id: "anatomy",
@@ -285,7 +275,7 @@ export const PAGES: DocPageDef[] = [
         id: "root",
         title: "Root",
         blocks: [
-          { type: "p", text: "Renders a `div` on the web and a `View` on React Native. Holds the value, the gestures, and the CSS variables or shared values." },
+          { type: "p", text: "Renders a `div`. Holds the value, the gestures, and the CSS variables." },
           {
             type: "table",
             caption: "Root props",
@@ -318,7 +308,7 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: 'Renders a `div` with `role="slider"`. Pointer, scroll and keyboard input live here. On React Native it is a `View` with the pan gesture and the adjustable accessibility role; the props are `accessibilityLabel` and `getAccessibilityValueText`.',
+            text: 'Renders a `div` with `role="slider"`. Pointer, scroll and keyboard input live here.',
           },
           {
             type: "table",
@@ -338,7 +328,7 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: "Renders an `aria-hidden` `div` with `rotate: var(--click-wheel-rotation)`. On React Native it is an `Animated.View` driven by a shared value. Give it a texture; it does the turning. No props of its own.",
+            text: "Renders an `aria-hidden` `div` with `rotate: var(--click-wheel-rotation)`. Give it a texture; it does the turning. No props of its own.",
           },
         ],
       },
@@ -348,7 +338,7 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: "Renders a `button`. Pass `onClick` and an `aria-label`. Render it as a `div` for a plain hub. On React Native it is a `Pressable` with `onPress` and `accessibilityLabel`. No props of its own.",
+            text: "Renders a `button`. Pass `onClick` and an `aria-label`. Render it as a `div` for a plain hub. No props of its own.",
           },
         ],
       },
@@ -356,7 +346,7 @@ export const PAGES: DocPageDef[] = [
         id: "common-props",
         title: "Common props",
         blocks: [
-          { type: "p", text: "Every part accepts these on the web, plus the props of the element it renders. On React Native, `style` is the only one: an object or a function of state." },
+          { type: "p", text: "Every part accepts these, plus the props of the element it renders." },
           {
             type: "table",
             caption: "Common props",
@@ -399,10 +389,9 @@ export const PAGES: DocPageDef[] = [
             columns: ["Export", "Type", "Description"],
             mono: [0, 1],
             rows: [
-              ["haptic(ms?)", "(durationMs?: number) => void", "One pulse. Web: the duration applies to the Vibration API, default 4. React Native: one expo-haptics selection tick."],
+              ["haptic(ms?)", "(durationMs?: number) => void", "One pulse. The duration applies to the Vibration API, default 4."],
               ["hapticsSupported()", "() => boolean", "Web only. True when this browser has any path to a pulse."],
               ["<HapticTap />", "input props", "Web only. An invisible switch that covers its parent so a real tap ticks on iOS. The click still bubbles."],
-              ["useClickWheel()", "() => { state, rotation, fraction, turns }", "React Native only. The state, plus rotation, fraction and turns as shared values for your own animated styles."],
             ],
           },
         ],
@@ -425,7 +414,7 @@ export const PAGES: DocPageDef[] = [
           },
           {
             type: "p",
-            text: "The ring announces itself as a slider with `aria-valuenow`, `aria-valuemin` and `aria-valuemax`. Use `getAriaValueText` for a spoken format. Phones have no keyboard here; on React Native, VoiceOver and TalkBack step the value with the increment and decrement actions on the ring.",
+            text: "The ring announces itself as a slider with `aria-valuenow`, `aria-valuemin` and `aria-valuemax`. Use `getAriaValueText` for a spoken format.",
           },
         ],
       },
@@ -505,7 +494,7 @@ export const PAGES: DocPageDef[] = [
     href: "/examples/default",
     group: "Examples",
     title: "Default",
-    description: "The most basic setup for a click wheel, then the props that make it yours. These previews run on the web; the React Native player is on the React Native page.",
+    description: "The most basic setup for a click wheel, then the props that make it yours.",
     sections: [
       {
         id: "basic",
@@ -632,6 +621,9 @@ export const PAGES: DocPageDef[] = [
   },
 ];
 
+// Keep the unfinished native guide out of published pages and exports.
+export const PAGES = ALL_PAGES.filter((page) => page.slug !== "react-native");
+
 export function getPage(slug: string): DocPageDef | undefined {
   return PAGES.find((page) => page.slug === slug);
 }
@@ -641,4 +633,4 @@ export const EXAMPLE_PAGES = PAGES.filter((page) => page.group === "Examples");
 
 /** The shortest useful description, shared by llms.txt, metadata and the README. */
 export const SUMMARY =
-  "An unstyled, iPod-style rotary input for React and React Native. A slider with gearing instead of length: one revolution moves the value by `unitsPerTurn`. Parts in the Base UI style (Root, Ring, Rotor, Center), data attributes, CSS variables, haptics, zero dependencies.";
+  "An unstyled, iPod-style rotary input for React. A slider with gearing instead of length: one revolution moves the value by `unitsPerTurn`. Parts in the Base UI style (Root, Ring, Rotor, Center), data attributes, CSS variables, haptics, zero dependencies.";
