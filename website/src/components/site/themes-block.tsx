@@ -10,7 +10,8 @@ const read = async (file: string) =>
 
 export const DUOTONE_CSS = `/* Duotone: the same Tailwind skin under two colors with fixed roles. The primary
    is the body: the face of the ring and the track. The secondary is everything
-   that moves or can be pressed: the arc, the ticks, the hub and the fill. */
+   that moves or can be pressed: the arc, the ticks, the hub and the fill. The
+   glyph on the hub is white, so every secondary must carry white. */
 .theme-navy-orange {
   --duo-primary: #12354e;
   --duo-secondary: #f99d1b;
@@ -21,31 +22,31 @@ export const DUOTONE_CSS = `/* Duotone: the same Tailwind skin under two colors 
   --duo-secondary: #f48067;
 }
 
-.theme-forest-ivory {
-  --duo-primary: #004f46;
-  --duo-secondary: #ebd3a2;
+.theme-russet-sea {
+  --duo-primary: #793327;
+  --duo-secondary: #00b49b;
 }
 
-.theme-plum-lime {
-  --duo-primary: #501345;
-  --duo-secondary: #c7d14f;
+.theme-plum-cinnamon {
+  --duo-primary: #4e1d4c;
+  --duo-secondary: #c27544;
 }
 
 .theme-navy-orange,
 .theme-indigo-coral,
-.theme-forest-ivory,
-.theme-plum-lime,
+.theme-russet-sea,
+.theme-plum-cinnamon,
 .dark .theme-navy-orange,
 .dark .theme-indigo-coral,
-.dark .theme-forest-ivory,
-.dark .theme-plum-lime {
+.dark .theme-russet-sea,
+.dark .theme-plum-cinnamon {
   --primary: var(--duo-secondary);
-  --primary-foreground: var(--duo-primary);
+  --primary-foreground: #fff;
   --muted: var(--duo-primary);
   --border: color-mix(in oklab, var(--duo-primary) 62%, var(--duo-secondary));
   --ring: var(--duo-secondary);
   --hub: var(--duo-secondary);
-  --hub-foreground: var(--duo-primary);
+  --hub-foreground: #fff;
   --ticks: var(--duo-secondary);
 }
 

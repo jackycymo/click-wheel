@@ -18,10 +18,7 @@ export function MusicCredits() {
             </li>
           ))}
         </ul>
-        <p className="mt-3 max-w-lg">
-          Morning Coffee is compressed for this demo. The other tracks are unmodified.
-        </p>
-        <a className="mt-2 inline-block underline underline-offset-2 hover:text-foreground" href="/audio/LICENSE.txt">Full music credits</a>
+        <a className="mt-3 inline-block underline underline-offset-2 hover:text-foreground" href="/audio/LICENSE.txt">Full music credits</a>
       </details>
     </div>
   );

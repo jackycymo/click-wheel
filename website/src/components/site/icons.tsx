@@ -88,3 +88,12 @@ export function IconNext(props: Props) {
     </svg>
   );
 }
+
+export function IconMonitor(props: Props) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="2" y="4" width="20" height="13" rx="2" />
+      <path d="M8 21h8M12 17v4" />
+    </svg>
+  );
+}

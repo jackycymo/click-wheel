@@ -8,13 +8,14 @@ import { Wheel } from "./wheel";
 const PAIRS = [
   { className: "theme-navy-orange", label: "Navy and orange", primary: "#12354e", secondary: "#f99d1b" },
   { className: "theme-indigo-coral", label: "Indigo and coral", primary: "#051230", secondary: "#f48067" },
-  { className: "theme-forest-ivory", label: "Forest and ivory", primary: "#004f46", secondary: "#ebd3a2" },
-  { className: "theme-plum-lime", label: "Plum and lime", primary: "#501345", secondary: "#c7d14f" },
+  { className: "theme-russet-sea", label: "Russet and sea green", primary: "#793327", secondary: "#00b49b" },
+  { className: "theme-plum-cinnamon", label: "Plum and cinnamon", primary: "#4e1d4c", secondary: "#c27544" },
 ];
 
 /**
  * The stock skin under each pair. The primary is the body of the wheel; the
- * secondary is the arc, the ticks and the hub. Swatches switch the class only.
+ * secondary is the arc, the ticks and the hub, with a white glyph on the hub.
+ * Swatches switch the class only.
  */
 export function DuotoneDemo({ mode }: { mode: Mode }) {
   const [pair, setPair] = React.useState(PAIRS[0]);
