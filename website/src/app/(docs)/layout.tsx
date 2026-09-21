@@ -7,7 +7,8 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
       <Header />
       <div className="mx-auto flex w-full max-w-6xl flex-col px-5 lg:flex-row lg:gap-10">
         <SidebarNav />
-        <div className="min-w-0 flex-1 py-10 pb-24 lg:py-12">{children}</div>
+        {/* Extra room at the end so the floating player never covers the last lines. */}
+        <div className="min-w-0 flex-1 py-10 pb-40 lg:py-12 lg:pb-40">{children}</div>
       </div>
     </>
   );

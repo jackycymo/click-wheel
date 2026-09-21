@@ -28,7 +28,7 @@ export function Vinyl() {
           <div
             key={i}
             aria-hidden="true"
-            className="absolute rounded-full [background:conic-gradient(var(--color-primary)_calc(var(--fill)*360deg),var(--color-border)_0)] [mask:radial-gradient(circle_closest-side,transparent_calc(100%_-_3px),black_calc(100%_-_2px))]"
+            className="absolute rounded-full [background:conic-gradient(var(--primary)_calc(var(--fill)*360deg),var(--border)_0)] [mask:radial-gradient(circle_closest-side,transparent_calc(100%_-_3px),black_calc(100%_-_2px))]"
             style={{ inset: i * 5, "--fill": `clamp(0, calc(var(--click-wheel-turns) - ${i}), 1)` } as React.CSSProperties}
           />
         ))}

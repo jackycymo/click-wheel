@@ -6,7 +6,7 @@ import { ClickWheel } from "click-wheel";
 /*
   The stock skin: shadcn/ui tokens and Tailwind classes, nothing else.
   Swap --primary and friends for a new palette; the classes stay the same.
-  --hub, --hub-foreground and --ticks are neutral by default; a tint sets them.
+  --hub, --hub-foreground and --ticks are neutral by default; a duotone sets them.
 
   Progress is one arc for the whole range. Pass `grooves` to draw it like
   the grooves of a record instead: one ring per revolution, outer to inner,
@@ -59,7 +59,7 @@ export function Wheel({
         <div
           key={i}
           aria-hidden="true"
-          className="absolute rounded-full [background:conic-gradient(var(--color-primary)_calc(var(--groove-fill)*360deg),var(--color-border)_0)] [mask:radial-gradient(circle_closest-side,transparent_calc(100%_-_3px),black_calc(100%_-_2px))]"
+          className="absolute rounded-full [background:conic-gradient(var(--primary)_calc(var(--groove-fill)*360deg),var(--border)_0)] [mask:radial-gradient(circle_closest-side,transparent_calc(100%_-_3px),black_calc(100%_-_2px))]"
           style={
             {
               inset: i * GROOVE,
@@ -80,7 +80,7 @@ export function Wheel({
       >
         {/* Tick texture that turns with the finger. No transition on rotate: a ramp that
             restarts on every touch sample stutters on phones. */}
-        <ClickWheel.Rotor className="absolute inset-0 rounded-full opacity-25 transition-opacity [background:repeating-conic-gradient(var(--color-ticks)_0_1deg,transparent_1deg_15deg)] [mask:radial-gradient(circle_closest-side,transparent_56%,black_57%_82%,transparent_83%)] data-[dragging]:opacity-60 data-[coasting]:opacity-60" />
+        <ClickWheel.Rotor className="absolute inset-0 rounded-full opacity-25 transition-opacity [background:repeating-conic-gradient(var(--ticks)_0_1deg,transparent_1deg_15deg)] [mask:radial-gradient(circle_closest-side,transparent_56%,black_57%_82%,transparent_83%)] data-[dragging]:opacity-60 data-[coasting]:opacity-60" />
       </ClickWheel.Ring>
       <ClickWheel.Center
         aria-label={centerLabel}

@@ -5,28 +5,32 @@ import { IconPause, IconPlay } from "@/components/site/icons";
 import { fmt, speakTime, usePlayer, type Mode } from "@/components/site/use-player";
 import { Wheel } from "./wheel";
 
-const TINTS = [
-  { className: "theme-blue-seashell", label: "Blue and Seashell Pink", colors: ["#006eb8", "#fdd4bd"] },
-  { className: "theme-benzol-coral", label: "Benzol Green and Coral Red", colors: ["#00978d", "#f58e84"] },
-  { className: "theme-pompeian-cameo", label: "Pompeian Red and Cameo Pink", colors: ["#ab2439", "#e0b3b6"] },
+const PAIRS = [
+  { className: "theme-navy-orange", label: "Navy and orange", primary: "#12354e", secondary: "#f99d1b" },
+  { className: "theme-indigo-coral", label: "Indigo and coral", primary: "#051230", secondary: "#f48067" },
+  { className: "theme-forest-ivory", label: "Forest and ivory", primary: "#004f46", secondary: "#ebd3a2" },
+  { className: "theme-plum-lime", label: "Plum and lime", primary: "#501345", secondary: "#c7d14f" },
 ];
 
-/** The stock skin under each pair. Swatches switch the class; nothing else changes. */
-export function TintedDemo({ mode }: { mode: Mode }) {
-  const [tint, setTint] = React.useState(TINTS[0]);
+/**
+ * The stock skin under each pair. The primary is the body of the wheel; the
+ * secondary is the arc, the ticks and the hub. Swatches switch the class only.
+ */
+export function DuotoneDemo({ mode }: { mode: Mode }) {
+  const [pair, setPair] = React.useState(PAIRS[0]);
   return (
     <div className="flex flex-col items-center gap-5">
-      <Demo mode={mode} className={tint.className} />
-      <div className="flex items-center gap-2" role="group" aria-label="Tint">
-        {TINTS.map((t) => (
+      <Demo mode={mode} className={pair.className} />
+      <div className="flex items-center gap-2.5" role="group" aria-label="Color pair">
+        {PAIRS.map((p) => (
           <button
-            key={t.className}
+            key={p.className}
             type="button"
-            aria-label={t.label}
-            aria-pressed={t === tint}
-            onClick={() => setTint(t)}
-            className="size-5 rounded-full border border-black/20 outline-none ring-offset-2 ring-offset-background transition-transform focus-visible:ring-2 focus-visible:ring-ring aria-[pressed=true]:scale-110 aria-[pressed=true]:ring-2 aria-[pressed=true]:ring-foreground"
-            style={{ background: `linear-gradient(90deg, ${t.colors[0]} 50%, ${t.colors[1]} 50%)` }}
+            aria-label={p.label}
+            aria-pressed={p === pair}
+            onClick={() => setPair(p)}
+            className="size-6 rounded-full outline-none ring-offset-2 ring-offset-background transition-transform focus-visible:ring-2 focus-visible:ring-ring aria-[pressed=true]:scale-110 aria-[pressed=true]:ring-2 aria-[pressed=true]:ring-foreground"
+            style={{ background: `radial-gradient(circle, ${p.secondary} 36%, ${p.primary} 40%)` }}
           />
         ))}
       </div>

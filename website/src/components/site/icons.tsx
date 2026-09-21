@@ -80,3 +80,11 @@ export function IconWheel(props: Props) {
     </svg>
   );
 }
+
+export function IconNext(props: Props) {
+  return (
+    <svg {...base} fill="currentColor" stroke="none" {...props}>
+      <path d="M5 5v14l9-7zM16 5h3v14h-3z" />
+    </svg>
+  );
+}

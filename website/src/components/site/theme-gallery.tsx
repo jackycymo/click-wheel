@@ -2,17 +2,17 @@
 
 import * as React from "react";
 import { Tabs } from "@base-ui/react/tabs";
-import { Demo as ShadcnDemo, TintedDemo } from "@/themes/shadcn/demo";
+import { Demo as ShadcnDemo, DuotoneDemo } from "@/themes/shadcn/demo";
 import { Demo as IpodDemo } from "@/themes/ipod/demo";
 import { Demo as RetroDemo } from "@/themes/retro/demo";
 import { Demo as GalleyDemo } from "@/themes/galley/demo";
 import type { Mode } from "./use-player";
 
-export type ThemeId = "default" | "tinted" | "ipod" | "retro" | "galley";
+export type ThemeId = "default" | "duotone" | "ipod" | "retro" | "galley";
 
 const THEMES: Array<{ id: ThemeId; name: string }> = [
   { id: "default", name: "Default" },
-  { id: "tinted", name: "Tinted" },
+  { id: "duotone", name: "Duotone" },
   { id: "ipod", name: "iPod" },
   { id: "retro", name: "Retro" },
   { id: "galley", name: "Galley" },
@@ -20,7 +20,7 @@ const THEMES: Array<{ id: ThemeId; name: string }> = [
 
 const DEMOS: Record<ThemeId, React.ComponentType<{ mode: Mode }>> = {
   default: ShadcnDemo,
-  tinted: TintedDemo,
+  duotone: DuotoneDemo,
   ipod: IpodDemo,
   retro: RetroDemo,
   galley: GalleyDemo,

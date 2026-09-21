@@ -16,7 +16,7 @@ export function Arc() {
       {/* The value as an arc. CSS reads --click-wheel-fraction; no React render needed. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 rounded-full [background:conic-gradient(var(--color-primary)_calc(var(--click-wheel-fraction)*360deg),var(--color-border)_0)] [mask:radial-gradient(circle_closest-side,transparent_calc(100%_-_6px),black_calc(100%_-_5px))]"
+        className="absolute inset-0 rounded-full [background:conic-gradient(var(--primary)_calc(var(--click-wheel-fraction)*360deg),var(--border)_0)] [mask:radial-gradient(circle_closest-side,transparent_calc(100%_-_6px),black_calc(100%_-_5px))]"
       />
       <ClickWheel.Ring
         aria-label="Level"

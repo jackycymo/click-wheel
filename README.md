@@ -61,7 +61,7 @@ import { ClickWheel } from "@/components/click-wheel";
 | Theme   | How                                    |
 | ------- | -------------------------------------- |
 | Default | shadcn/ui tokens and Tailwind classes  |
-| Tinted  | the same classes, a pair of colors in the tokens |
+| Duotone | the same classes, a primary and a secondary color in the tokens |
 | iPod    | plain CSS, printed glyphs, a domed hub |
 | Retro   | plain CSS, soft-shadow knob in a well, one accent index, four accents |
 | Galley  | plain CSS, soft metal knob with a knurled rim and lit segments |

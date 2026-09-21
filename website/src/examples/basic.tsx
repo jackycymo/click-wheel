@@ -27,7 +27,7 @@ export function Basic() {
           className="absolute inset-0 cursor-grab rounded-full border bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring data-[dragging]:cursor-grabbing"
         >
           {/* A tick texture. The Rotor turns it 1:1 with the finger. */}
-          <ClickWheel.Rotor className="absolute inset-0 rounded-full opacity-25 [background:repeating-conic-gradient(var(--color-foreground)_0_1deg,transparent_1deg_15deg)] [mask:radial-gradient(circle_closest-side,transparent_56%,black_57%_82%,transparent_83%)]" />
+          <ClickWheel.Rotor className="absolute inset-0 rounded-full opacity-25 [background:repeating-conic-gradient(var(--foreground)_0_1deg,transparent_1deg_15deg)] [mask:radial-gradient(circle_closest-side,transparent_56%,black_57%_82%,transparent_83%)]" />
         </ClickWheel.Ring>
         <ClickWheel.Center
           aria-label="Back to start"

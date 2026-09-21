@@ -21,7 +21,7 @@ export function HeroDemo() {
 
   return (
     <div className="overflow-hidden rounded-xl border bg-card">
-      <div className="grid items-center gap-8 bg-[radial-gradient(var(--color-border)_1px,transparent_1px)] [background-size:18px_18px] p-6 sm:grid-cols-[auto_1fr] sm:gap-12 sm:p-10">
+      <div className="grid items-center gap-8 bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:18px_18px] p-6 sm:grid-cols-[auto_1fr] sm:gap-12 sm:p-10">
         <Wheel
           {...p.wheel}
           onDraggingChange={(next) => {

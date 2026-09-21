@@ -53,7 +53,7 @@ async function Example({ id, file }: { id: ExampleId; file: string }) {
   const source = await readExample(file);
   return (
     <div className="space-y-3">
-      <div className="flex min-h-[320px] items-center justify-center rounded-xl border bg-card bg-[radial-gradient(var(--color-border)_1px,transparent_1px)] [background-size:18px_18px] p-8">
+      <div className="flex min-h-[320px] items-center justify-center rounded-xl border bg-card bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:18px_18px] p-8">
         <Preview />
       </div>
       <CodeBlock code={source} title={`examples/${file}`} />

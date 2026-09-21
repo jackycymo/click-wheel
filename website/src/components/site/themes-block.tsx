@@ -8,40 +8,48 @@ import { ThemeGallery } from "./theme-gallery";
 const read = async (file: string) =>
   forReaders(await fs.readFile(path.join(process.cwd(), "src", "themes", file), "utf8"));
 
-export const TINT_CSS = `/* Tints for the same Tailwind skin: a pair of colors. The strong one drives the
-   arc, the hub and the ticks; the soft one is the face of the ring. */
-.theme-blue-seashell {
-  --tint: #006eb8;
-  --tint-2: #fdd4bd;
+export const DUOTONE_CSS = `/* Duotone: the same Tailwind skin under two colors with fixed roles. The primary
+   is the body: the face of the ring and the track. The secondary is everything
+   that moves or can be pressed: the arc, the ticks, the hub and the fill. */
+.theme-navy-orange {
+  --duo-primary: #12354e;
+  --duo-secondary: #f99d1b;
 }
 
-.theme-benzol-coral {
-  --tint: #00978d;
-  --tint-2: #f58e84;
+.theme-indigo-coral {
+  --duo-primary: #051230;
+  --duo-secondary: #f48067;
 }
 
-.theme-pompeian-cameo {
-  --tint: #ab2439;
-  --tint-2: #e0b3b6;
+.theme-forest-ivory {
+  --duo-primary: #004f46;
+  --duo-secondary: #ebd3a2;
 }
 
-.theme-blue-seashell,
-.theme-benzol-coral,
-.theme-pompeian-cameo,
-.dark .theme-blue-seashell,
-.dark .theme-benzol-coral,
-.dark .theme-pompeian-cameo {
-  --primary: var(--tint);
-  --primary-foreground: #fafafa;
-  --muted: var(--tint-2);
-  --border: color-mix(in oklab, var(--tint) 30%, var(--tint-2));
-  --ring: var(--tint);
-  --hub: var(--tint);
-  --hub-foreground: #fafafa;
-  --ticks: var(--tint);
+.theme-plum-lime {
+  --duo-primary: #501345;
+  --duo-secondary: #c7d14f;
 }
 
-<div className="theme-benzol-coral">
+.theme-navy-orange,
+.theme-indigo-coral,
+.theme-forest-ivory,
+.theme-plum-lime,
+.dark .theme-navy-orange,
+.dark .theme-indigo-coral,
+.dark .theme-forest-ivory,
+.dark .theme-plum-lime {
+  --primary: var(--duo-secondary);
+  --primary-foreground: var(--duo-primary);
+  --muted: var(--duo-primary);
+  --border: color-mix(in oklab, var(--duo-primary) 62%, var(--duo-secondary));
+  --ring: var(--duo-secondary);
+  --hub: var(--duo-secondary);
+  --hub-foreground: var(--duo-primary);
+  --ticks: var(--duo-secondary);
+}
+
+<div className="theme-navy-orange">
   <Wheel … />
 </div>`;
 
@@ -61,7 +69,7 @@ export async function ThemesBlock() {
     <ThemeGallery
       sources={{
         default: <CodeBlock code={shadcnSrc} title="themes/shadcn/wheel.tsx" />,
-        tinted: <CodeBlock code={TINT_CSS} lang="css" title="globals.css" />,
+        duotone: <CodeBlock code={DUOTONE_CSS} lang="css" title="globals.css" />,
         ipod: (
           <>
             <CodeBlock code={ipodSrc} title="themes/ipod/wheel.tsx" />

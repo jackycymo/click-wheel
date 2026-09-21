@@ -17,15 +17,55 @@ export interface PlayerApi {
   setPosition: (seconds: number) => void;
   setScrubbing: (scrubbing: boolean) => void;
   setVolume: (volume: number) => void;
+  /** Skip to the next track. Playback continues if it was playing. */
+  next: () => void;
+  /** Restart the track, or go back one when it has just started. */
+  previous: () => void;
   track: Track;
   error: string | null;
 }
 
 const PlayerContext = React.createContext<PlayerApi | null>(null);
 
+/*
+  The tab remembers the track, the position and whether it was playing, so a
+  reload lands where the listener left off. Playback after a reload is not a
+  user gesture; when the browser refuses it, the player stays paused quietly.
+*/
+const STORAGE_KEY = "click-wheel:player";
+
+interface Saved {
+  src: string;
+  position: number;
+  playing: boolean;
+}
+
+function readSaved(): Saved | null {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const saved: unknown = JSON.parse(raw);
+    if (!saved || typeof saved !== "object") return null;
+    const { src, position, playing } = saved as Record<string, unknown>;
+    if (typeof src !== "string" || typeof position !== "number" || !Number.isFinite(position)) return null;
+    return { src, position, playing: playing === true };
+  } catch {
+    return null;
+  }
+}
+
+function writeSaved(saved: Saved) {
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+  } catch {
+    // Storage can be blocked; the player still works, it only forgets.
+  }
+}
+
 /**
  * One HTML5 audio element for the whole site. Every wheel on every page
- * reads and drives the same playback, so nothing ever plays twice.
+ * reads and drives the same playback, so nothing ever plays twice. It lives
+ * in the root layout, which stays mounted across client-side navigation.
  */
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const audioRef = React.useRef<HTMLAudioElement>(null);
@@ -33,6 +73,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const trackIndexRef = React.useRef(0);
   const playRequestRef = React.useRef(0);
   const volumeRef = React.useRef(64);
+  const resumeRef = React.useRef<{ position: number; playing: boolean } | null>(null);
   const [trackIndex, setTrackIndex] = React.useState(0);
   const [position, setPositionState] = React.useState(0);
   const [duration, setDuration] = React.useState(TRACKS[0].duration);
@@ -41,7 +82,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [scrubbing, setScrubbingState] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
-  const play = React.useCallback(() => {
+  const save = React.useCallback(() => {
+    const audio = audioRef.current;
+    const track = TRACKS[trackIndexRef.current];
+    if (!audio || !track) return;
+    writeSaved({ src: track.src, position: audio.currentTime, playing: !audio.paused && !audio.ended });
+  }, []);
+
+  const play = React.useCallback((quiet = false) => {
     const audio = audioRef.current;
     if (!audio) return;
     const request = ++playRequestRef.current;
@@ -49,36 +97,62 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     void audio.play().catch((error: unknown) => {
       if (request !== playRequestRef.current || (error instanceof DOMException && error.name === "AbortError")) return;
       setPlaying(false);
+      save();
+      // Autoplay refused after a reload: not an error, the listener just presses play again.
+      if (quiet && error instanceof DOMException && error.name === "NotAllowedError") return;
       setError("Couldn't start this track. Press the center of the wheel to retry.");
     });
-  }, []);
+  }, [save]);
 
-  const loadTrack = React.useCallback((index: number, autoplay: boolean) => {
-    const audio = audioRef.current;
-    if (!audio || !Number.isInteger(index) || !TRACKS[index]) return;
-    const track = TRACKS[index];
-    ++playRequestRef.current;
-    trackIndexRef.current = index;
-    scrubbingRef.current = false;
-    setTrackIndex(index);
-    setPositionState(0);
-    setDuration(track.duration);
-    setScrubbingState(false);
-    setPlaying(false);
-    setError(null);
-    audio.src = track.src;
-    audio.volume = volumeRef.current / 100;
-    audio.load();
-    if (autoplay) play();
-  }, [play]);
+  const loadTrack = React.useCallback(
+    (index: number, autoplay: boolean, resumeAt?: number) => {
+      const audio = audioRef.current;
+      if (!audio || !Number.isInteger(index) || !TRACKS[index]) return;
+      const track = TRACKS[index];
+      ++playRequestRef.current;
+      trackIndexRef.current = index;
+      scrubbingRef.current = false;
+      setTrackIndex(index);
+      setPositionState(resumeAt ?? 0);
+      setDuration(track.duration);
+      setScrubbingState(false);
+      setPlaying(false);
+      setError(null);
+      audio.src = track.src;
+      audio.volume = volumeRef.current / 100;
+      audio.load();
+      if (autoplay) play();
+      writeSaved({ src: track.src, position: resumeAt ?? 0, playing: autoplay });
+    },
+    [play],
+  );
 
   React.useEffect(() => {
-    // Pick a starting song only in the browser, keeping SSR and hydration identical.
-    loadTrack(Math.floor(Math.random() * TRACKS.length), false);
+    // Pick up where this tab left off, or start a random song. Both happen only
+    // in the browser, keeping SSR and hydration identical.
+    const saved = readSaved();
+    const index = saved ? TRACKS.findIndex((track) => track.src === saved.src) : -1;
+    if (saved && index >= 0) {
+      resumeRef.current = { position: saved.position, playing: saved.playing };
+      loadTrack(index, false, saved.position);
+    } else {
+      loadTrack(Math.floor(Math.random() * TRACKS.length), false);
+    }
   }, [loadTrack]);
 
-  const api = React.useMemo<PlayerApi>(
-    () => ({
+  const api = React.useMemo<PlayerApi>(() => {
+    const isPlaying = () => {
+      const audio = audioRef.current;
+      return !!audio && !audio.paused && !audio.ended;
+    };
+    const seek = (seconds: number) => {
+      const audio = audioRef.current;
+      const position = Math.max(0, Math.min(seconds, duration));
+      setPositionState(position);
+      if (audio) audio.currentTime = position;
+      save();
+    };
+    return {
       position,
       duration,
       playing,
@@ -95,12 +169,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           audio.pause();
         }
       },
-      seek: (seconds) => {
-        const audio = audioRef.current;
-        const position = Math.max(0, Math.min(seconds, duration));
-        setPositionState(position);
-        if (audio) audio.currentTime = position;
-      },
+      seek,
       setPosition: setPositionState,
       setScrubbing: (next) => {
         scrubbingRef.current = next;
@@ -112,9 +181,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         setVolumeState(next);
         if (audio) audio.volume = next / 100;
       },
-    }),
-    [position, duration, playing, volume, scrubbing, trackIndex, error, play],
-  );
+      next: () => loadTrack((trackIndexRef.current + 1) % TRACKS.length, isPlaying()),
+      previous: () => {
+        const audio = audioRef.current;
+        if (audio && audio.currentTime > 3) seek(0);
+        else loadTrack((trackIndexRef.current + TRACKS.length - 1) % TRACKS.length, isPlaying());
+      },
+    };
+  }, [position, duration, playing, volume, scrubbing, trackIndex, error, play, loadTrack, save]);
 
   return (
     <PlayerContext.Provider value={api}>
@@ -126,13 +200,27 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           const audio = e.currentTarget;
           audio.volume = volumeRef.current / 100;
           if (Number.isFinite(audio.duration)) setDuration(audio.duration);
+          const resume = resumeRef.current;
+          if (!resume) return;
+          resumeRef.current = null;
+          const at = Math.max(0, Math.min(resume.position, Math.max(0, audio.duration - 1)));
+          audio.currentTime = at;
+          setPositionState(at);
+          if (resume.playing) play(true);
         }}
         onTimeUpdate={(e) => {
           // While a wheel holds the position, the readout is the wheel's, not the file's.
           if (!scrubbingRef.current) setPositionState(e.currentTarget.currentTime);
+          save();
         }}
-        onPlay={() => setPlaying(true)}
-        onPause={() => setPlaying(false)}
+        onPlay={() => {
+          setPlaying(true);
+          save();
+        }}
+        onPause={() => {
+          setPlaying(false);
+          save();
+        }}
         onEnded={() => loadTrack((trackIndexRef.current + 1) % TRACKS.length, true)}
         onError={() => {
           setPlaying(false);

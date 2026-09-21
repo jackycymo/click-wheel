@@ -62,7 +62,7 @@ export function HomeHero({ children }: { children: ReactNode }) {
         </div>
 
         <div className="home-hero-layout">
-          <div className="home-hero-device" hidden={appearance !== "retro"}>
+          <div className="home-hero-device" data-player-anchor hidden={appearance !== "retro"}>
             <div className="home-hero-player">
               <RetroDemo mode="seek" defaultClicker />
             </div>
@@ -81,7 +81,7 @@ export function HomeHero({ children }: { children: ReactNode }) {
           </div>
         </div>
 
-        <div className="home-hero-basic" hidden={appearance !== "basic"}>
+        <div className="home-hero-basic" data-player-anchor hidden={appearance !== "basic"}>
           <HeroDemo />
           <p className="mt-4 text-center text-xs text-muted-foreground">
             Drag to adjust, or focus the wheel and use the arrow keys. Press the center to play.

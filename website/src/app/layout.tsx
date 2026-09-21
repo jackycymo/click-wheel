@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, Doto, Geist, Geist_Mono, Pixelify_Sans } from "next/font/google";
+import { PlayerDock } from "@/components/site/player-dock";
 import { PlayerProvider } from "@/components/site/player-provider";
 import "./globals.css";
 
@@ -36,7 +37,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body className="flex min-h-full flex-col font-sans">
-        <PlayerProvider>{children}</PlayerProvider>
+        <PlayerProvider>
+          {children}
+          <PlayerDock />
+        </PlayerProvider>
       </body>
     </html>
   );

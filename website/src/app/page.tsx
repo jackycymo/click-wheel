@@ -32,7 +32,7 @@ export default function Home() {
           </div>
         </HomeHero>
 
-        <div className="mx-auto w-full max-w-5xl px-5 pb-24">
+        <div className="mx-auto w-full max-w-5xl px-5 pb-40">
           <div className="border-b py-8">
             <div className="min-w-0 space-y-2">
               <InstallCommand />
