@@ -3,6 +3,7 @@ import { Header } from "@/components/site/header";
 import { HomeHero } from "@/components/site/home-hero";
 import { InstallCommand } from "@/components/site/install-command";
 import { ThemesBlock } from "@/components/site/themes-block";
+import { MusicCredits } from "@/components/site/music-credits";
 
 export default function Home() {
   return (
@@ -12,10 +13,10 @@ export default function Home() {
         <HomeHero>
           <h1 id="hero-title">Click Wheel</h1>
           <p className="home-hero-description">
-            Bring the joy of the iPod style click wheel. A tactile React component for
+            Bring the joy of the iPod style click wheel back. A tactile React component for
             playback, volume, and everything you used to slide.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="home-hero-actions mt-8 flex flex-wrap gap-3">
             <Link
               href="/docs"
               className="inline-flex h-10 items-center gap-3 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-xs transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
@@ -45,7 +46,8 @@ export default function Home() {
             </div>
           </section>
 
-          <footer className="flex flex-wrap items-center justify-between gap-3 border-t pt-6 text-sm text-muted-foreground">
+          <footer className="flex flex-wrap items-start justify-between gap-6 border-t pt-6 text-sm text-muted-foreground">
+            <MusicCredits />
             <span className="font-mono text-xs">
               <a href="/llms.txt" className="hover:text-foreground">llms.txt</a> ·{" "}
               <a href="/docs.md" className="hover:text-foreground">docs.md</a> ·{" "}

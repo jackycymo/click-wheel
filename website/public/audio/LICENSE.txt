@@ -3,3 +3,39 @@ Album: Lo-fi And Chill
 Source: https://freemusicarchive.org/music/holiznacc0/lo-fi-and-chill/morning-coffee/
 License: CC0 1.0 Universal (public domain) https://creativecommons.org/publicdomain/zero/1.0/
 Re-encoded to 112 kbps MP3 for the demo.
+
+Additional playlist tracks by HoliznaCC0
+Album: Lofi And Chill
+Artist: https://holiznacc0.bandcamp.com/
+Album: https://holiznacc0.bandcamp.com/album/lofi-and-chill
+
+Vintage
+Source: https://holiznacc0.bandcamp.com/track/vintage
+File: vintage.mp3
+
+Mundane
+Source: https://holiznacc0.bandcamp.com/track/mundane
+File: mundane.mp3
+
+Something In The Air
+Source: https://holiznacc0.bandcamp.com/track/something-in-the-air
+File: something-in-the-air.mp3
+
+A Little Shade
+Source: https://holiznacc0.bandcamp.com/track/a-little-shade
+File: a-little-shade.mp3
+
+Laundry Day
+Source: https://holiznacc0.bandcamp.com/track/laundry-day
+File: laundry-day.mp3
+
+License for the five additional tracks: Creative Commons Attribution 4.0
+International (CC BY 4.0), as linked on the artist's Bandcamp album.
+https://creativecommons.org/licenses/by/4.0/
+Legal code: https://creativecommons.org/licenses/by/4.0/legalcode
+These files are the artist's publicly available 128 kbps MP3 streams,
+downloaded without editing or re-encoding. Verified September 21, 2026.
+
+The artist also dedicates the album and archive to the public domain in
+the album description and artist bio. We retain attribution and the
+linked CC BY 4.0 license for these Bandcamp-sourced files.

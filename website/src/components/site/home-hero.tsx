@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Caveat } from "next/font/google";
 import { Demo as RetroDemo } from "@/themes/retro/demo";
 import { HeroDemo } from "./hero-demo";
+import { usePlayerContext } from "./player-provider";
 import { Segmented } from "./segmented";
 import "./home-hero.css";
 
@@ -14,6 +15,7 @@ type Appearance = "retro" | "basic";
 
 export function HomeHero({ children }: { children: ReactNode }) {
   const [appearance, setAppearance] = useState<Appearance>("retro");
+  const { error } = usePlayerContext();
 
   return (
     <section className={`home-hero ${handwriting.variable}`} data-appearance={appearance} aria-labelledby="hero-title">
@@ -73,7 +75,10 @@ export function HomeHero({ children }: { children: ReactNode }) {
             </div>
           </div>
 
-          <div className="home-hero-copy">{children}</div>
+          <div className="home-hero-copy">
+            {children}
+            {error ? <p className="mt-3 text-xs" role="alert">{error}</p> : null}
+          </div>
         </div>
 
         <div className="home-hero-basic" hidden={appearance !== "basic"}>

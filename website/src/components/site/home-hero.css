@@ -378,3 +378,72 @@
   }
 
 }
+
+@media (max-width: 599px) {
+  .home-hero-inner {
+    padding: 10px 16px 0;
+  }
+
+  .home-hero-toolbar {
+    min-height: 0;
+    padding: 0;
+  }
+
+  .home-hero-appearance {
+    padding: 3px 8px;
+  }
+
+  .home-hero-switch-note {
+    font-size: 18px;
+  }
+
+  .home-hero-appearance [role="group"] {
+    height: 32px;
+    font-size: 21px;
+  }
+
+  .home-hero-layout {
+    gap: 26px;
+    padding: 16px 0 28px;
+  }
+
+  .home-hero[data-appearance="retro"] .home-hero-copy {
+    padding: 16px 18px;
+  }
+
+  .home-hero-copy h1,
+  .home-hero[data-appearance="basic"] .home-hero-copy h1 {
+    font-size: 32px;
+  }
+
+  .home-hero-description,
+  .home-hero[data-appearance="basic"] .home-hero-description {
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .home-hero-actions {
+    margin-top: 14px;
+    gap: 8px;
+  }
+
+  .home-hero-actions a {
+    height: 36px;
+    padding-inline: 12px;
+    font-size: 12px;
+  }
+
+  .home-hero-player {
+    width: min(280px, calc(100vw - 72px));
+    transform: rotate(-4deg);
+  }
+
+  .home-hero-player .retro-body {
+    width: 100%;
+  }
+
+  .home-hero-instructions {
+    margin-top: 24px;
+  }
+}

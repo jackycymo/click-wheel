@@ -1,15 +1,7 @@
 "use client";
 
 import * as React from "react";
-
-/** The one track the site plays: CC0, see public/audio/LICENSE.txt. Duration is read from the file once it loads. */
-export const TRACK = {
-  src: "/audio/morning-coffee.mp3",
-  title: "Morning Coffee",
-  artist: "HoliznaCC0",
-  album: "Lo-fi And Chill",
-  duration: 192,
-};
+import { TRACKS, type Track } from "@/lib/playlist";
 
 export interface PlayerApi {
   position: number;
@@ -25,7 +17,8 @@ export interface PlayerApi {
   setPosition: (seconds: number) => void;
   setScrubbing: (scrubbing: boolean) => void;
   setVolume: (volume: number) => void;
-  track: typeof TRACK;
+  track: Track;
+  error: string | null;
 }
 
 const PlayerContext = React.createContext<PlayerApi | null>(null);
@@ -37,11 +30,52 @@ const PlayerContext = React.createContext<PlayerApi | null>(null);
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const scrubbingRef = React.useRef(false);
+  const trackIndexRef = React.useRef(0);
+  const playRequestRef = React.useRef(0);
+  const volumeRef = React.useRef(64);
+  const [trackIndex, setTrackIndex] = React.useState(0);
   const [position, setPositionState] = React.useState(0);
-  const [duration, setDuration] = React.useState(TRACK.duration);
+  const [duration, setDuration] = React.useState(TRACKS[0].duration);
   const [playing, setPlaying] = React.useState(false);
   const [volume, setVolumeState] = React.useState(64);
   const [scrubbing, setScrubbingState] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+
+  const play = React.useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const request = ++playRequestRef.current;
+    setError(null);
+    void audio.play().catch((error: unknown) => {
+      if (request !== playRequestRef.current || (error instanceof DOMException && error.name === "AbortError")) return;
+      setPlaying(false);
+      setError("Couldn't start this track. Press the center of the wheel to retry.");
+    });
+  }, []);
+
+  const loadTrack = React.useCallback((index: number, autoplay: boolean) => {
+    const audio = audioRef.current;
+    if (!audio || !Number.isInteger(index) || !TRACKS[index]) return;
+    const track = TRACKS[index];
+    ++playRequestRef.current;
+    trackIndexRef.current = index;
+    scrubbingRef.current = false;
+    setTrackIndex(index);
+    setPositionState(0);
+    setDuration(track.duration);
+    setScrubbingState(false);
+    setPlaying(false);
+    setError(null);
+    audio.src = track.src;
+    audio.volume = volumeRef.current / 100;
+    audio.load();
+    if (autoplay) play();
+  }, [play]);
+
+  React.useEffect(() => {
+    // Pick a starting song only in the browser, keeping SSR and hydration identical.
+    loadTrack(Math.floor(Math.random() * TRACKS.length), false);
+  }, [loadTrack]);
 
   const api = React.useMemo<PlayerApi>(
     () => ({
@@ -50,17 +84,22 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       playing,
       volume,
       scrubbing,
-      track: TRACK,
+      track: TRACKS[trackIndex],
+      error,
       toggle: () => {
         const audio = audioRef.current;
         if (!audio) return;
-        if (audio.paused) void audio.play().catch(() => {});
-        else audio.pause();
+        if (audio.paused) play();
+        else {
+          ++playRequestRef.current;
+          audio.pause();
+        }
       },
       seek: (seconds) => {
         const audio = audioRef.current;
-        setPositionState(seconds);
-        if (audio) audio.currentTime = seconds;
+        const position = Math.max(0, Math.min(seconds, duration));
+        setPositionState(position);
+        if (audio) audio.currentTime = position;
       },
       setPosition: setPositionState,
       setScrubbing: (next) => {
@@ -69,11 +108,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       },
       setVolume: (next) => {
         const audio = audioRef.current;
+        volumeRef.current = next;
         setVolumeState(next);
         if (audio) audio.volume = next / 100;
       },
     }),
-    [position, duration, playing, volume, scrubbing],
+    [position, duration, playing, volume, scrubbing, trackIndex, error, play],
   );
 
   return (
@@ -81,11 +121,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       {children}
       <audio
         ref={audioRef}
-        src={TRACK.src}
         preload="metadata"
         onLoadedMetadata={(e) => {
           const audio = e.currentTarget;
-          audio.volume = volume / 100;
+          audio.volume = volumeRef.current / 100;
           if (Number.isFinite(audio.duration)) setDuration(audio.duration);
         }}
         onTimeUpdate={(e) => {
@@ -94,7 +133,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         }}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
-        onEnded={() => setPlaying(false)}
+        onEnded={() => loadTrack((trackIndexRef.current + 1) % TRACKS.length, true)}
+        onError={() => {
+          setPlaying(false);
+          setError("This track couldn't be loaded. Press the center of the wheel to retry.");
+        }}
       />
     </PlayerContext.Provider>
   );
