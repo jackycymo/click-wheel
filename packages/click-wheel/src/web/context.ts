@@ -15,6 +15,7 @@ export interface ClickWheelContextValue {
   state: ClickWheelState;
   min: number;
   max: number;
+  step: number;
   ringRef: React.RefObject<HTMLElement | null>;
   centerRef: React.RefObject<HTMLElement | null>;
   onPointerDown: (event: React.PointerEvent) => void;

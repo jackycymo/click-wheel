@@ -42,7 +42,7 @@ export function usePlayer(options: { mode?: Mode } = {}) {
   const wheel: ClickWheel.RootProps =
     mode === "seek"
       ? {
-          value: Math.floor(player.position),
+          value: player.position, // fractional while playing, so arcs move like a needle
           min: 0,
           max: Math.floor(player.duration),
           step: 1,

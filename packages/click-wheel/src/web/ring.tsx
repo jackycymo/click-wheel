@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useClickWheelContext, type ClickWheelState } from "./context";
+import { stepValue } from "../core";
 import { renderPart, useMergedRefs, type PartProps } from "./render";
 
 export interface RingProps extends PartProps<ClickWheelState, "div"> {
@@ -24,7 +25,8 @@ const RING_STYLE: React.CSSProperties = {
 export function Ring(props: RingProps) {
   const { getAriaValueText, ref: refProp, ...rest } = props;
   const ctx = useClickWheelContext("Ring");
-  const { state, min, max } = ctx;
+  const { state, min, max, step } = ctx;
+  const spoken = stepValue(state.value, min, max, step);
   const ref = useMergedRefs(ctx.ringRef, refProp as React.Ref<HTMLElement>);
 
   return renderPart("div", state, rest, {
@@ -33,8 +35,8 @@ export function Ring(props: RingProps) {
     tabIndex: state.disabled ? -1 : 0,
     "aria-valuemin": min,
     "aria-valuemax": max,
-    "aria-valuenow": state.value,
-    "aria-valuetext": getAriaValueText?.(state.value),
+    "aria-valuenow": spoken,
+    "aria-valuetext": getAriaValueText?.(spoken),
     "aria-disabled": state.disabled || undefined,
     "data-turning": state.turning ? "" : undefined,
     "data-disabled": state.disabled ? "" : undefined,
@@ -43,6 +45,7 @@ export function Ring(props: RingProps) {
     onPointerMove: ctx.onPointerMove,
     onPointerUp: ctx.onPointerUp,
     onPointerCancel: ctx.onPointerCancel,
+    onLostPointerCapture: ctx.onPointerCancel,
     onKeyDown: ctx.onKeyDown,
   });
 }

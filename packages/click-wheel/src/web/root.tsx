@@ -110,6 +110,7 @@ export function Root(props: RootProps) {
     velocity: 0,
     frame: 0,
     lastFrame: 0,
+    onWindowBlur: null as null | (() => void),
   });
 
   // Handlers and the coast loop read props from here, so a frame that runs
@@ -151,6 +152,19 @@ export function Root(props: RootProps) {
     rootRef.current?.style.setProperty("--click-wheel-rotation", `${g.current.rotation}deg`);
   };
 
+  /**
+   * The progress variables. Written from the continuous position during a
+   * turn, so arcs and grooves move like a needle, not in value steps.
+   */
+  const writeProgress = (units: number) => {
+    const L = latest.current;
+    const root = rootRef.current;
+    if (!root) return;
+    const fraction = L.max > L.min ? (units - L.min) / (L.max - L.min) : 0;
+    root.style.setProperty("--click-wheel-fraction", String(fraction));
+    root.style.setProperty("--click-wheel-turns", String((units - L.min) / L.unitsPerTurn));
+  };
+
   const crossDetents = (prev: number, next: number) => {
     const L = latest.current;
     const direction = detentCrossing(prev, next, L.min, L.detent);
@@ -166,6 +180,7 @@ export function Root(props: RootProps) {
     const prev = g.current.float;
     const next = clamp(prev + degreesToUnits(deltaDeg, L.unitsPerTurn), L.min, L.max);
     g.current.float = next;
+    writeProgress(next);
     crossDetents(prev, next);
     emit(next, false);
   };
@@ -179,6 +194,10 @@ export function Root(props: RootProps) {
 
   /** The interaction is over: the pointer lifted with no flick, or the coast ran out. */
   const settle = () => {
+    if (g.current.onWindowBlur) {
+      window.removeEventListener("blur", g.current.onWindowBlur);
+      g.current.onWindowBlur = null;
+    }
     g.current.velocity = 0;
     g.current.turning = false;
     setTurning(false);
@@ -231,6 +250,7 @@ export function Root(props: RootProps) {
     g.current.emitted = L.value;
     spin(unitsToDegrees(deltaUnits, L.unitsPerTurn));
     const next = clamp(L.value + deltaUnits, L.min, L.max);
+    writeProgress(next);
     crossDetents(L.value, next);
     emit(next, true);
   };
@@ -270,6 +290,15 @@ export function Root(props: RootProps) {
     });
     g.current.lastAngle = angleOf(e);
     g.current.samples = [{ t: e.timeStamp, rotation: g.current.rotation }];
+    // A release outside the window never reaches the ring; the window going
+    // blurry is the signal that the pointer is gone.
+    const onWindowBlur = () => {
+      if (g.current.pointerId === -1) return;
+      g.current.pointerId = -1;
+      settle();
+    };
+    g.current.onWindowBlur = onWindowBlur;
+    window.addEventListener("blur", onWindowBlur);
     startTurning();
   };
 
@@ -296,6 +325,8 @@ export function Root(props: RootProps) {
     settle();
   };
 
+  // Fires on cancel, and whenever the browser drops the capture mid-turn.
+  // After a normal release the pointer id is already cleared, so this no-ops.
   const onPointerCancel = (e: React.PointerEvent) => {
     if (g.current.pointerId !== e.pointerId) return;
     g.current.pointerId = -1;
@@ -344,14 +375,31 @@ export function Root(props: RootProps) {
       root.removeEventListener("wheel", onWheel);
       window.clearTimeout(gesture.wheelTimer);
       if (gesture.frame) cancelAnimationFrame(gesture.frame);
+      if (gesture.onWindowBlur) window.removeEventListener("blur", gesture.onWindowBlur);
     };
   }, []);
+
+  // Outside changes to the value (playback, a reset) land here. A value that
+  // is our own last emit keeps the continuous position already on screen.
+  React.useLayoutEffect(() => {
+    if (g.current.turning || g.current.wheeling) return;
+    if (value === g.current.emitted) return;
+    writeProgress(value);
+  }, [value, min, max, unitsPerTurn]);
+
+  // The first paint gets the variables inline; after that they are written
+  // directly, so React never overwrites a position mid-turn.
+  const [initialVars] = React.useState(() => ({
+    "--click-wheel-fraction": max > min ? (value - min) / (max - min) : 0,
+    "--click-wheel-turns": (value - min) / unitsPerTurn,
+  }) as React.CSSProperties);
 
   const state: ClickWheelState = { value, turning, disabled };
   const context: ClickWheelContextValue = {
     state,
     min,
     max,
+    step,
     ringRef,
     centerRef,
     onPointerDown,
@@ -360,8 +408,6 @@ export function Root(props: RootProps) {
     onPointerCancel,
     onKeyDown,
   };
-  const fraction = max > min ? (value - min) / (max - min) : 0;
-  const turns = (value - min) / unitsPerTurn;
 
   return (
     <ClickWheelContext.Provider value={context}>
@@ -381,7 +427,7 @@ export function Root(props: RootProps) {
           ref: mergedRootRef,
           "data-turning": turning ? "" : undefined,
           "data-disabled": disabled ? "" : undefined,
-          style: { "--click-wheel-fraction": fraction, "--click-wheel-turns": turns } as React.CSSProperties,
+          style: initialVars,
         },
       )}
     </ClickWheelContext.Provider>

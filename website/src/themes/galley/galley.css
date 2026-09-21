@@ -84,7 +84,6 @@
     transparent 2deg 5deg
   );
   mask: radial-gradient(circle closest-side, transparent 84%, #000 85%);
-  transition: rotate 50ms linear;
 }
 
 /* The hub: pressed into the knob, and deeper while pressed. */

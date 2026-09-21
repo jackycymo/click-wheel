@@ -62,9 +62,7 @@
     transparent 62%
   );
   opacity: 0;
-  transition:
-    opacity 0.25s ease,
-    rotate 50ms linear;
+  transition: opacity 0.25s ease;
 }
 
 .ipod-rotor[data-turning] {

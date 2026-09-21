@@ -72,10 +72,6 @@ const STYLE_CSS = `/* The value as an arc, no JavaScript. */
   rotate: var(--click-wheel-rotation, 0deg);
 }`;
 
-const STYLE_SMOOTH = `.rotor {
-  transition: rotate 50ms linear;
-}`;
-
 const STYLE_FUNCTION = `<ClickWheel.Ring
   className={(state) => (state.turning ? "ring ring-active" : "ring")}
   style={(state) => ({ opacity: state.disabled ? 0.5 : 1 })}
@@ -196,9 +192,8 @@ export const PAGES: DocPageDef[] = [
           { type: "code", code: STYLE_CSS, lang: "css", title: "wheel.css" },
           {
             type: "p",
-            text: "The `Rotor` sets `will-change: transform`, so a turn moves a cached layer instead of repainting the texture on every pointer sample. Touch input often arrives at 60 Hz even on 120 Hz screens; a short transition on `rotate` lets the compositor fill in the frames between samples.",
+            text: "The `Rotor` sets `will-change: transform`, so a turn moves a cached layer instead of repainting the texture on every pointer sample. Do not put a transition on its `rotate`: a ramp that restarts on every touch sample stutters on phones.",
           },
-          { type: "code", code: STYLE_SMOOTH, lang: "css", title: "smooth on 120 Hz screens" },
         ],
       },
       {
