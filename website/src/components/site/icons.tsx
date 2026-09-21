@@ -72,13 +72,11 @@ export function IconChevron(props: Props) {
   );
 }
 
-/** The wordmark glyph: a ring with a hub. */
+/** The selected wheel mark with a single thumb recess. */
 export function IconWheel(props: Props) {
   return (
     <svg {...base} {...props}>
-      <circle cx="12" cy="12" r="9" />
-      <circle cx="12" cy="12" r="3" />
-      <path d="M12 3v2.5" />
+      <image href="/images/click-wheel-mark.png" width="24" height="24" className="dark:invert" />
     </svg>
   );
 }

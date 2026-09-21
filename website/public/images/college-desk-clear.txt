@@ -1,0 +1,5 @@
+Edited with the built-in image generation tool, then optimized as WebP.
+Source: college-desk-wired.webp (see college-desk-wired.txt for original generation prompts).
+
+Edit prompt:
+Use case: precise-object-edit. Edit the attached photo in exactly one way: remove the large blank off-white sheet of paper from the center-right of the desk, including the sheet's shadow, and seamlessly reconstruct the warm maple wood tabletop underneath it. The cleared center-right area must be empty wood with the same fine grain, lighting and natural shading as the surrounding desk. Preserve EVERYTHING else exactly: the image dimensions and overhead framing, the blue CD player, mix CD cases, silver discs, silver laptop, the white wired earbuds and their cable ending in the empty center-left, notebook, pen, timetable, bag, flip phone, sticky notes and coffee mug. Do not move, resize, add, or remove any other object. Do not add a new sheet of paper, an iPod, a music player, UI, text or a watermark. This is a surgical paper removal, not a redesigned scene.

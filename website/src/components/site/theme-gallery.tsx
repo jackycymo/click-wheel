@@ -35,18 +35,18 @@ export function ThemeGallery({ sources }: { sources: Record<ThemeId, React.React
     <Tabs.Root
       value={theme}
       onValueChange={(value) => setTheme(value as ThemeId)}
-      className="grid items-start gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
+      className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
     >
-      <div className="lg:sticky lg:top-20">
+      <div className="min-w-0 lg:sticky lg:top-20">
         <Tabs.List
           aria-label="Theme"
-          className="inline-flex h-9 items-center rounded-lg border bg-muted p-1 text-sm font-medium"
+          className="inline-flex h-9 max-w-full items-center overflow-x-auto rounded-lg border bg-muted p-1 text-sm font-medium"
         >
           {THEMES.map((t) => (
             <Tabs.Tab
               key={t.id}
               value={t.id}
-              className="h-full rounded-md px-3 text-muted-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring data-[active]:bg-background data-[active]:text-foreground data-[active]:shadow-xs"
+              className="h-full shrink-0 rounded-md px-3 text-muted-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring data-[active]:bg-background data-[active]:text-foreground data-[active]:shadow-xs"
             >
               {t.name}
             </Tabs.Tab>
