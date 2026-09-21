@@ -16,8 +16,8 @@ const ACCENTS = [
 ];
 
 /** Site chrome: a grey panel with a small OLED. The four keys pick the accent. Not part of the skin. */
-export function Demo({ mode }: { mode: Mode }) {
-  const p = usePlayer({ mode });
+export function Demo({ mode, defaultClicker = false }: { mode: Mode; defaultClicker?: boolean }) {
+  const p = usePlayer({ mode, defaultClicker });
   const [accent, setAccent] = React.useState("peacock");
   const seek = mode === "seek";
   const pct = seek ? (p.position / p.track.duration) * 100 : p.volume;

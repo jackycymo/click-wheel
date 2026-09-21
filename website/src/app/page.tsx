@@ -47,7 +47,6 @@ export default function Home() {
           </section>
 
           <footer className="flex flex-wrap items-center justify-between gap-3 border-t pt-6 text-sm text-muted-foreground">
-            <span>Built with Next.js, Base UI and Tailwind CSS. The wheel itself is plain React.</span>
             <span className="font-mono text-xs">
               <a href="/llms.txt" className="hover:text-foreground">llms.txt</a> ·{" "}
               <a href="/docs.md" className="hover:text-foreground">docs.md</a> ·{" "}

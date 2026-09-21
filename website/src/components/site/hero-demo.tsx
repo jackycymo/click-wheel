@@ -13,7 +13,7 @@ const MODES: Array<{ value: Mode; label: string }> = [
 ];
 
 export function HeroDemo() {
-  const p = usePlayer();
+  const p = usePlayer({ defaultClicker: true });
   const [dragging, setDragging] = React.useState(false);
   const [grooves, setGrooves] = React.useState(false);
   const seek = p.mode === "seek";

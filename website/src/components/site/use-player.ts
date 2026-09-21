@@ -27,12 +27,12 @@ export function speakTime(seconds: number) {
  * Demo state shared by every skin. Playback itself is the site's single
  * audio element; each demo only keeps its own mode, gearing and switches.
  */
-export function usePlayer(options: { mode?: Mode } = {}) {
+export function usePlayer(options: { mode?: Mode; defaultClicker?: boolean } = {}) {
   const player = usePlayerContext();
   const [internalMode, setMode] = React.useState<Mode>("seek");
   const mode = options.mode ?? internalMode;
   const [unitsPerTurn, setUnitsPerTurn] = React.useState(60);
-  const [clicker, setClicker] = React.useState(false);
+  const [clicker, setClicker] = React.useState(options.defaultClicker ?? false);
   const [inertia, setInertia] = React.useState(true);
 
   const tick = () => {

@@ -62,7 +62,7 @@ export function HomeHero({ children }: { children: ReactNode }) {
         <div className="home-hero-layout">
           <div className="home-hero-device" hidden={appearance !== "retro"}>
             <div className="home-hero-player">
-              <RetroDemo mode="seek" />
+              <RetroDemo mode="seek" defaultClicker />
             </div>
             <div className="home-hero-instructions">
               <svg className="home-hero-wheel-arrow" viewBox="0 0 100 120" fill="none" aria-hidden="true">

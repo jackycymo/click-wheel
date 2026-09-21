@@ -40,9 +40,10 @@
 }
 
 .dark .home-hero[data-appearance="retro"] .home-hero-copy {
-  background: linear-gradient(115deg, #dbccb1, #b9ad98);
-  border-color: #e0cfad50;
-  box-shadow: 3px 7px 14px #0007;
+  --paper-color: #e9ddc5;
+  --paper-grid: #688ea42b;
+  border-color: #f5e9d280;
+  box-shadow: 0 1px 2px #0004, 3px 6px 12px -4px #0006;
 }
 
 .dark .home-hero[data-appearance="retro"] .home-hero-appearance {
@@ -221,12 +222,19 @@
 }
 
 .home-hero[data-appearance="retro"] .home-hero-copy {
+  --paper-color: #fffdf3;
+  --paper-grid: #7ba5bd2b;
   width: 100%;
   max-width: 480px;
   padding: 32px;
-  background: linear-gradient(115deg, #fffdf8, #eee8dc);
+  background-color: var(--paper-color);
+  background-image:
+    linear-gradient(var(--paper-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--paper-grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
   border: 1px solid #fffdf880;
-  box-shadow: 2px 5px 8px #38261230;
+  box-shadow: 0 1px 2px #38261220, 3px 6px 12px -4px #38261240;
 }
 
 .home-hero[data-appearance="retro"] .home-hero-copy h1 {
