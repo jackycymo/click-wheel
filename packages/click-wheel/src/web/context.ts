@@ -5,8 +5,10 @@ import * as React from "react";
 export interface ClickWheelState {
   /** The current value. */
   value: number;
-  /** Whether the ring is turning: a pointer is on it, or it is still spinning after a flick. */
-  turning: boolean;
+  /** A pointer is holding the ring. */
+  dragging: boolean;
+  /** The ring is spinning on after a flick, with no hand on it. */
+  coasting: boolean;
   /** Whether the wheel is disabled. */
   disabled: boolean;
 }

@@ -10,7 +10,7 @@ export function PlainHub() {
     <ClickWheel.Root value={value} onValueChange={setValue} className="relative aspect-square w-40">
       <ClickWheel.Ring
         aria-label="Level"
-        className="absolute inset-0 cursor-grab rounded-full border bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring data-[turning]:cursor-grabbing"
+        className="absolute inset-0 cursor-grab rounded-full border bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring data-[dragging]:cursor-grabbing"
       />
       {/* `render` swaps the button for a div: no focus stop, no click, just a readout. */}
       <ClickWheel.Center

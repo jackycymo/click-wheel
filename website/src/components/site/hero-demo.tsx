@@ -14,7 +14,7 @@ const MODES: Array<{ value: Mode; label: string }> = [
 
 export function HeroDemo() {
   const p = usePlayer();
-  const [turning, setTurning] = React.useState(false);
+  const [dragging, setDragging] = React.useState(false);
   const [grooves, setGrooves] = React.useState(false);
   const seek = p.mode === "seek";
   const pct = seek ? (p.position / p.track.duration) * 100 : p.volume;
@@ -24,9 +24,9 @@ export function HeroDemo() {
       <div className="grid items-center gap-8 bg-[radial-gradient(var(--color-border)_1px,transparent_1px)] [background-size:18px_18px] p-6 sm:grid-cols-[auto_1fr] sm:gap-12 sm:p-10">
         <Wheel
           {...p.wheel}
-          onTurningChange={(next) => {
-            p.wheel.onTurningChange?.(next);
-            setTurning(next);
+          onDraggingChange={(next) => {
+            p.wheel.onDraggingChange?.(next);
+            setDragging(next);
           }}
           className="mx-auto w-[min(64vw,240px)]"
           grooves={grooves}
@@ -106,8 +106,8 @@ export function HeroDemo() {
               <dd className="mt-0.5 tabular-nums">{p.wheel.unitsPerTurn}</dd>
             </div>
             <div>
-              <dt className="text-muted-foreground">data-turning</dt>
-              <dd className="mt-0.5">{turning ? "true" : "false"}</dd>
+              <dt className="text-muted-foreground">data-dragging</dt>
+              <dd className="mt-0.5">{dragging ? "true" : "false"}</dd>
             </div>
           </dl>
         </div>

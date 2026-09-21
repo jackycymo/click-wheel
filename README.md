@@ -6,7 +6,7 @@ precision are a prop you choose, not a function of screen space.
 
 - Parts, not a black box: `Root`, `Ring`, `Rotor`, `Center`, in the style of
   [Base UI](https://base-ui.com). No classes, no visual styles.
-- State reaches CSS as `data-turning` / `data-disabled`, the CSS variables
+- State reaches CSS as `data-dragging` / `data-coasting` / `data-disabled`, the CSS variables
   `--click-wheel-fraction` and `--click-wheel-rotation`, and `className` /
   `style` functions of state. Every part takes a `render` prop.
 - Pointer drag, scroll wheel, and full keyboard support. Announced as a slider.

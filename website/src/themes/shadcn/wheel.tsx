@@ -76,11 +76,11 @@ export function Wheel({
         aria-label={label}
         getAriaValueText={getAriaValueText}
         style={{ inset: grooves * GROOVE + 4 }}
-        className="absolute cursor-grab rounded-full border border-border bg-muted shadow-sm outline-none ring-offset-2 ring-offset-background focus-visible:ring-2 focus-visible:ring-ring data-[turning]:cursor-grabbing data-[disabled]:cursor-default data-[disabled]:opacity-50"
+        className="absolute cursor-grab rounded-full border border-border bg-muted shadow-sm outline-none ring-offset-2 ring-offset-background focus-visible:ring-2 focus-visible:ring-ring data-[dragging]:cursor-grabbing data-[disabled]:cursor-default data-[disabled]:opacity-50"
       >
         {/* Tick texture that turns with the finger. No transition on rotate: a ramp that
             restarts on every touch sample stutters on phones. */}
-        <ClickWheel.Rotor className="absolute inset-0 rounded-full opacity-25 transition-opacity [background:repeating-conic-gradient(var(--color-ticks)_0_1deg,transparent_1deg_15deg)] [mask:radial-gradient(circle_closest-side,transparent_56%,black_57%_82%,transparent_83%)] data-[turning]:opacity-60" />
+        <ClickWheel.Rotor className="absolute inset-0 rounded-full opacity-25 transition-opacity [background:repeating-conic-gradient(var(--color-ticks)_0_1deg,transparent_1deg_15deg)] [mask:radial-gradient(circle_closest-side,transparent_56%,black_57%_82%,transparent_83%)] data-[dragging]:opacity-60 data-[coasting]:opacity-60" />
       </ClickWheel.Ring>
       <ClickWheel.Center
         aria-label={centerLabel}

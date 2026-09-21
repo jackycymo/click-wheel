@@ -41,7 +41,7 @@
     0 0 0 3px var(--ipod-focus);
 }
 
-.ipod-ring[data-turning] {
+.ipod-ring[data-dragging] {
   cursor: grabbing;
 }
 
@@ -65,7 +65,8 @@
   transition: opacity 0.25s ease;
 }
 
-.ipod-rotor[data-turning] {
+.ipod-rotor[data-dragging],
+.ipod-rotor[data-coasting] {
   opacity: 0.6;
 }
 

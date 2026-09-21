@@ -20,7 +20,8 @@ export function Rotor(props: RotorProps) {
   const { state } = useClickWheelContext("Rotor");
   return renderPart("div", state, props, {
     "aria-hidden": true,
-    "data-turning": state.turning ? "" : undefined,
+    "data-dragging": state.dragging ? "" : undefined,
+    "data-coasting": state.coasting ? "" : undefined,
     "data-disabled": state.disabled ? "" : undefined,
     style: ROTOR_STYLE,
   });

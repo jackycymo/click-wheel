@@ -44,7 +44,7 @@ export function Player() {
       >
         <ClickWheel.Ring
           accessibilityLabel="Playback position"
-          style={({ turning }) => [styles.ring, turning && styles.ringTurning]}
+          style={({ dragging }) => [styles.ring, dragging && styles.ringHeld]}
         >
           <ClickWheel.Rotor style={StyleSheet.absoluteFill}>
             <Ticks />
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e4e4e7",
   },
-  ringTurning: { backgroundColor: "#e4e4e7" },
+  ringHeld: { backgroundColor: "#e4e4e7" },
   tick: {
     position: "absolute",
     left: SIZE / 2 - 1,

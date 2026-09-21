@@ -50,8 +50,13 @@ export function usePlayer(options: { mode?: Mode } = {}) {
           detent: 5,
           inertia,
           onValueChange: player.setPosition, // the readout follows the wheel
-          onValueCommitted: player.seek, // the audio lands where the wheel settles
-          onTurningChange: player.setScrubbing,
+          onValueCommitted: (seconds) => {
+            player.seek(seconds); // the audio lands where the wheel settles, coast included
+            player.setScrubbing(false);
+          },
+          onDraggingChange: (held) => {
+            if (held) player.setScrubbing(true); // a scrub stays open until the commit
+          },
           onTick: tick,
         }
       : {

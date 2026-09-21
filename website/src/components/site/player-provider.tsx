@@ -16,7 +16,7 @@ export interface PlayerApi {
   duration: number;
   playing: boolean;
   volume: number;
-  /** A wheel is moving the position: turning, or coasting after a flick. */
+  /** A wheel owns the position: from the first touch until the value commits. */
   scrubbing: boolean;
   toggle: () => void;
   /** Move the audio to a position. */

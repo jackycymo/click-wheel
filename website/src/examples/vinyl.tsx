@@ -34,7 +34,7 @@ export function Vinyl() {
         ))}
         <ClickWheel.Ring
           aria-label="Playback position"
-          className="absolute inset-6 cursor-grab rounded-full border bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring data-[turning]:cursor-grabbing"
+          className="absolute inset-6 cursor-grab rounded-full border bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring data-[dragging]:cursor-grabbing"
         />
         <ClickWheel.Center
           render={<div />}

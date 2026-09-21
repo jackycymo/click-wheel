@@ -3,8 +3,10 @@ import type { StyleProp, ViewStyle } from "react-native";
 export interface ClickWheelState {
   /** The current value. */
   value: number;
-  /** Whether the ring is turning: a finger is on it, or it is still spinning after a flick. */
-  turning: boolean;
+  /** A finger is holding the ring. */
+  dragging: boolean;
+  /** The ring is spinning on after a flick, with no finger on it. */
+  coasting: boolean;
   /** Whether the wheel is disabled. */
   disabled: boolean;
 }

@@ -65,7 +65,7 @@
   outline-offset: 4px;
 }
 
-.retro-ring[data-turning] {
+.retro-ring[data-dragging] {
   cursor: grabbing;
   background: var(--retro-face-2);
 }

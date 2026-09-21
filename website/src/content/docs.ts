@@ -48,7 +48,7 @@ export const ANATOMY = `import { ClickWheel } from "@/components/click-wheel";
   </ClickWheel.Center>
 </ClickWheel.Root>`;
 
-const STYLE_TAILWIND = `<ClickWheel.Ring className="rounded-full bg-muted cursor-grab data-[turning]:cursor-grabbing data-[disabled]:opacity-50" />`;
+const STYLE_TAILWIND = `<ClickWheel.Ring className="rounded-full bg-muted cursor-grab data-[dragging]:cursor-grabbing data-[disabled]:opacity-50" />`;
 
 const STYLE_CSS = `/* The value as an arc, no JavaScript. */
 .arc {
@@ -73,7 +73,7 @@ const STYLE_CSS = `/* The value as an arc, no JavaScript. */
 }`;
 
 const STYLE_FUNCTION = `<ClickWheel.Ring
-  className={(state) => (state.turning ? "ring ring-active" : "ring")}
+  className={(state) => (state.dragging ? "ring ring-held" : "ring")}
   style={(state) => ({ opacity: state.disabled ? 0.5 : 1 })}
 />`;
 
@@ -176,7 +176,7 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: "Every part carries `data-turning` while the ring turns, by a finger or by inertia, and `data-disabled` when the wheel is disabled. Works with Tailwind variants or attribute selectors.",
+            text: "Every part carries `data-dragging` while a pointer holds the ring, `data-coasting` while it spins on after a flick with no hand on it, and `data-disabled` when the wheel is disabled. Works with Tailwind variants or attribute selectors.",
           },
           { type: "code", code: STYLE_TAILWIND, lang: "tsx", title: "Tailwind" },
         ],
@@ -202,7 +202,7 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: "`className` and `style` accept a function of the part's state. The state is `{ value, turning, disabled }`.",
+            text: "`className` and `style` accept a function of the part's state. The state is `{ value, dragging, coasting, disabled }`.",
           },
           { type: "code", code: STYLE_FUNCTION, lang: "tsx", title: "className as a function" },
         ],
@@ -304,9 +304,9 @@ export const PAGES: DocPageDef[] = [
               ["decelerationRate", "number", "0.998", "Velocity kept per millisecond while coasting. 0.998 is the iOS default; 0.99 stops fast."],
               ["disabled", "boolean", "false", "Inert. Sets data-disabled on every part."],
               ["name", "string", "—", "Renders a hidden input with this name, for forms. Web only."],
-              ["onValueChange", "(value: number) => void", "—", "Fires on every change while turning, coasting, scrolling or keying."],
+              ["onValueChange", "(value: number) => void", "—", "Fires on every change while dragging, coasting, scrolling or keying."],
               ["onValueCommitted", "(value: number) => void", "—", "Fires once when an interaction ends. With inertia, that is when the wheel settles."],
-              ["onTurningChange", "(turning: boolean) => void", "—", "Fires when the ring starts turning and when it stops, including the coast after a flick. Pause a playhead here."],
+              ["onDraggingChange", "(dragging: boolean) => void", "—", "Fires when a pointer takes hold of the ring and when it lets go. A coast is not a drag: pause a playhead on true, resume on onValueCommitted."],
               ["onTick", "(direction: 1 | -1) => void", "—", "Fires per detent crossing. Wire up a click sound."],
             ],
           },
@@ -382,7 +382,8 @@ export const PAGES: DocPageDef[] = [
             mono: [0, 1],
             rows: [
               ["value", "number", "The current value."],
-              ["turning", "boolean", "The ring is turning: a pointer is on it, or it is still spinning after a flick."],
+              ["dragging", "boolean", "A pointer is holding the ring."],
+              ["coasting", "boolean", "The ring is spinning on after a flick, with no hand on it."],
               ["disabled", "boolean", "The wheel is disabled."],
             ],
           },
@@ -481,7 +482,7 @@ export const PAGES: DocPageDef[] = [
             columns: ["Web", "React Native"],
             mono: [0, 1],
             rows: [
-              ["className, data-turning, data-disabled", "style as a function of { value, turning, disabled }"],
+              ["className, data-dragging, data-coasting, data-disabled", "style as a function of { value, dragging, coasting, disabled }"],
               ["--click-wheel-rotation, --click-wheel-fraction, --click-wheel-turns", "useClickWheel().rotation, .fraction and .turns, shared values"],
               ["render prop", "Not needed: pass any View props; Center is a Pressable"],
               ["Scroll wheel input", "None"],
@@ -545,7 +546,7 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: "Opt in with `inertia` and a flick keeps the wheel spinning, slowing like an iOS scroll. Detents keep clicking as it coasts, a touch grabs it, and `onTurningChange` waits until it settles. `decelerationRate` is the velocity kept per millisecond: 0.998 is the iOS default, 0.99 stops fast.",
+            text: "Opt in with `inertia` and a flick keeps the wheel spinning, slowing like an iOS scroll. Detents keep clicking as it coasts and a touch grabs it. `onDraggingChange` reports only the hand; `data-coasting` marks the spin after release; `onValueCommitted` waits until it settles. `decelerationRate` is the velocity kept per millisecond: 0.998 is the iOS default, 0.99 stops fast.",
           },
           { type: "example", id: "inertia", file: "inertia.tsx" },
         ],
@@ -556,7 +557,7 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: "Own the value with `value` and `onValueChange`. `onTurningChange` tells you when a scrub starts and ends, so playback can pause under the thumb. `onValueCommitted` fires once per gesture.",
+            text: "Own the value with `value` and `onValueChange`. `onDraggingChange` tells you when a hand takes the wheel, so playback can pause under the thumb. `onValueCommitted` fires once the wheel settles, coast included, so resume there.",
           },
           { type: "example", id: "controlled", file: "controlled.tsx" },
         ],

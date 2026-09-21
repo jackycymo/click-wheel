@@ -28,12 +28,12 @@ export interface RootProps extends Omit<PartProps<ClickWheelState, "div">, "defa
   value?: number;
   /** Starting value when uncontrolled. */
   defaultValue?: number;
-  /** Fires on every value change while turning, coasting, scrolling or keying. */
+  /** Fires on every value change while dragging, coasting, scrolling or keying. */
   onValueChange?: (value: number) => void;
   /** Fires once when an interaction ends. With inertia, that is when the wheel settles. */
   onValueCommitted?: (value: number) => void;
-  /** Fires when the ring starts turning and when it stops, including the coast after a flick. */
-  onTurningChange?: (turning: boolean) => void;
+  /** Fires when a pointer takes hold of the ring and when it lets go. A coast after a flick is not a drag; wait for `onValueCommitted`. */
+  onDraggingChange?: (dragging: boolean) => void;
   /** Fires each time the value crosses a detent. */
   onTick?: (direction: 1 | -1) => void;
   min?: number;
@@ -66,7 +66,7 @@ export function Root(props: RootProps) {
     defaultValue,
     onValueChange,
     onValueCommitted,
-    onTurningChange,
+    onDraggingChange,
     onTick,
     min = 0,
     max = 100,
@@ -87,7 +87,8 @@ export function Root(props: RootProps) {
     clamp(defaultValue ?? min, min, max),
   );
   const value = clamp(valueProp ?? internalValue, min, max);
-  const [turning, setTurning] = React.useState(false);
+  const [dragging, setDragging] = React.useState(false);
+  const [coasting, setCoasting] = React.useState(false);
 
   const rootRef = React.useRef<HTMLDivElement>(null);
   const ringRef = React.useRef<HTMLElement>(null);
@@ -103,7 +104,8 @@ export function Root(props: RootProps) {
     float: 0,
     rotation: 0,
     emitted: NaN,
-    turning: false,
+    dragging: false,
+    coasting: false,
     wheeling: false,
     wheelTimer: 0,
     samples: [] as Sample[],
@@ -128,7 +130,7 @@ export function Root(props: RootProps) {
     disabled,
     onValueChange,
     onValueCommitted,
-    onTurningChange,
+    onDraggingChange,
     onTick,
   };
   const latest = React.useRef(propsSnapshot);
@@ -185,11 +187,24 @@ export function Root(props: RootProps) {
     emit(next, false);
   };
 
-  const startTurning = () => {
-    if (g.current.turning) return;
-    g.current.turning = true;
-    setTurning(true);
-    latest.current.onTurningChange?.(true);
+  const beginDrag = () => {
+    if (g.current.dragging) return;
+    g.current.dragging = true;
+    setDragging(true);
+    latest.current.onDraggingChange?.(true);
+  };
+
+  const endDrag = () => {
+    if (!g.current.dragging) return;
+    g.current.dragging = false;
+    setDragging(false);
+    latest.current.onDraggingChange?.(false);
+  };
+
+  const setCoast = (next: boolean) => {
+    if (g.current.coasting === next) return;
+    g.current.coasting = next;
+    setCoasting(next);
   };
 
   /** The interaction is over: the pointer lifted with no flick, or the coast ran out. */
@@ -199,9 +214,8 @@ export function Root(props: RootProps) {
       g.current.onWindowBlur = null;
     }
     g.current.velocity = 0;
-    g.current.turning = false;
-    setTurning(false);
-    latest.current.onTurningChange?.(false);
+    endDrag();
+    setCoast(false);
     emit(g.current.float, true);
   };
 
@@ -210,6 +224,7 @@ export function Root(props: RootProps) {
     cancelAnimationFrame(g.current.frame);
     g.current.frame = 0;
     g.current.velocity = 0;
+    setCoast(false);
   };
 
   /** Stop a coast from the outside (scroll, keys): the wheel settles where it is. */
@@ -223,6 +238,8 @@ export function Root(props: RootProps) {
   const coast = (velocity: number, startedAt: number) => {
     g.current.velocity = velocity;
     g.current.lastFrame = startedAt;
+    endDrag();
+    setCoast(true);
     const frame = (now: number) => {
       const L = latest.current;
       const s = g.current;
@@ -278,7 +295,7 @@ export function Root(props: RootProps) {
       // Synthetic events in tests carry ids the browser does not know.
     }
     ring.focus({ preventScroll: true });
-    // A touch grabs a spinning wheel: keep its momentum out, keep `turning` on.
+    // A touch grabs a spinning wheel: its momentum is gone, a hand is on it.
     const wasCoasting = Boolean(g.current.frame);
     cancelCoast();
     Object.assign(g.current, {
@@ -299,7 +316,7 @@ export function Root(props: RootProps) {
     };
     g.current.onWindowBlur = onWindowBlur;
     window.addEventListener("blur", onWindowBlur);
-    startTurning();
+    beginDrag();
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
@@ -319,7 +336,7 @@ export function Root(props: RootProps) {
     const L = latest.current;
     const velocity = L.inertia && !L.disabled ? releaseVelocity(g.current.samples, e.timeStamp) : 0;
     if (Math.abs(velocity) >= MIN_VELOCITY) {
-      coast(velocity, e.timeStamp); // `turning` stays on until the wheel settles
+      coast(velocity, e.timeStamp); // the hand is off; the wheel coasts until it settles
       return;
     }
     settle();
@@ -382,7 +399,7 @@ export function Root(props: RootProps) {
   // Outside changes to the value (playback, a reset) land here. A value that
   // is our own last emit keeps the continuous position already on screen.
   React.useLayoutEffect(() => {
-    if (g.current.turning || g.current.wheeling) return;
+    if (g.current.dragging || g.current.coasting || g.current.wheeling) return;
     if (value === g.current.emitted) return;
     writeProgress(value);
   }, [value, min, max, unitsPerTurn]);
@@ -394,7 +411,7 @@ export function Root(props: RootProps) {
     "--click-wheel-turns": (value - min) / unitsPerTurn,
   }) as React.CSSProperties);
 
-  const state: ClickWheelState = { value, turning, disabled };
+  const state: ClickWheelState = { value, dragging, coasting, disabled };
   const context: ClickWheelContextValue = {
     state,
     min,
@@ -425,7 +442,8 @@ export function Root(props: RootProps) {
         },
         {
           ref: mergedRootRef,
-          "data-turning": turning ? "" : undefined,
+          "data-dragging": dragging ? "" : undefined,
+          "data-coasting": coasting ? "" : undefined,
           "data-disabled": disabled ? "" : undefined,
           style: initialVars,
         },

@@ -12,23 +12,26 @@ function fmt(s: number) {
 export function Controlled() {
   const [seconds, setSeconds] = React.useState(72);
   const [playing, setPlaying] = React.useState(false);
-  const [turning, setTurning] = React.useState(false);
+  const [held, setHeld] = React.useState(false); // from the first touch until the value commits
   const [log, setLog] = React.useState<string[]>([]);
 
-  // Playback advances only while the wheel is not being turned.
+  // Playback advances only while the wheel is not scrubbing.
   React.useEffect(() => {
-    if (!playing || turning) return;
+    if (!playing || held) return;
     const id = setInterval(() => setSeconds((s) => (s + 1) % DURATION), 1000);
     return () => clearInterval(id);
-  }, [playing, turning]);
+  }, [playing, held]);
 
   return (
     <div className="flex flex-col items-center gap-6">
       <Wheel
         value={seconds}
         onValueChange={setSeconds}
-        onTurningChange={setTurning}
-        onValueCommitted={(v) => setLog((l) => [`committed ${fmt(v)}`, ...l].slice(0, 3))}
+        onDraggingChange={(dragging) => dragging && setHeld(true)}
+        onValueCommitted={(v) => {
+          setHeld(false); // the coast has settled too
+          setLog((l) => [`committed ${fmt(v)}`, ...l].slice(0, 3));
+        }}
         max={DURATION}
         unitsPerTurn={60}
         detent={5}
@@ -39,7 +42,7 @@ export function Controlled() {
         className="w-48"
       />
       <p className="font-mono text-sm tabular-nums">
-        {fmt(seconds)} · {playing ? (turning ? "scrubbing" : "playing") : "paused"}
+        {fmt(seconds)} · {playing ? (held ? "scrubbing" : "playing") : "paused"}
       </p>
       <ul className="min-h-[3.75rem] font-mono text-xs text-muted-foreground">
         {log.map((entry, i) => (

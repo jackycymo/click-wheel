@@ -12,14 +12,19 @@ export function Inertia() {
   const [value, setValue] = React.useState(40);
   const [inertia, setInertia] = React.useState(true);
   const [rate, setRate] = React.useState(0.998);
-  const [turning, setTurning] = React.useState(false);
+  const [dragging, setDragging] = React.useState(false);
+  const [settled, setSettled] = React.useState(true);
 
   return (
     <div className="flex flex-col items-center gap-6">
       <Wheel
         value={value}
         onValueChange={setValue}
-        onTurningChange={setTurning}
+        onDraggingChange={(d) => {
+          setDragging(d);
+          if (d) setSettled(false);
+        }}
+        onValueCommitted={() => setSettled(true)}
         max={1000}
         unitsPerTurn={100}
         detent={10}
@@ -47,7 +52,7 @@ export function Inertia() {
           ))}
         </div>
         <span className="font-mono tabular-nums text-muted-foreground">
-          {value} · {turning ? "turning" : "still"}
+          {value} · {dragging ? "held" : settled ? "still" : "coasting"}
         </span>
       </div>
     </div>

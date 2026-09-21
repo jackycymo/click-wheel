@@ -32,12 +32,12 @@ export interface RootProps extends Omit<ViewProps, "style"> {
   value?: number;
   /** Starting value when uncontrolled. */
   defaultValue?: number;
-  /** Fires on every value change while turning, coasting or stepping. */
+  /** Fires on every value change while dragging, coasting or stepping. */
   onValueChange?: (value: number) => void;
   /** Fires once when an interaction ends. With inertia, that is when the wheel settles. */
   onValueCommitted?: (value: number) => void;
-  /** Fires when the ring starts turning and when it stops, including the coast after a flick. */
-  onTurningChange?: (turning: boolean) => void;
+  /** Fires when a finger takes hold of the ring and when it lets go. A coast after a flick is not a drag; wait for `onValueCommitted`. */
+  onDraggingChange?: (dragging: boolean) => void;
   /** Fires each time the value crosses a detent. */
   onTick?: (direction: 1 | -1) => void;
   min?: number;
@@ -69,7 +69,7 @@ export function Root(props: RootProps) {
     defaultValue,
     onValueChange,
     onValueCommitted,
-    onTurningChange,
+    onDraggingChange,
     onTick,
     min = 0,
     max = 100,
@@ -89,7 +89,8 @@ export function Root(props: RootProps) {
     clamp(defaultValue ?? min, min, max),
   );
   const value = clamp(valueProp ?? internalValue, min, max);
-  const [turning, setTurning] = React.useState(false);
+  const [dragging, setDragging] = React.useState(false);
+  const [coasting, setCoasting] = React.useState(false);
 
   // Everything the UI thread needs lives in shared values.
   const rotation = useSharedValue(0);
@@ -97,7 +98,8 @@ export function Root(props: RootProps) {
   const emitted = useSharedValue(value);
   const lastAngle = useSharedValue(0);
   const velocity = useSharedValue(0);
-  const isTurning = useSharedValue(false);
+  const isDragging = useSharedValue(false);
+  const isCoasting = useSharedValue(false);
   const size = useSharedValue({ width: 0, height: 0 });
   const config = useSharedValue({ min, max, step, unitsPerTurn, detent, inertia, decelerationRate, disabled });
   const fraction = useDerivedValue(() => {
@@ -115,16 +117,16 @@ export function Root(props: RootProps) {
 
   // Outside changes to `value` land while the wheel is at rest.
   React.useEffect(() => {
-    if (!isTurning.value) {
+    if (!isDragging.value && !isCoasting.value) {
       float.value = value;
       emitted.value = value;
     }
-  }, [value, float, emitted, isTurning]);
+  }, [value, float, emitted, isDragging, isCoasting]);
 
   // The JS side of the worklets. Stable identities, latest callbacks.
-  const latest = React.useRef({ onValueChange, onValueCommitted, onTurningChange, onTick, haptics });
+  const latest = React.useRef({ onValueChange, onValueCommitted, onDraggingChange, onTick, haptics });
   React.useEffect(() => {
-    latest.current = { onValueChange, onValueCommitted, onTurningChange, onTick, haptics };
+    latest.current = { onValueChange, onValueCommitted, onDraggingChange, onTick, haptics };
   });
   const emitJS = React.useCallback((next: number) => {
     setInternalValue(next);
@@ -134,17 +136,18 @@ export function Root(props: RootProps) {
     if (latest.current.haptics) haptic();
     latest.current.onTick?.(direction);
   }, []);
-  const turningJS = React.useCallback((next: boolean) => {
-    setTurning(next);
-    latest.current.onTurningChange?.(next);
+  const draggingJS = React.useCallback((next: boolean) => {
+    setDragging(next);
+    latest.current.onDraggingChange?.(next);
   }, []);
   const commitJS = React.useCallback(() => {
     latest.current.onValueCommitted?.(emitted.value);
   }, [emitted]);
   const settleJS = React.useCallback(() => {
-    turningJS(false);
+    draggingJS(false);
+    setCoasting(false);
     commitJS();
-  }, [turningJS, commitJS]);
+  }, [draggingJS, commitJS]);
 
   // Every rotation change, from a finger, a coast or a step, moves the value here.
   useAnimatedReaction(
@@ -174,10 +177,12 @@ export function Root(props: RootProps) {
   }, [settleJS]);
   const startCoastJS = React.useCallback((omega: number) => {
     velocity.value = omega;
+    setCoasting(true);
     coastRef.current?.setActive(true);
   }, [velocity]);
   const cancelCoastJS = React.useCallback(() => {
     coastRef.current?.setActive(false);
+    setCoasting(false);
   }, []);
   const coast = useFrameCallback((frame) => {
     "worklet";
@@ -191,7 +196,7 @@ export function Root(props: RootProps) {
       (float.value <= c.min && next.velocity < 0) || (float.value >= c.max && next.velocity > 0);
     if (Math.abs(next.velocity) < MIN_VELOCITY || atEnd || c.disabled) {
       velocity.value = 0;
-      isTurning.value = false;
+      isCoasting.value = false;
       runOnJS(stopCoastJS)();
     }
   }, false);
@@ -216,14 +221,15 @@ export function Root(props: RootProps) {
       const { width, height } = size.value;
       if (Math.hypot(e.x - width / 2, e.y - height / 2) < Math.min(width, height) * HUB_DEAD_ZONE) return;
       lastAngle.value = angleAt(width / 2, height / 2, e.x, e.y);
-      // A touch grabs a spinning wheel and keeps `turning` on.
+      // A touch grabs a spinning wheel: its momentum is gone, a finger is on it.
       if (velocity.value !== 0) {
         velocity.value = 0;
+        isCoasting.value = false;
         runOnJS(cancelCoastJS)();
       }
-      if (!isTurning.value) {
-        isTurning.value = true;
-        runOnJS(turningJS)(true);
+      if (!isDragging.value) {
+        isDragging.value = true;
+        runOnJS(draggingJS)(true);
       }
     },
     onUpdate: (e) => {
@@ -236,7 +242,7 @@ export function Root(props: RootProps) {
     },
     onDeactivate: (e) => {
       "worklet";
-      if (!isTurning.value) return;
+      if (!isDragging.value) return;
       const c = config.value;
       const { width, height } = size.value;
       // Points per second from the gesture, points per millisecond for the math.
@@ -244,19 +250,21 @@ export function Root(props: RootProps) {
         c.inertia && !c.disabled && !e.canceled
           ? angularVelocity(e.x - width / 2, e.y - height / 2, e.velocityX / 1000, e.velocityY / 1000)
           : 0;
+      isDragging.value = false;
       if (Math.abs(omega) >= MIN_VELOCITY) {
         velocity.value = omega; // set here so onFinalize knows a coast is on
-        runOnJS(startCoastJS)(omega); // `turning` stays on until the wheel settles
+        isCoasting.value = true;
+        runOnJS(draggingJS)(false); // the finger is off; the wheel coasts until it settles
+        runOnJS(startCoastJS)(omega);
         return;
       }
-      isTurning.value = false;
       runOnJS(settleJS)();
     },
     onFinalize: () => {
       "worklet";
       // A gesture that ended before it activated still needs to let go.
-      if (!isTurning.value || velocity.value !== 0) return;
-      isTurning.value = false;
+      if (!isDragging.value || velocity.value !== 0) return;
+      isDragging.value = false;
       runOnJS(settleJS)();
     },
   });
@@ -283,7 +291,7 @@ export function Root(props: RootProps) {
     [config, rotation, commitJS],
   );
 
-  const state: ClickWheelState = { value, turning, disabled };
+  const state: ClickWheelState = { value, dragging, coasting, disabled };
   const context: ClickWheelContextValue = {
     state,
     min,

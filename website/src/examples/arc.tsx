@@ -20,7 +20,7 @@ export function Arc() {
       />
       <ClickWheel.Ring
         aria-label="Level"
-        className="absolute inset-3 cursor-grab rounded-full bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring data-[turning]:cursor-grabbing"
+        className="absolute inset-3 cursor-grab rounded-full bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring data-[dragging]:cursor-grabbing"
       >
         {/* A needle that follows the finger. Any element can use --click-wheel-rotation, not only the Rotor. */}
         <div aria-hidden="true" className="absolute inset-0 [rotate:var(--click-wheel-rotation,0deg)]">

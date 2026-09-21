@@ -20,7 +20,8 @@ export function Center(props: CenterProps) {
     ref,
     type: rest.render ? undefined : "button",
     disabled: state.disabled || undefined,
-    "data-turning": state.turning ? "" : undefined,
+    "data-dragging": state.dragging ? "" : undefined,
+    "data-coasting": state.coasting ? "" : undefined,
     "data-disabled": state.disabled ? "" : undefined,
   });
 }

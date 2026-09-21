@@ -64,7 +64,7 @@
     0 0 0 3px var(--galley-lamp);
 }
 
-.galley-ring[data-turning] {
+.galley-ring[data-dragging] {
   cursor: grabbing;
 }
 
