@@ -58,6 +58,15 @@ const STYLE_CSS = `/* The value as an arc, no JavaScript. */
   );
 }
 
+/* One ring per revolution, like the grooves of a record.
+   This one fills during the third lap. */
+.groove-3 {
+  background: conic-gradient(
+    var(--primary) calc(clamp(0, calc(var(--click-wheel-turns) - 2), 1) * 360deg),
+    transparent 0
+  );
+}
+
 /* Anything can turn with the finger, not only the Rotor. */
 .needle {
   rotate: var(--click-wheel-rotation, 0deg);
@@ -182,7 +191,7 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: "`Root` sets `--click-wheel-fraction`, the value as a number from 0 to 1, and `--click-wheel-rotation`, the cumulative angle of the rotor in degrees. Both update without a React render.",
+            text: "`Root` sets three variables. `--click-wheel-fraction` is the value as a number from 0 to 1. `--click-wheel-turns` is the value's distance from `min` in revolutions, so 1.5 means one and a half laps; draw one ring per lap and the arc always matches the finger. `--click-wheel-rotation` is the cumulative angle of the rotor in degrees. All three update without a React render.",
           },
           { type: "code", code: STYLE_CSS, lang: "css", title: "wheel.css" },
           {
@@ -397,7 +406,7 @@ export const PAGES: DocPageDef[] = [
               ["haptic(ms?)", "(durationMs?: number) => void", "One pulse. Web: the duration applies to the Vibration API, default 4. React Native: one expo-haptics selection tick."],
               ["hapticsSupported()", "() => boolean", "Web only. True when this browser has any path to a pulse."],
               ["<HapticTap />", "input props", "Web only. An invisible switch that covers its parent so a real tap ticks on iOS. The click still bubbles."],
-              ["useClickWheel()", "() => { state, rotation, fraction }", "React Native only. The state, plus rotation and fraction as shared values for your own animated styles."],
+              ["useClickWheel()", "() => { state, rotation, fraction, turns }", "React Native only. The state, plus rotation, fraction and turns as shared values for your own animated styles."],
             ],
           },
         ],
@@ -462,7 +471,7 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: "Where the web exposes CSS variables, native exposes shared values. `useClickWheel()` returns `rotation` in degrees and `fraction` from 0 to 1, both updated on the UI thread without a React render.",
+            text: "Where the web exposes CSS variables, native exposes shared values. `useClickWheel()` returns `rotation` in degrees, `fraction` from 0 to 1, and `turns`, the value's distance from `min` in revolutions, all updated on the UI thread without a React render.",
           },
           { type: "code", code: NATIVE_ANIMATE, lang: "tsx", title: "Needle.tsx" },
         ],
@@ -478,7 +487,7 @@ export const PAGES: DocPageDef[] = [
             mono: [0, 1],
             rows: [
               ["className, data-turning, data-disabled", "style as a function of { value, turning, disabled }"],
-              ["--click-wheel-rotation, --click-wheel-fraction", "useClickWheel().rotation and .fraction, shared values"],
+              ["--click-wheel-rotation, --click-wheel-fraction, --click-wheel-turns", "useClickWheel().rotation, .fraction and .turns, shared values"],
               ["render prop", "Not needed: pass any View props; Center is a Pressable"],
               ["Scroll wheel input", "None"],
               ["Arrow keys, Home, End", "Accessibility increment and decrement actions"],
@@ -599,6 +608,17 @@ export const PAGES: DocPageDef[] = [
             text: "The CSS variables at work: a conic arc from `--click-wheel-fraction` and a needle from `--click-wheel-rotation`. Neither needs a React render.",
           },
           { type: "example", id: "arc", file: "arc.tsx" },
+        ],
+      },
+      {
+        id: "vinyl",
+        title: "Vinyl",
+        blocks: [
+          {
+            type: "p",
+            text: "A progress bar that respects the gearing. `--click-wheel-turns` counts laps, so each ring is one revolution and fills as that lap completes, outer to inner like the grooves of a record. The stock skin does this when you pass `grooves`; here it is in the raw.",
+          },
+          { type: "example", id: "vinyl", file: "vinyl.tsx" },
         ],
       },
       {

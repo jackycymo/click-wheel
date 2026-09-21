@@ -1,0 +1,145 @@
+/* Demo chrome only: the brushed panel around the knob. */
+.galley-body {
+  --galley-panel: #e6e4df;
+  --galley-panel-2: #d8d5ce;
+  --galley-ink: #3b3a36;
+  --galley-ink-2: #7a776f;
+  --galley-light: rgba(255, 255, 255, 0.85);
+  --galley-shade: rgba(60, 50, 35, 0.22);
+  --galley-lamp: #f99d1b;
+  --galley-power: #00b49b;
+  --galley-window: #1c1a17;
+  width: min(100%, 250px);
+  margin: 0 auto;
+  padding: 18px 20px 20px;
+  border-radius: 18px;
+  color: var(--galley-ink);
+  font-family: var(--font-archivo);
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.22) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, var(--galley-panel) 0%, var(--galley-panel-2) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    12px 12px 28px -14px var(--galley-shade),
+    -8px -8px 22px -12px var(--galley-light);
+}
+
+.dark .galley-body {
+  --galley-panel: #2f3032;
+  --galley-panel-2: #242527;
+  --galley-ink: #d9d7d1;
+  --galley-ink-2: #8f8d86;
+  --galley-light: rgba(255, 255, 255, 0.06);
+  --galley-shade: rgba(0, 0, 0, 0.6);
+  --galley-window: #0f0e0d;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, var(--galley-panel) 0%, var(--galley-panel-2) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    12px 12px 28px -14px var(--galley-shade);
+}
+
+.galley-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* An engraved nameplate: text cut into the metal. */
+.galley-plate {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--galley-ink-2);
+  text-shadow: 0 1px 0 var(--galley-light);
+  box-shadow:
+    inset 2px 2px 5px var(--galley-shade),
+    inset -2px -2px 5px var(--galley-light);
+}
+
+.galley-leds {
+  display: flex;
+  gap: 8px;
+}
+
+.galley-leds i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(60, 50, 35, 0.25);
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.galley-leds i[data-on] {
+  background: var(--galley-lamp);
+  box-shadow:
+    0 0 6px var(--galley-lamp),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.galley-leds i[data-power] {
+  background: var(--galley-power);
+  box-shadow:
+    0 0 6px var(--galley-power),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* A recessed readout window with amber digits. */
+.galley-display {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  column-gap: 8px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--galley-window);
+  color: var(--galley-lamp);
+  font-family: var(--font-doto);
+  font-weight: 700;
+  box-shadow:
+    inset 3px 3px 8px rgba(0, 0, 0, 0.7),
+    inset -1px -1px 2px rgba(255, 255, 255, 0.08),
+    0 1px 0 var(--galley-light);
+}
+
+.galley-display-label {
+  grid-column: 1 / -1;
+  font-family: var(--font-archivo);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(249, 157, 27, 0.55);
+}
+
+.galley-display-value {
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.galley-display-sub {
+  font-size: 12px;
+  color: rgba(249, 157, 27, 0.55);
+}
+
+.galley-slot {
+  width: 74%;
+  margin: 22px auto 0;
+}
+
+.galley-engraved {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--galley-ink-2);
+  text-shadow: 0 1px 0 var(--galley-light);
+}

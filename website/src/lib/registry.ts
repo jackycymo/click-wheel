@@ -47,13 +47,15 @@ const NATIVE_DEPENDENCIES = ["react-native-gesture-handler", "react-native-reani
 const THEME_FILES: Record<ThemeId, string[]> = {
   shadcn: ["wheel.tsx"],
   ipod: ["wheel.tsx", "ipod.css"],
-  te: ["wheel.tsx", "te.css"],
+  retro: ["wheel.tsx", "retro.css"],
+  galley: ["wheel.tsx", "galley.css"],
 };
 
 const THEME_META: Record<ThemeId, { title: string; description: string }> = {
   shadcn: { title: "Click Wheel — shadcn skin", description: "The stock skin: shadcn/ui tokens and Tailwind classes." },
   ipod: { title: "Click Wheel — iPod skin", description: "iPod classic: plain CSS, printed glyphs, a domed hub." },
-  te: { title: "Click Wheel — TE skin", description: "Teenage engineering inspired: flat disc, one orange index, a scale that fills." },
+  retro: { title: "Click Wheel — Retro skin", description: "Retro hardware: flat matte disc, one accent index, a scale that fills. Four accents." },
+  galley: { title: "Click Wheel — Galley skin", description: "The knob on an aircraft coffee maker: soft metal, a knurled rim, a pressed-in hub, indicator segments." },
 };
 
 /** The web parts plus the shared core, read from the workspace package. */

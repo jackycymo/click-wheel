@@ -14,6 +14,10 @@
   --primary-foreground: oklch(0.985 0 0);
   --accent: oklch(0.967 0.001 286.375);
   --ring: oklch(0.705 0.015 286.067);
+  /* The stock wheel skin: the hub and the tick texture. Neutral here; tints recolor them. */
+  --hub: var(--background);
+  --hub-foreground: var(--foreground);
+  --ticks: var(--foreground);
   --radius: 0.625rem;
 }
 
@@ -30,21 +34,37 @@
   --ring: oklch(0.552 0.016 285.938);
 }
 
-/* A second palette for the same Tailwind skin: swap the tokens, keep the classes. */
-.theme-blue {
-  --primary: oklch(0.546 0.245 262.881);
-  --primary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.97 0.014 254.604);
-  --border: oklch(0.882 0.059 254.128);
-  --ring: oklch(0.623 0.214 259.815);
+/* Tints for the same Tailwind skin: a pair of colors. The strong one drives the
+   arc, the hub and the ticks; the soft one is the face of the ring. */
+.theme-blue-seashell {
+  --tint: #006eb8;
+  --tint-2: #fdd4bd;
 }
 
-.dark .theme-blue {
-  --primary: oklch(0.623 0.214 259.815);
-  --primary-foreground: oklch(0.97 0.014 254.604);
-  --muted: oklch(0.282 0.091 267.935);
-  --border: oklch(0.379 0.146 265.522);
-  --ring: oklch(0.546 0.245 262.881);
+.theme-benzol-coral {
+  --tint: #00978d;
+  --tint-2: #f58e84;
+}
+
+.theme-pompeian-cameo {
+  --tint: #ab2439;
+  --tint-2: #e0b3b6;
+}
+
+.theme-blue-seashell,
+.theme-benzol-coral,
+.theme-pompeian-cameo,
+.dark .theme-blue-seashell,
+.dark .theme-benzol-coral,
+.dark .theme-pompeian-cameo {
+  --primary: var(--tint);
+  --primary-foreground: #fafafa;
+  --muted: var(--tint-2);
+  --border: color-mix(in oklab, var(--tint) 30%, var(--tint-2));
+  --ring: var(--tint);
+  --hub: var(--tint);
+  --hub-foreground: #fafafa;
+  --ticks: var(--tint);
 }
 
 @theme inline {
@@ -58,6 +78,9 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-accent: var(--accent);
   --color-ring: var(--ring);
+  --color-hub: var(--hub);
+  --color-hub-foreground: var(--hub-foreground);
+  --color-ticks: var(--ticks);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
   --font-pixel: var(--font-pixelify), ui-monospace, monospace;

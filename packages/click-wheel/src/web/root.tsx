@@ -361,6 +361,7 @@ export function Root(props: RootProps) {
     onKeyDown,
   };
   const fraction = max > min ? (value - min) / (max - min) : 0;
+  const turns = (value - min) / unitsPerTurn;
 
   return (
     <ClickWheelContext.Provider value={context}>
@@ -380,7 +381,7 @@ export function Root(props: RootProps) {
           ref: mergedRootRef,
           "data-turning": turning ? "" : undefined,
           "data-disabled": disabled ? "" : undefined,
-          style: { "--click-wheel-fraction": fraction } as React.CSSProperties,
+          style: { "--click-wheel-fraction": fraction, "--click-wheel-turns": turns } as React.CSSProperties,
         },
       )}
     </ClickWheelContext.Provider>

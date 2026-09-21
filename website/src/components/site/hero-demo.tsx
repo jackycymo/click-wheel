@@ -15,6 +15,7 @@ const MODES: Array<{ value: Mode; label: string }> = [
 export function HeroDemo() {
   const p = usePlayer();
   const [turning, setTurning] = React.useState(false);
+  const [grooves, setGrooves] = React.useState(false);
   const seek = p.mode === "seek";
   const pct = seek ? (p.position / p.track.duration) * 100 : p.volume;
 
@@ -28,6 +29,7 @@ export function HeroDemo() {
             setTurning(next);
           }}
           className="mx-auto w-[min(64vw,240px)]"
+          grooves={grooves}
           label={seek ? "Playback position" : "Volume"}
           getAriaValueText={seek ? speakTime : undefined}
           icon={p.playing ? <IconPause width={20} height={20} /> : <IconPlay width={20} height={20} />}
@@ -71,6 +73,16 @@ export function HeroDemo() {
                 <Switch.Thumb className="block size-4 translate-x-0.5 rounded-full bg-background shadow-xs transition-transform data-[checked]:translate-x-3.5" />
               </Switch.Root>
               Inertia
+            </label>
+            <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+              <Switch.Root
+                checked={grooves}
+                onCheckedChange={setGrooves}
+                className="relative h-5 w-8 rounded-full bg-muted outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring data-[checked]:bg-primary"
+              >
+                <Switch.Thumb className="block size-4 translate-x-0.5 rounded-full bg-background shadow-xs transition-transform data-[checked]:translate-x-3.5" />
+              </Switch.Root>
+              Grooves
             </label>
             <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
               <Switch.Root

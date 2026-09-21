@@ -13,6 +13,8 @@ export interface ClickWheelContextValue {
   rotation: SharedValue<number>;
   /** The value as a number from 0 to 1. Read it in `useAnimatedStyle`. */
   fraction: SharedValue<number>;
+  /** The value's distance from `min` in revolutions: 1.5 is one and a half turns. */
+  turns: SharedValue<number>;
   pan: PanGesture;
   onRingLayout: (event: LayoutChangeEvent) => void;
   nudge: (units: number) => void;
@@ -32,6 +34,6 @@ export function useClickWheelContext(part: string): ClickWheelContextValue {
  * equivalent of the web's data attributes and CSS variables.
  */
 export function useClickWheel() {
-  const { state, rotation, fraction } = useClickWheelContext("useClickWheel");
-  return { state, rotation, fraction };
+  const { state, rotation, fraction, turns } = useClickWheelContext("useClickWheel");
+  return { state, rotation, fraction, turns };
 }

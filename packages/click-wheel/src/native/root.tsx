@@ -104,6 +104,10 @@ export function Root(props: RootProps) {
     const c = config.value;
     return c.max > c.min ? (float.value - c.min) / (c.max - c.min) : 0;
   });
+  const turns = useDerivedValue(() => {
+    const c = config.value;
+    return (float.value - c.min) / c.unitsPerTurn;
+  });
 
   React.useEffect(() => {
     config.value = { min, max, step, unitsPerTurn, detent, inertia, decelerationRate, disabled };
@@ -287,6 +291,7 @@ export function Root(props: RootProps) {
     step,
     rotation,
     fraction,
+    turns,
     pan,
     onRingLayout,
     nudge,

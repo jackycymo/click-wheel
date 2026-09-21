@@ -3,13 +3,7 @@
 import * as React from "react";
 import type { ClickWheel } from "click-wheel";
 import { playClick } from "./audio";
-
-export const TRACK = {
-  title: "North Coast",
-  artist: "The Marginals",
-  album: "Slow Signal",
-  duration: 227,
-};
+import { usePlayerContext } from "./player-provider";
 
 export type Mode = "seek" | "volume";
 
@@ -29,26 +23,17 @@ export function speakTime(seconds: number) {
   return `${Math.floor(s / 60)} minutes ${s % 60} seconds`;
 }
 
-/** Demo state shared by every skin: a fake player with a seek and a volume wheel. */
+/**
+ * Demo state shared by every skin. Playback itself is the site's single
+ * audio element; each demo only keeps its own mode, gearing and switches.
+ */
 export function usePlayer(options: { mode?: Mode } = {}) {
+  const player = usePlayerContext();
   const [internalMode, setMode] = React.useState<Mode>("seek");
   const mode = options.mode ?? internalMode;
-  const [position, setPosition] = React.useState(72);
-  const [playing, setPlaying] = React.useState(false);
-  const [scrubbing, setScrubbing] = React.useState(false);
-  const [volume, setVolume] = React.useState(64);
   const [unitsPerTurn, setUnitsPerTurn] = React.useState(60);
   const [clicker, setClicker] = React.useState(false);
   const [inertia, setInertia] = React.useState(true);
-
-  // Simulated playback; pauses while the wheel is being turned.
-  React.useEffect(() => {
-    if (!playing || scrubbing) return;
-    const id = setInterval(() => {
-      setPosition((p) => (p + 0.25 >= TRACK.duration ? 0 : p + 0.25));
-    }, 250);
-    return () => clearInterval(id);
-  }, [playing, scrubbing]);
 
   const tick = () => {
     if (clicker) playClick();
@@ -57,44 +42,45 @@ export function usePlayer(options: { mode?: Mode } = {}) {
   const wheel: ClickWheel.RootProps =
     mode === "seek"
       ? {
-          value: Math.floor(position),
+          value: Math.floor(player.position),
           min: 0,
-          max: TRACK.duration,
+          max: Math.floor(player.duration),
           step: 1,
           unitsPerTurn,
           detent: 5,
           inertia,
-          onValueChange: setPosition,
-          onTurningChange: setScrubbing,
+          onValueChange: player.setPosition, // the readout follows the wheel
+          onValueCommitted: player.seek, // the audio lands where the wheel settles
+          onTurningChange: player.setScrubbing,
           onTick: tick,
         }
       : {
-          value: volume,
+          value: player.volume,
           min: 0,
           max: 100,
           step: 1,
           unitsPerTurn: 120,
           detent: 5,
           inertia,
-          onValueChange: setVolume,
+          onValueChange: player.setVolume,
           onTick: tick,
         };
 
   return {
     mode,
     setMode,
-    position,
-    playing,
-    togglePlay: () => setPlaying((p) => !p),
-    scrubbing,
-    volume,
+    position: player.position,
+    playing: player.playing,
+    togglePlay: player.toggle,
+    scrubbing: player.scrubbing,
+    volume: player.volume,
     unitsPerTurn,
     setUnitsPerTurn,
     clicker,
     setClicker,
     inertia,
     setInertia,
-    track: TRACK,
+    track: { ...player.track, duration: player.duration },
     wheel,
   };
 }

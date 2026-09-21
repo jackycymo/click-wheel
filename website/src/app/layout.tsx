@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, Doto, Geist, Geist_Mono, Pixelify_Sans } from "next/font/google";
+import { PlayerProvider } from "@/components/site/player-provider";
 import "./globals.css";
 
 const geist = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -34,7 +35,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
-      <body className="flex min-h-full flex-col font-sans">{children}</body>
+      <body className="flex min-h-full flex-col font-sans">
+        <PlayerProvider>{children}</PlayerProvider>
+      </body>
     </html>
   );
 }

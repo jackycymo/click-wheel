@@ -2,29 +2,28 @@
 
 import * as React from "react";
 import { Tabs } from "@base-ui/react/tabs";
-import { Demo as ShadcnDemo } from "@/themes/shadcn/demo";
+import { Demo as ShadcnDemo, TintedDemo } from "@/themes/shadcn/demo";
 import { Demo as IpodDemo } from "@/themes/ipod/demo";
-import { Demo as TeDemo } from "@/themes/te/demo";
+import { Demo as RetroDemo } from "@/themes/retro/demo";
+import { Demo as GalleyDemo } from "@/themes/galley/demo";
 import type { Mode } from "./use-player";
 
-export type ThemeId = "default" | "blue" | "ipod" | "te";
+export type ThemeId = "default" | "tinted" | "ipod" | "retro" | "galley";
 
 const THEMES: Array<{ id: ThemeId; name: string }> = [
   { id: "default", name: "Default" },
-  { id: "blue", name: "Blue" },
+  { id: "tinted", name: "Tinted" },
   { id: "ipod", name: "iPod" },
-  { id: "te", name: "TE" },
+  { id: "retro", name: "Retro" },
+  { id: "galley", name: "Galley" },
 ];
-
-function BlueDemo({ mode }: { mode: Mode }) {
-  return <ShadcnDemo mode={mode} className="theme-blue" />;
-}
 
 const DEMOS: Record<ThemeId, React.ComponentType<{ mode: Mode }>> = {
   default: ShadcnDemo,
-  blue: BlueDemo,
+  tinted: TintedDemo,
   ipod: IpodDemo,
-  te: TeDemo,
+  retro: RetroDemo,
+  galley: GalleyDemo,
 };
 
 /** Pick a skin on the left, read its source on the right. */

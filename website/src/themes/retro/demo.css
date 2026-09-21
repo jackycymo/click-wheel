@@ -1,87 +1,79 @@
 /* Demo chrome only: the grey panel and the OLED. */
-.te-body {
-  --te-panel: #d2d2cd;
-  --te-ink: #161616;
-  --te-orange: #ff5a1f;
-  --te-oled: #0d0d0d;
-  --te-oled-ink: #f1f1ee;
-  --te-oled-dim: #6f6f6c;
-  --te-oled-off: #262626;
+.retro-body {
+  --retro-panel: #d2d2cd;
+  --retro-ink: #161616;
+  --retro-oled: #0d0d0d;
+  --retro-oled-ink: #f1f1ee;
+  --retro-oled-dim: #6f6f6c;
+  --retro-oled-off: #262626;
   width: min(100%, 260px);
   margin: 0 auto;
   padding: 14px 16px 20px;
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.16);
-  background: var(--te-panel);
-  color: var(--te-ink);
+  background: var(--retro-panel);
+  color: var(--retro-ink);
   font-family: var(--font-archivo);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.4),
     0 12px 28px -18px rgba(0, 0, 0, 0.55);
 }
 
-.dark .te-body {
-  --te-panel: #383838;
-  --te-ink: #ececea;
+.dark .retro-body {
+  --retro-panel: #383838;
+  --retro-ink: #ececea;
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 12px 28px -18px rgba(0, 0, 0, 0.9);
 }
 
-.te-head {
+.retro-head {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.te-label {
+.retro-label {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
-.te-dim {
+.retro-dim {
   opacity: 0.55;
 }
 
-.te-keys {
+/* The four keys: one per accent, the pressed one is the current accent. */
+.retro-keys {
   display: flex;
   gap: 5px;
   margin-left: auto;
 }
 
-.te-keys i {
+.retro-keys button {
   width: 12px;
   height: 12px;
+  padding: 0;
   border-radius: 3px;
   border: 1px solid rgba(0, 0, 0, 0.35);
+  background: var(--retro-accent);
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+  cursor: pointer;
 }
 
-.te-keys i[data-k="a"] {
-  background: #8d8d89;
+.retro-keys button[aria-pressed="true"] {
+  outline: 2px solid var(--retro-ink);
+  outline-offset: 1px;
 }
 
-.te-keys i[data-k="b"] {
-  background: #f4f4f1;
-}
-
-.te-keys i[data-k="c"] {
-  background: var(--te-orange);
-}
-
-.te-keys i[data-k="d"] {
-  background: #3f6fd8;
-}
-
-.te-screen {
+.retro-screen {
   margin-top: 12px;
   padding: 10px 12px 12px;
   border-radius: 4px;
-  background: var(--te-oled);
-  color: var(--te-oled-ink);
+  background: var(--retro-oled);
+  color: var(--retro-oled-ink);
   font-family: var(--font-doto);
   font-weight: 700;
   box-shadow:
@@ -89,20 +81,20 @@
     inset 0 2px 8px rgba(0, 0, 0, 0.8);
 }
 
-.te-screen-top {
+.retro-screen-top {
   display: flex;
   justify-content: space-between;
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--te-oled-dim);
+  color: var(--retro-oled-dim);
 }
 
-.te-accent {
-  color: var(--te-orange);
+.retro-accent {
+  color: var(--retro-accent, #00939b);
 }
 
-.te-readout {
+.retro-readout {
   margin-top: 6px;
   font-size: 30px;
   line-height: 1;
@@ -110,28 +102,28 @@
   font-variant-numeric: tabular-nums;
 }
 
-.te-readout small {
+.retro-readout small {
   font-size: 12px;
-  color: var(--te-oled-dim);
+  color: var(--retro-oled-dim);
 }
 
-.te-meter {
+.retro-meter {
   display: flex;
   gap: 3px;
   margin-top: 10px;
 }
 
-.te-meter i {
+.retro-meter i {
   flex: 1;
   height: 6px;
-  background: var(--te-oled-off);
+  background: var(--retro-oled-off);
 }
 
-.te-meter i[data-on] {
-  background: var(--te-orange);
+.retro-meter i[data-on] {
+  background: var(--retro-accent, #00939b);
 }
 
-.te-slot {
+.retro-slot {
   width: 74%;
   margin: 18px auto 0;
 }

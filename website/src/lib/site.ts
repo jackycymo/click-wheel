@@ -9,7 +9,7 @@ export function siteUrl(): string {
   return "http://localhost:3000";
 }
 
-export const THEME_IDS = ["shadcn", "ipod", "te"] as const;
+export const THEME_IDS = ["shadcn", "ipod", "retro", "galley"] as const;
 export type ThemeId = (typeof THEME_IDS)[number];
 
 export const REGISTRY_ITEMS = ["click-wheel", ...THEME_IDS.map((t) => `click-wheel-${t}`), "click-wheel-native"];

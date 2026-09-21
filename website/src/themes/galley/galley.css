@@ -1,0 +1,131 @@
+/* Galley: the knob on an aircraft coffee maker. Soft metal, extruded from the panel. */
+.galley-wheel {
+  --galley-metal: #e3e1dc;
+  --galley-metal-2: #d2cfc8;
+  --galley-sheen: #f4f2ee;
+  --galley-ink: #3b3a36;
+  --galley-light: rgba(255, 255, 255, 0.85);
+  --galley-shade: rgba(60, 50, 35, 0.22);
+  --galley-lamp: #f99d1b;
+  --galley-lamp-off: rgba(60, 50, 35, 0.14);
+  position: relative;
+  aspect-ratio: 1;
+}
+
+.dark .galley-wheel {
+  --galley-metal: #2c2d2f;
+  --galley-metal-2: #222325;
+  --galley-sheen: #3a3b3e;
+  --galley-ink: #d9d7d1;
+  --galley-light: rgba(255, 255, 255, 0.07);
+  --galley-shade: rgba(0, 0, 0, 0.55);
+  --galley-lamp-off: rgba(255, 255, 255, 0.08);
+}
+
+/* Indicator segments around the knob. Lit ones take the lamp color up to the value. */
+.galley-lamps {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--galley-lamp) calc(var(--click-wheel-fraction) * 360deg),
+    var(--galley-lamp-off) 0
+  );
+  mask:
+    repeating-conic-gradient(#000 0 7deg, transparent 7deg 15deg),
+    radial-gradient(circle closest-side, transparent 92%, #000 93%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+}
+
+/* The knob: raised from the panel by a light and a shadow. */
+.galley-ring {
+  position: absolute;
+  inset: 11%;
+  border-radius: 50%;
+  cursor: grab;
+  outline: none;
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--galley-sheen) 0%,
+    var(--galley-metal) 45%,
+    var(--galley-metal-2) 100%
+  );
+  box-shadow:
+    10px 10px 22px var(--galley-shade),
+    -8px -8px 18px var(--galley-light),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+
+.galley-ring:focus-visible {
+  box-shadow:
+    10px 10px 22px var(--galley-shade),
+    -8px -8px 18px var(--galley-light),
+    0 0 0 3px var(--galley-lamp);
+}
+
+.galley-ring[data-turning] {
+  cursor: grabbing;
+}
+
+.galley-ring[data-disabled] {
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* Knurled rim, machined into the knob, turning 1:1 with the finger. */
+.galley-rotor {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    rgba(0, 0, 0, 0.16) 0 1deg,
+    rgba(255, 255, 255, 0.45) 1deg 2deg,
+    transparent 2deg 5deg
+  );
+  mask: radial-gradient(circle closest-side, transparent 84%, #000 85%);
+  transition: rotate 50ms linear;
+}
+
+/* The hub: pressed into the knob, and deeper while pressed. */
+.galley-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  width: 38%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--galley-metal);
+  color: var(--galley-ink);
+  box-shadow:
+    inset 5px 5px 10px var(--galley-shade),
+    inset -4px -4px 9px var(--galley-light);
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.galley-center:active {
+  box-shadow:
+    inset 7px 7px 14px var(--galley-shade),
+    inset -3px -3px 7px var(--galley-light);
+}
+
+.galley-center:active > * {
+  transform: translateY(1px);
+}
+
+.galley-center:focus-visible {
+  outline: 2px solid var(--galley-lamp);
+  outline-offset: 3px;
+}
+
+.galley-center:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
