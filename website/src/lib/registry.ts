@@ -54,7 +54,7 @@ const THEME_FILES: Record<ThemeId, string[]> = {
 const THEME_META: Record<ThemeId, { title: string; description: string }> = {
   shadcn: { title: "Click Wheel — shadcn skin", description: "The stock skin: shadcn/ui tokens and Tailwind classes." },
   ipod: { title: "Click Wheel — iPod skin", description: "iPod classic: plain CSS, printed glyphs, a domed hub." },
-  retro: { title: "Click Wheel — Retro skin", description: "Retro hardware: flat matte disc, one accent index, a scale that fills. Four accents." },
+  retro: { title: "Click Wheel — Retro skin", description: "Retro hardware, soft: a knob raised from a pressed-in well, one accent index, a scale that fills. Four accents." },
   galley: { title: "Click Wheel — Galley skin", description: "The knob on an aircraft coffee maker: soft metal, a knurled rim, a pressed-in hub, indicator segments." },
 };
 

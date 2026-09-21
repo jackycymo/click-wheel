@@ -71,7 +71,7 @@ or import `click-wheel/native`. See `/docs/react-native`.
 | Default | shadcn/ui tokens and Tailwind classes  |
 | Tinted  | the same classes, a pair of colors in the tokens |
 | iPod    | plain CSS, printed glyphs, a domed hub |
-| Retro   | plain CSS, flat disc, one accent index, four accents |
+| Retro   | plain CSS, soft-shadow knob in a well, one accent index, four accents |
 | Galley  | plain CSS, soft metal knob with a knurled rim and lit segments |
 
 Each `wheel.tsx` is the copyable part. `demo.tsx` and `demo.css` are the
