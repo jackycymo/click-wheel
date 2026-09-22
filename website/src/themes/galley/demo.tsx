@@ -29,7 +29,7 @@ export function Demo({ mode }: { mode: Mode }) {
         className="galley-slot"
         label={seek ? "Playback position" : "Volume"}
         getAriaValueText={seek ? speakTime : undefined}
-        icon={p.playing ? <IconPause width={16} height={16} /> : <IconPlay width={16} height={16} />}
+        icon={p.playing ? <IconPause /> : <IconPlay />}
         onCenterClick={p.togglePlay}
         centerLabel={p.playing ? "Pause" : "Play"}
       />

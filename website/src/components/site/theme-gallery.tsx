@@ -40,13 +40,13 @@ export function ThemeGallery({ sources }: { sources: Record<ThemeId, React.React
       <div className="min-w-0 lg:sticky lg:top-20">
         <Tabs.List
           aria-label="Theme"
-          className="inline-flex h-9 max-w-full items-center overflow-x-auto rounded-lg border bg-muted p-1 text-sm font-medium"
+          className="inline-flex h-9 max-w-full items-center overflow-x-auto overflow-y-hidden rounded-lg border bg-muted p-1 text-sm font-medium [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {THEMES.map((t) => (
             <Tabs.Tab
               key={t.id}
               value={t.id}
-              className="h-full shrink-0 rounded-md px-3 text-muted-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring data-[active]:bg-background data-[active]:text-foreground data-[active]:shadow-xs"
+              className="h-full shrink-0 rounded-md px-2.5 text-muted-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring data-[active]:bg-background data-[active]:text-foreground data-[active]:shadow-xs sm:px-3"
             >
               {t.name}
             </Tabs.Tab>

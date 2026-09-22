@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Doto, Geist, Geist_Mono, Pixelify_Sans } from "next/font/google";
+import { Archivo, Doto, Geist, Geist_Mono, Tiny5 } from "next/font/google";
 import { PlayerDock } from "@/components/site/player-dock";
 import { PlayerProvider } from "@/components/site/player-provider";
 import "./globals.css";
 
 const geist = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
-const pixelify = Pixelify_Sans({ variable: "--font-pixelify", subsets: ["latin"] });
+const tiny5 = Tiny5({ variable: "--font-tiny5", weight: "400", subsets: ["latin"] });
 const doto = Doto({ variable: "--font-doto", subsets: ["latin"] });
 const archivo = Archivo({ variable: "--font-archivo", subsets: ["latin"] });
 
@@ -31,7 +31,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       lang="en"
       suppressHydrationWarning
       data-scroll-behavior="smooth"
-      className={`${geist.variable} ${geistMono.variable} ${pixelify.variable} ${doto.variable} ${archivo.variable} h-full`}
+      className={`${geist.variable} ${geistMono.variable} ${tiny5.variable} ${doto.variable} ${archivo.variable} h-full`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />

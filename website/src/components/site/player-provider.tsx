@@ -10,6 +10,8 @@ export interface PlayerApi {
   volume: number;
   /** A wheel owns the position: from the first touch until the value commits. */
   scrubbing: boolean;
+  /** Playback has started at least once in this tab. */
+  started: boolean;
   toggle: () => void;
   /** Move the audio to a position. */
   seek: (seconds: number) => void;
@@ -38,6 +40,7 @@ interface Saved {
   src: string;
   position: number;
   playing: boolean;
+  started: boolean;
 }
 
 function readSaved(): Saved | null {
@@ -46,9 +49,9 @@ function readSaved(): Saved | null {
     if (!raw) return null;
     const saved: unknown = JSON.parse(raw);
     if (!saved || typeof saved !== "object") return null;
-    const { src, position, playing } = saved as Record<string, unknown>;
+    const { src, position, playing, started } = saved as Record<string, unknown>;
     if (typeof src !== "string" || typeof position !== "number" || !Number.isFinite(position)) return null;
-    return { src, position, playing: playing === true };
+    return { src, position, playing: playing === true, started: started === true || playing === true };
   } catch {
     return null;
   }
@@ -60,6 +63,31 @@ function writeSaved(saved: Saved) {
   } catch {
     // Storage can be blocked; the player still works, it only forgets.
   }
+}
+
+/*
+  "Started" is a small external store: true once play has run in this tab,
+  read back from the saved state on the first call in the browser.
+*/
+const startedListeners = new Set<() => void>();
+let startedCache: boolean | null = null;
+
+function readStarted(): boolean {
+  if (startedCache === null) startedCache = readSaved()?.started ?? false;
+  return startedCache;
+}
+
+function markStarted() {
+  if (startedCache === true) return;
+  startedCache = true;
+  for (const listener of startedListeners) listener();
+}
+
+function subscribeStarted(listener: () => void) {
+  startedListeners.add(listener);
+  return () => {
+    startedListeners.delete(listener);
+  };
 }
 
 /**
@@ -81,12 +109,19 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [volume, setVolumeState] = React.useState(64);
   const [scrubbing, setScrubbingState] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const started = React.useSyncExternalStore(subscribeStarted, readStarted, () => false);
+
 
   const save = React.useCallback(() => {
     const audio = audioRef.current;
     const track = TRACKS[trackIndexRef.current];
     if (!audio || !track) return;
-    writeSaved({ src: track.src, position: audio.currentTime, playing: !audio.paused && !audio.ended });
+    writeSaved({
+      src: track.src,
+      position: audio.currentTime,
+      playing: !audio.paused && !audio.ended,
+      started: readStarted(),
+    });
   }, []);
 
   const play = React.useCallback((quiet = false) => {
@@ -122,7 +157,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       audio.volume = volumeRef.current / 100;
       audio.load();
       if (autoplay) play();
-      writeSaved({ src: track.src, position: resumeAt ?? 0, playing: autoplay });
+      writeSaved({ src: track.src, position: resumeAt ?? 0, playing: autoplay, started: readStarted() });
     },
     [play],
   );
@@ -158,6 +193,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       playing,
       volume,
       scrubbing,
+      started,
       track: TRACKS[trackIndex],
       error,
       toggle: () => {
@@ -188,7 +224,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         else loadTrack((trackIndexRef.current + TRACKS.length - 1) % TRACKS.length, isPlaying());
       },
     };
-  }, [position, duration, playing, volume, scrubbing, trackIndex, error, play, loadTrack, save]);
+  }, [position, duration, playing, volume, scrubbing, started, trackIndex, error, play, loadTrack, save]);
 
   return (
     <PlayerContext.Provider value={api}>
@@ -215,6 +251,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         }}
         onPlay={() => {
           setPlaying(true);
+          markStarted();
           save();
         }}
         onPause={() => {

@@ -85,7 +85,7 @@ export function Wheel({
       <ClickWheel.Center
         aria-label={centerLabel}
         onClick={onCenterClick}
-        className="absolute left-1/2 top-1/2 flex size-[38%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-hub text-hub-foreground shadow-xs outline-none transition-transform active:scale-95 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+        className="absolute left-1/2 top-1/2 flex size-[38%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-hub text-hub-foreground shadow-xs outline-none transition-transform active:scale-95 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 [&>svg]:size-[36%]"
       >
         {icon}
       </ClickWheel.Center>

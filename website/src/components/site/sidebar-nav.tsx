@@ -35,7 +35,7 @@ export function SidebarNav() {
         </div>
       </nav>
 
-      <nav aria-label="Docs" className="-mx-5 overflow-x-auto border-b px-5 lg:hidden">
+      <nav aria-label="Docs" className="-mx-5 overflow-x-auto border-b px-5 [scrollbar-width:none] lg:hidden [&::-webkit-scrollbar]:hidden">
         <ul className="flex gap-1 py-2 text-sm whitespace-nowrap">
           {PAGES.map((page) => (
             <li key={page.slug}>

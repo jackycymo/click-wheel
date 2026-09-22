@@ -109,6 +109,12 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* The glyph on the hub scales with the wheel. */
+.galley-center > svg {
+  width: 36%;
+  height: 36%;
+}
+
 .galley-center:active {
   box-shadow:
     inset 7px 7px 14px var(--galley-shade),

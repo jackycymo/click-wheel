@@ -60,7 +60,7 @@ export function Demo({ mode, defaultClicker = false }: { mode: Mode; defaultClic
         className="retro-slot"
         label={seek ? "Playback position" : "Volume"}
         getAriaValueText={seek ? speakTime : undefined}
-        icon={p.playing ? <IconPause width={14} height={14} /> : <IconPlay width={14} height={14} />}
+        icon={p.playing ? <IconPause /> : <IconPlay />}
         onCenterClick={p.togglePlay}
         centerLabel={p.playing ? "Pause" : "Play"}
       />

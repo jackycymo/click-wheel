@@ -9,8 +9,9 @@ import { fmt, speakTime, usePlayer } from "./use-player";
 
 /*
   The floating player. It keeps the same track within reach on every page and
-  shows that the wheel is a real seek control, not a toy. The home page has its
-  own big wheel, so there the dock waits until that wheel scrolls out of view.
+  shows that the wheel is a real seek control, not a toy. It appears only once
+  the listener has pressed play in this tab. The home page has its own big
+  wheel, so there the dock also waits until that wheel scrolls out of view.
   It folds to a pill and remembers that choice in localStorage.
 */
 
@@ -76,7 +77,8 @@ export function PlayerDock() {
   const pathname = usePathname();
   const dock = React.useSyncExternalStore(subscribe, readDock, serverDock);
   const anchorInView = useAnchorInView(pathname === "/");
-  if (dock === null || anchorInView) return null;
+  const { started } = usePlayerContext();
+  if (!started || dock === null || anchorInView) return null;
   return dock === "open" ? <OpenDock /> : <ClosedDock />;
 }
 
@@ -98,7 +100,7 @@ function OpenDock() {
           className="w-24 shrink-0"
           label="Playback position"
           getAriaValueText={speakTime}
-          icon={p.playing ? <IconPause width={14} height={14} /> : <IconPlay width={14} height={14} />}
+          icon={p.playing ? <IconPause /> : <IconPlay />}
           onCenterClick={p.togglePlay}
           centerLabel={p.playing ? "Pause" : "Play"}
         />

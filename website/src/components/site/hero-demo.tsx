@@ -32,7 +32,7 @@ export function HeroDemo() {
           grooves={grooves}
           label={seek ? "Playback position" : "Volume"}
           getAriaValueText={seek ? speakTime : undefined}
-          icon={p.playing ? <IconPause width={20} height={20} /> : <IconPlay width={20} height={20} />}
+          icon={p.playing ? <IconPause /> : <IconPlay />}
           onCenterClick={p.togglePlay}
           centerLabel={p.playing ? "Pause" : "Play"}
         />

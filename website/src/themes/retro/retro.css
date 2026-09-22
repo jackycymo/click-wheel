@@ -144,6 +144,12 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* The glyph on the hub scales with the wheel. */
+.retro-center > svg {
+  width: 36%;
+  height: 36%;
+}
+
 .retro-center:active {
   background: linear-gradient(145deg, var(--retro-face-lo), var(--retro-face-hi));
   box-shadow:
