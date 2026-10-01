@@ -13,7 +13,7 @@ export function Demo({ mode }: { mode: Mode }) {
   return (
     <div className="galley-body">
       <div className="galley-top">
-        <span className="galley-plate">{seek ? "Seek" : "Volume"}</span>
+        {seek ? null : <span className="galley-plate">Volume</span>}
         <span className="galley-leds" aria-hidden="true">
           <i data-on={p.playing || undefined} />
           <i data-on data-power />

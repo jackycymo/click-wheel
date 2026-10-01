@@ -26,7 +26,7 @@ export function Demo({ mode, defaultClicker = false }: { mode: Mode; defaultClic
   return (
     <div className="retro-body" data-accent={accent}>
       <div className="retro-head">
-        <span className="retro-label">{seek ? "seek" : "vol"}</span>
+        {seek ? null : <span className="retro-label">vol</span>}
         <div className="retro-keys" role="group" aria-label="Accent">
           {ACCENTS.map((a) => (
             <button

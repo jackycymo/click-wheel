@@ -64,6 +64,7 @@
 .galley-leds {
   display: flex;
   gap: 8px;
+  margin-left: auto;
 }
 
 .galley-leds i {
