@@ -14,7 +14,7 @@ precision are a prop you choose, not a function of screen space.
   as it slows. A touch grabs it again.
 - Haptics on detents: Vibration API on Android, the switch trick on iOS 17.4
   to 26.4, and `<HapticTap />` for real taps on iOS 26.5+.
-- Zero dependencies beyond React 19 on the web. Copy the files from the
+- Zero dependencies beyond React 19.2. Copy the files from the
   registry, or import `click-wheel` from the package.
 
 ```bash
@@ -25,13 +25,13 @@ bun dev   # http://localhost:3000 — best tried on a phone
 ## Layout
 
 ```
-packages/click-wheel   the publishable package: src/core.ts, src/web, src/native
+packages/click-wheel   the publishable package: src/core.ts, src/web
 website                the docs site, a Next.js app that depends on the package
 ```
 
 `bun install` at the root links the workspace. `bun run check` type-checks
-the package for both targets, `bun run dev` starts the site, `bun run build`
-builds it.
+the package and tests, `bun run test` runs the behavior tests, `bun run dev`
+starts the site, and `bun run build` builds it.
 
 ## Usage
 
@@ -42,8 +42,8 @@ import { ClickWheel } from "@/components/click-wheel";
   value={seconds}
   onValueChange={setSeconds}
   max={duration}
-  unitsPerTurn={60}   // one lap = one minute
-  detent={5}          // a tick every five seconds
+  unitsPerTurn={60}
+  detent={5}
 >
   <ClickWheel.Ring aria-label="Playback position">
     <ClickWheel.Rotor />
@@ -60,8 +60,7 @@ import { ClickWheel } from "@/components/click-wheel";
 
 | Theme   | How                                    |
 | ------- | -------------------------------------- |
-| Default | shadcn/ui tokens and Tailwind classes  |
-| Duotone | the same classes, a primary and a secondary color in the tokens |
+| Duotone | shadcn/ui tokens and Tailwind classes with two-color palettes |
 | iPod    | plain CSS, printed glyphs, a domed hub |
 | Retro   | plain CSS, soft-shadow knob in a well, one accent index, four accents |
 | Galley  | plain CSS, soft metal knob with a knurled rim and lit segments |
@@ -87,8 +86,8 @@ Set `NEXT_PUBLIC_SITE_URL` so the absolute links point at your deployment.
 
 Next.js App Router, Tailwind CSS v4, Base UI for the small controls, shiki
 for code. The home page is the hero demo and the theme gallery. The docs
-(`/docs`, `/docs/styling`, `/docs/haptics`, `/docs/api`) and the examples
-(`/examples/default`, `/examples/themes`, `/examples/other`) all render from
+(`/docs`, `/docs/styling`, `/docs/api`) and the examples
+(`/examples/default`, `/examples/themes`) all render from
 one content file, `website/src/content/docs.ts`. Example previews live in
 `website/src/examples/`; the page reads each file from disk, so the code shown
 is the code that runs.

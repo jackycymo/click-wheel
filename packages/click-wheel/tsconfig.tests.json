@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.web.json",
+  "compilerOptions": { "types": ["bun"] },
+  "include": ["src/core.ts", "src/web", "tests"]
+}

@@ -3,7 +3,7 @@
 import * as React from "react";
 import { ClickWheel } from "click-wheel";
 
-const DURATION = 240; // four laps at one minute per turn
+const DURATION = 240;
 const LAPS = 4;
 
 function fmt(s: number) {
@@ -23,7 +23,6 @@ export function Vinyl() {
         detent={5}
         className="relative aspect-square w-48"
       >
-        {/* One groove per lap. Groove i fills during lap i, read straight from --click-wheel-turns. */}
         {Array.from({ length: LAPS }, (_, i) => (
           <div
             key={i}

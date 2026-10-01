@@ -49,14 +49,11 @@ export function usePlayer(options: { mode?: Mode; defaultClicker?: boolean } = {
           unitsPerTurn,
           detent: 5,
           inertia,
-          onValueChange: player.setPosition, // the readout follows the wheel
+          onValueChange: player.setPosition,
           onValueCommitted: (seconds) => {
             player.seek(seconds); // the audio lands where the wheel settles, coast included
-            player.setScrubbing(false);
           },
-          onDraggingChange: (held) => {
-            if (held) player.setScrubbing(true); // a scrub stays open until the commit
-          },
+          onInteractionChange: player.setScrubbing,
           onTick: tick,
         }
       : {

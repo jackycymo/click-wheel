@@ -4,7 +4,6 @@ import { ANATOMY, PAGES, SUMMARY, type Block } from "./docs";
 
 export interface Readers {
   example: (file: string) => Promise<string>;
-  native: (file: string) => Promise<string>;
 }
 
 const cell = (s: string) => s.replace(/\|/g, "\\|").replace(/\n/g, " ");
@@ -25,12 +24,8 @@ async function blockToMarkdown(block: Block, read: Readers): Promise<string> {
       return `\`\`\`bash\nnpx shadcn@latest add ${siteUrl()}/r/${block.item ?? "click-wheel"}.json\n\`\`\``;
     case "example":
       return `**examples/${block.file}**\n\n\`\`\`tsx\n${(await read.example(block.file)).trim()}\n\`\`\``;
-    case "file":
-      return `**${block.title}**\n\n\`\`\`tsx\n${(await read.native(block.file)).trim()}\n\`\`\``;
     case "themes":
-      return `> Four skins of the same parts: ${THEME_IDS.map((t) => `\`click-wheel-${t}\``).join(", ")} plus a blue token swap. Sources are in ${siteUrl()}/llms-full.txt and installable from ${siteUrl()}/r/registry.json.`;
-    case "demo":
-      return `> ${block.fallback}`;
+      return `> Duotone, iPod, Retro and Galley. Duotone applies color pairs to the shared shadcn skin. Sources are in ${siteUrl()}/llms-full.txt and installable from ${siteUrl()}/r/registry.json.`;
   }
 }
 
@@ -64,7 +59,7 @@ export function llmsTxt(): string {
 
 ## Install
 
-- \`npx shadcn@latest add ${site}/r/click-wheel.json\` — the web component: ten files under components/click-wheel, React 19, no dependencies
+- \`npx shadcn@latest add ${site}/r/click-wheel.json\` — the web component: ten files under components/click-wheel, React 19.2, no dependencies
 ${THEME_IDS.map((t) => `- \`npx shadcn@latest add ${site}/r/click-wheel-${t}.json\` — the ${t} skin (depends on click-wheel)`).join("\n")}
 - Or copy the files from ${site}/llms-full.txt
 
@@ -83,7 +78,7 @@ ${ANATOMY}
 
 - Style with anything: parts have no classes. State: \`data-dragging\` (a pointer holds the ring), \`data-coasting\` (spinning on after a flick), \`data-disabled\`, \`--click-wheel-fraction\` (0–1), \`--click-wheel-turns\` (laps from min), \`--click-wheel-rotation\` (deg). \`className\` and \`style\` may be functions of \`{ value, dragging, coasting, disabled }\`. Every part takes a \`render\` prop.
 - Gearing: \`unitsPerTurn\` sets how far one revolution moves the value. \`detent\` sets the units between haptic ticks. \`inertia\` (off by default) keeps the wheel spinning after a flick; \`decelerationRate\` (0.998) is the velocity kept per millisecond.
-- Callbacks: \`onValueChange\` on every change, \`onValueCommitted\` once per gesture, \`onDraggingChange\` when a hand takes or leaves the ring, \`onTick\` per detent.
+- Callbacks: \`onValueChange\` on every change, \`onValueCommitted\` once per completed interaction, \`onInteractionChange\` across pointer, scroll, keyboard and coasting (including cancellation), \`onDraggingChange\` when a hand takes or leaves the ring, \`onTick\` per detent.
 - Haptics: Vibration API on Android; the switch trick on iOS 17.4–26.4; on iOS 26.5+ only real taps vibrate, so put \`<HapticTap />\` inside the center button.
 `;
 }

@@ -12,7 +12,7 @@ export function DocPage({ page, children }: { page: DocPageDef; children: React.
 
   return (
     <div className="flex gap-12">
-      <article className="min-w-0 max-w-3xl flex-1">
+      <article className="min-w-0 flex-1">
         <h1 className="text-3xl font-semibold tracking-tight">{page.title}</h1>
         {page.description ? (
           <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">

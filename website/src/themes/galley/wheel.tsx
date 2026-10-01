@@ -4,13 +4,6 @@ import * as React from "react";
 import { ClickWheel } from "click-wheel";
 import "./galley.css";
 
-/*
-  Galley. The knob on an aircraft coffee maker: soft metal extruded from the
-  same panel, a knurled rim that turns with the finger, a hub pressed into the
-  surface, and a ring of indicator segments that light up as the value grows.
-  Two soft shadows do the shaping; --click-wheel-fraction lights the segments.
-*/
-
 export interface WheelProps extends Omit<ClickWheel.RootProps, "children" | "className"> {
   label: string;
   getAriaValueText?: (value: number) => string;

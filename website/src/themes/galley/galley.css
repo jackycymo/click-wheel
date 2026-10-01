@@ -1,4 +1,3 @@
-/* Galley: the knob on an aircraft coffee maker. Soft metal, extruded from the panel. */
 .galley-wheel {
   --galley-metal: #e3e1dc;
   --galley-metal-2: #d2cfc8;
@@ -22,7 +21,6 @@
   --galley-lamp-off: rgba(255, 255, 255, 0.08);
 }
 
-/* Indicator segments around the knob. Lit ones take the lamp color up to the value. */
 .galley-lamps {
   position: absolute;
   inset: 0;
@@ -38,7 +36,6 @@
   -webkit-mask-composite: source-in;
 }
 
-/* The knob: raised from the panel by a light and a shadow. */
 .galley-ring {
   position: absolute;
   inset: 11%;
@@ -73,7 +70,6 @@
   opacity: 0.6;
 }
 
-/* Knurled rim, machined into the knob, turning 1:1 with the finger. */
 .galley-rotor {
   position: absolute;
   inset: 0;
@@ -86,7 +82,6 @@
   mask: radial-gradient(circle closest-side, transparent 84%, #000 85%);
 }
 
-/* The hub: pressed into the knob, and deeper while pressed. */
 .galley-center {
   position: absolute;
   left: 50%;
@@ -109,7 +104,6 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* The glyph on the hub scales with the wheel. */
 .galley-center > svg {
   width: 36%;
   height: 36%;

@@ -12,10 +12,9 @@ function fmt(s: number) {
 export function Controlled() {
   const [seconds, setSeconds] = React.useState(72);
   const [playing, setPlaying] = React.useState(false);
-  const [held, setHeld] = React.useState(false); // from the first touch until the value commits
+  const [held, setHeld] = React.useState(false);
   const [log, setLog] = React.useState<string[]>([]);
 
-  // Playback advances only while the wheel is not scrubbing.
   React.useEffect(() => {
     if (!playing || held) return;
     const id = setInterval(() => setSeconds((s) => (s + 1) % DURATION), 1000);
@@ -27,9 +26,8 @@ export function Controlled() {
       <Wheel
         value={seconds}
         onValueChange={setSeconds}
-        onDraggingChange={(dragging) => dragging && setHeld(true)}
+        onInteractionChange={setHeld}
         onValueCommitted={(v) => {
-          setHeld(false); // the coast has settled too
           setLog((l) => [`committed ${fmt(v)}`, ...l].slice(0, 3));
         }}
         max={DURATION}

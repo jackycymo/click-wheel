@@ -1,19 +1,16 @@
 # click-wheel
 
-The iPod click wheel for React and React Native. Unstyled parts in the Base
+An unstyled iPod-style click wheel for React 19.2 and newer. Parts in the Base
 UI style, gearing instead of length, detents with haptics, optional inertia.
 
 ```
-src/core.ts      the math both versions share
-src/web/         React: Root, Ring, Rotor, Center; data attributes, CSS variables, render prop
-src/native/      React Native: the same parts on Gesture Handler 3 and Reanimated
-examples/native  a styled player, type-checked against the native parts
+src/core.ts      the wheel math
+src/web/         Root, Ring, Rotor, Center; data attributes, CSS variables, render prop
 ```
 
 ```tsx
-import { ClickWheel } from "click-wheel";          // web
-import { ClickWheel } from "click-wheel/native";   // React Native
+import { ClickWheel } from "click-wheel";
 ```
 
-Check both targets with `bun run check`. The web files are also linted from
-the website with the React Hooks rules.
+Run `bun run check` to type-check the package and `bun run test` for behavioral
+tests. The web files are also linted from the website with the React Hooks rules.

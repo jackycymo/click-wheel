@@ -8,11 +8,7 @@ import { ThemeGallery } from "./theme-gallery";
 const read = async (file: string) =>
   forReaders(await fs.readFile(path.join(process.cwd(), "src", "themes", file), "utf8"));
 
-export const DUOTONE_CSS = `/* Duotone: the same Tailwind skin under two colors with fixed roles. The primary
-   is the body: the face of the ring and the track. The secondary is everything
-   that moves or can be pressed: the arc, the ticks, the hub and the fill. The
-   glyph on the hub is white, so every secondary must carry white. */
-.theme-navy-orange {
+export const DUOTONE_CSS = `.theme-navy-orange {
   --duo-primary: #12354e;
   --duo-secondary: #f99d1b;
 }
@@ -69,8 +65,12 @@ export async function ThemesBlock() {
   return (
     <ThemeGallery
       sources={{
-        default: <CodeBlock code={shadcnSrc} title="themes/shadcn/wheel.tsx" />,
-        duotone: <CodeBlock code={DUOTONE_CSS} lang="css" title="globals.css" />,
+        duotone: (
+          <>
+            <CodeBlock code={shadcnSrc} title="themes/shadcn/wheel.tsx" />
+            <CodeBlock code={DUOTONE_CSS} lang="css" title="globals.css" />
+          </>
+        ),
         ipod: (
           <>
             <CodeBlock code={ipodSrc} title="themes/ipod/wheel.tsx" />

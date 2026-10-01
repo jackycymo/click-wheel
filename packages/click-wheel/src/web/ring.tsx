@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useClickWheelContext, type ClickWheelState } from "./context";
 import { stepValue } from "../core";
-import { renderPart, useMergedRefs, type PartProps } from "./render";
+import { useRenderPart, useMergedRefs, type PartProps } from "./render";
 
 export interface RingProps extends PartProps<ClickWheelState, "div"> {
   /** Formats the value for assistive tech, e.g. seconds to "1 min 20 sec". */
@@ -29,7 +29,7 @@ export function Ring(props: RingProps) {
   const spoken = stepValue(state.value, min, max, step);
   const ref = useMergedRefs(ctx.ringRef, refProp as React.Ref<HTMLElement>);
 
-  return renderPart("div", state, rest, {
+  return useRenderPart("div", state, rest, {
     ref,
     role: "slider",
     tabIndex: state.disabled ? -1 : 0,

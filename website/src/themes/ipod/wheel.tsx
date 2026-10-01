@@ -4,11 +4,6 @@ import * as React from "react";
 import { ClickWheel } from "click-wheel";
 import "./ipod.css";
 
-/*
-  iPod classic. Plain CSS classes, printed glyphs on the ring, a domed hub.
-  White polycarbonate in light mode, black anodized in dark mode.
-*/
-
 export interface WheelProps extends Omit<ClickWheel.RootProps, "children" | "className"> {
   label: string;
   getAriaValueText?: (value: number) => string;

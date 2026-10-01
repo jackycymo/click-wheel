@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Wheel } from "@/themes/shadcn/wheel"; // the Default skin from Examples → Themes
+import { Wheel } from "@/themes/shadcn/wheel";
 
 const DURATION = 227;
-const GEARINGS = [30, 60, 300]; // seconds per revolution
+const GEARINGS = [30, 60, 300];
 
 function fmt(s: number) {
   return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;

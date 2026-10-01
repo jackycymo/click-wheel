@@ -5,7 +5,6 @@ import { Wheel } from "@/themes/shadcn/wheel";
 
 let ctx: AudioContext | null = null;
 
-/** A short blip, like the iPod clicker. */
 function click() {
   ctx ??= new AudioContext();
   if (ctx.state === "suspended") void ctx.resume();
@@ -31,7 +30,7 @@ export function Detents() {
         value={value}
         onValueChange={setValue}
         unitsPerTurn={120}
-        detent={5} // haptics pulse and onTick fires every 5 units
+        detent={5}
         onTick={() => {
           setTicks((n) => n + 1);
           if (sound) click();

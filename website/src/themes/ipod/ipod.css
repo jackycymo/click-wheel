@@ -1,4 +1,3 @@
-/* iPod classic: white polycarbonate by day, black anodized at night. */
 .ipod-wheel {
   --ipod-shell: #efefed;
   --ipod-shell-2: #dcdcd9;
@@ -50,7 +49,6 @@
   opacity: 0.6;
 }
 
-/* A soft highlight that swings around with the finger. */
 .ipod-rotor {
   position: absolute;
   inset: 0;
@@ -70,7 +68,6 @@
   opacity: 0.6;
 }
 
-/* Printed glyphs: MENU, previous, next, play/pause. */
 .ipod-print {
   position: absolute;
   display: flex;
@@ -132,7 +129,6 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* The glyph on the hub scales with the wheel. */
 .ipod-center > svg {
   width: 36%;
   height: 36%;

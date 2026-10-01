@@ -1,11 +1,3 @@
-"worklet";
-
-/*
-  Pure math shared by the web and React Native versions. No imports, no DOM.
-  The "worklet" directive lets React Native run these on the UI thread; it is
-  inert everywhere else.
-*/
-
 export const DEG = 180 / Math.PI;
 /** How far a scroll gesture turns the ring: 900px of scrolling is one revolution. */
 export const WHEEL_DEG_PER_PX = 0.4;
@@ -49,17 +41,23 @@ export function unitsToDegrees(units: number, unitsPerTurn: number): number {
 
 /** Snap a raw value to the step grid and the bounds. */
 export function stepValue(raw: number, min: number, max: number, step: number): number {
+  if (raw <= min) return min;
+  if (raw >= max) return max;
   const stepped = Math.round((raw - min) / step) * step + min;
   return Number(clamp(stepped, min, max).toFixed(6));
 }
 
 /** 1 or -1 when moving from `prev` to `next` crosses a detent, else 0. */
 export function detentCrossing(prev: number, next: number, min: number, detent: number): 1 | -1 | 0 {
+  return Math.sign(detentCrossings(prev, next, min, detent)) as 1 | -1 | 0;
+}
+
+/** Signed number of detent boundaries crossed in one update. */
+export function detentCrossings(prev: number, next: number, min: number, detent: number): number {
   if (detent <= 0 || prev === next) return 0;
   const from = Math.floor((prev - min) / detent);
   const to = Math.floor((next - min) / detent);
-  if (from === to) return 0;
-  return to > from ? 1 : -1;
+  return to - from;
 }
 
 /**

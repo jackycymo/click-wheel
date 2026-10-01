@@ -4,7 +4,7 @@ import * as React from "react";
 import { Wheel } from "@/themes/shadcn/wheel";
 
 const RATES = [
-  { label: "normal", rate: 0.998 }, // iOS default
+  { label: "normal", rate: 0.998 },
   { label: "fast stop", rate: 0.99 },
 ];
 
@@ -12,24 +12,17 @@ export function Inertia() {
   const [value, setValue] = React.useState(40);
   const [inertia, setInertia] = React.useState(true);
   const [rate, setRate] = React.useState(0.998);
-  const [dragging, setDragging] = React.useState(false);
-  const [settled, setSettled] = React.useState(true);
 
   return (
     <div className="flex flex-col items-center gap-6">
       <Wheel
         value={value}
         onValueChange={setValue}
-        onDraggingChange={(d) => {
-          setDragging(d);
-          if (d) setSettled(false);
-        }}
-        onValueCommitted={() => setSettled(true)}
         max={1000}
         unitsPerTurn={100}
         detent={10}
-        inertia={inertia} // flick it and let go
-        decelerationRate={rate} // velocity kept per millisecond
+        inertia={inertia}
+        decelerationRate={rate}
         label="Level"
         className="w-48"
       />
@@ -51,9 +44,6 @@ export function Inertia() {
             </button>
           ))}
         </div>
-        <span className="font-mono tabular-nums text-muted-foreground">
-          {value} · {dragging ? "held" : settled ? "still" : "coasting"}
-        </span>
       </div>
     </div>
   );

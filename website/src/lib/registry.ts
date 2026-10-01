@@ -30,20 +30,6 @@ async function readCore(target: string): Promise<SourceFile> {
   return { path: target, content: await fs.readFile(path.join(PACKAGE_SRC, "core.ts"), "utf8") };
 }
 
-const NATIVE_FILES = [
-  "index.ts",
-  "parts.ts",
-  "types.ts",
-  "context.ts",
-  "haptics.ts",
-  "root.tsx",
-  "ring.tsx",
-  "rotor.tsx",
-  "center.tsx",
-];
-
-const NATIVE_DEPENDENCIES = ["react-native-gesture-handler", "react-native-reanimated", "expo-haptics"];
-
 const THEME_FILES: Record<ThemeId, string[]> = {
   shadcn: ["wheel.tsx"],
   ipod: ["wheel.tsx", "ipod.css"],
@@ -78,17 +64,6 @@ export async function readThemeFiles(theme: ThemeId): Promise<SourceFile[]> {
   );
 }
 
-/** The React Native parts plus the shared core, read from the workspace package. */
-export async function readNativeFiles(): Promise<SourceFile[]> {
-  const parts = await Promise.all(
-    NATIVE_FILES.map(async (file) => ({
-      path: `components/click-wheel-native/${file}`,
-      content: flatten(await fs.readFile(path.join(PACKAGE_SRC, "native", file), "utf8")),
-    })),
-  );
-  return [...parts, await readCore("components/click-wheel-native/core.ts")];
-}
-
 function toRegistryFiles(files: SourceFile[]) {
   return files.map((f) => ({ path: f.path, target: f.path, type: "registry:component", content: f.content }));
 }
@@ -106,20 +81,7 @@ export async function registryItem(name: string) {
         "The web component: an unstyled, iPod-style rotary input for React. Parts: Root, Ring, Rotor, Center. Zero dependencies.",
       dependencies: [],
       files: toRegistryFiles(await readComponentFiles()),
-      docs: `Import { ClickWheel } from "@/components/click-wheel". Docs: ${site}/docs.md`,
-    };
-  }
-  if (name === "click-wheel-native") {
-    return {
-      $schema: "https://ui.shadcn.com/schema/registry-item.json",
-      name,
-      type: "registry:component",
-      title: `${SITE_NAME} — React Native`,
-      description:
-        "The React Native version: same parts and math, gestures and the coast on the UI thread, haptics through expo-haptics.",
-      dependencies: NATIVE_DEPENDENCIES,
-      files: toRegistryFiles(await readNativeFiles()),
-      docs: `Import { ClickWheel } from "@/components/click-wheel-native". Needs react-native-gesture-handler 3+, react-native-reanimated 3.16+ and expo-haptics. Docs: ${site}/docs/react-native`,
+      docs: `Requires React 19.2 or newer. Import { ClickWheel } from "@/components/click-wheel". Docs: ${site}/docs.md`,
     };
   }
   const theme = THEME_IDS.find((t) => `click-wheel-${t}` === name);

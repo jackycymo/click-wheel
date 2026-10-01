@@ -1,5 +1,5 @@
 import { llmsFullTxt } from "@/content/markdown";
-import { readExample, readNativeExample } from "@/lib/examples";
+import { readExample } from "@/lib/examples";
 import { readComponentFiles, readThemeFiles } from "@/lib/registry";
 import { THEME_IDS } from "@/lib/site";
 
@@ -11,7 +11,7 @@ export async function GET() {
     ...(await readComponentFiles()),
     ...(await Promise.all(THEME_IDS.map(readThemeFiles))).flat(),
   ];
-  return new Response(await llmsFullTxt(files, { example: readExample, native: readNativeExample }), {
+  return new Response(await llmsFullTxt(files, { example: readExample }), {
     headers: { "content-type": "text/markdown; charset=utf-8" },
   });
 }

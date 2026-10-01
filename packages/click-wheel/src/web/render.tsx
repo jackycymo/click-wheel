@@ -22,10 +22,17 @@ type AnyProps = Record<string, unknown>;
 
 function mergeRefs<T>(...refs: Array<React.Ref<T> | undefined>): React.RefCallback<T> {
   return (node) => {
-    for (const ref of refs) {
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
-    }
+    const cleanups = refs.map((ref) => {
+      if (typeof ref === "function") {
+        const cleanup = ref(node);
+        return typeof cleanup === "function" ? cleanup : () => ref(null);
+      }
+      if (ref) {
+        ref.current = node;
+        return () => { ref.current = null; };
+      }
+    });
+    return () => { for (const cleanup of cleanups) cleanup?.(); };
   };
 }
 
@@ -51,8 +58,6 @@ export function mergeProps(internal: AnyProps, external: AnyProps): AnyProps {
       out.className = a ? `${a} ${b}` : b;
     } else if (key === "style") {
       out.style = { ...(a as object), ...(b as object) };
-    } else if (key === "ref") {
-      out.ref = a ? mergeRefs(a as React.Ref<unknown>, b as React.Ref<unknown>) : b;
     } else if (/^on[A-Z]/.test(key) && typeof a === "function" && typeof b === "function") {
       out[key] = (...args: unknown[]) => {
         b(...args);
@@ -69,7 +74,7 @@ export function mergeProps(internal: AnyProps, external: AnyProps): AnyProps {
  * Render one part. `internal` holds the props the part needs to function;
  * `external` is what the consumer passed, including `render`.
  */
-export function renderPart<State>(
+export function useRenderPart<State>(
   tag: keyof React.JSX.IntrinsicElements,
   state: State,
   external: PartProps<State, React.ElementType>,
@@ -82,7 +87,11 @@ export function renderPart<State>(
     style: typeof style === "function" ? style(state) : style,
   };
   const props = mergeProps(internal, resolved);
-  if (typeof render === "function") return render(props, state);
-  if (render) return React.cloneElement(render, mergeProps(props, render.props));
-  return React.createElement(tag, props);
+  const ref = useMergedRefs(
+    props.ref as React.Ref<unknown>,
+    typeof render === "object" ? render.props.ref as React.Ref<unknown> : undefined,
+  );
+  if (typeof render === "function") return render({ ...props, ref }, state);
+  if (render) return React.cloneElement(render, { ...mergeProps(props, render.props), ref });
+  return React.createElement(tag, { ...props, ref });
 }

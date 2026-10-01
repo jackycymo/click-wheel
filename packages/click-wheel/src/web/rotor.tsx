@@ -1,7 +1,7 @@
 "use client";
 
 import { useClickWheelContext, type ClickWheelState } from "./context";
-import { renderPart, type PartProps } from "./render";
+import { useRenderPart, type PartProps } from "./render";
 
 export type RotorProps = PartProps<ClickWheelState, "div">;
 
@@ -18,7 +18,7 @@ const ROTOR_STYLE = {
  */
 export function Rotor(props: RotorProps) {
   const { state } = useClickWheelContext("Rotor");
-  return renderPart("div", state, props, {
+  return useRenderPart("div", state, props, {
     "aria-hidden": true,
     "data-dragging": state.dragging ? "" : undefined,
     "data-coasting": state.coasting ? "" : undefined,

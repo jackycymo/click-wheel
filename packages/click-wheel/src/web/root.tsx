@@ -9,7 +9,7 @@ import {
   coastStep,
   DEFAULT_DECELERATION_RATE,
   degreesToUnits,
-  detentCrossing,
+  detentCrossings,
   HUB_DEAD_ZONE,
   keyDelta,
   MIN_VELOCITY,
@@ -21,7 +21,18 @@ import {
   WHEEL_DEG_PER_PX,
 } from "../core";
 import { haptic } from "./haptics";
-import { renderPart, useMergedRefs, type PartProps } from "./render";
+import { useRenderPart, useMergedRefs, type PartProps } from "./render";
+
+export type InteractionSource = "pointer" | "wheel" | "keyboard";
+
+export interface ChangeDetails {
+  source: InteractionSource;
+}
+
+export interface InteractionDetails extends ChangeDetails {
+  /** True when disabled, cancelled by the browser, or unmounted before committing. */
+  cancelled: boolean;
+}
 
 export interface RootProps extends Omit<PartProps<ClickWheelState, "div">, "defaultValue"> {
   /** Controlled value. */
@@ -29,10 +40,12 @@ export interface RootProps extends Omit<PartProps<ClickWheelState, "div">, "defa
   /** Starting value when uncontrolled. */
   defaultValue?: number;
   /** Fires on every value change while dragging, coasting, scrolling or keying. */
-  onValueChange?: (value: number) => void;
+  onValueChange?: (value: number, details: ChangeDetails) => void;
   /** Fires once when an interaction ends. With inertia, that is when the wheel settles. */
-  onValueCommitted?: (value: number) => void;
-  /** Fires when a pointer takes hold of the ring and when it lets go. A coast after a flick is not a drag; wait for `onValueCommitted`. */
+  onValueCommitted?: (value: number, details: ChangeDetails) => void;
+  /** Covers pointer, scroll and keyboard interactions, including any coast. */
+  onInteractionChange?: (active: boolean, details: InteractionDetails) => void;
+  /** Fires when a pointer takes hold of the ring and when it lets go. Use `onInteractionChange` to include coasting and cancellation. */
   onDraggingChange?: (dragging: boolean) => void;
   /** Fires each time the value crosses a detent. */
   onTick?: (direction: 1 | -1) => void;
@@ -44,7 +57,7 @@ export interface RootProps extends Omit<PartProps<ClickWheelState, "div">, "defa
   unitsPerTurn?: number;
   /** Units between detents (haptic pulse + onTick). 0 turns detents off. */
   detent?: number;
-  /** Pulse the haptic motor on each detent, where the platform supports it. */
+  /** Pulse the haptic motor when crossing detents; coalesce crossings within one update. */
   haptics?: boolean;
   /** Keep spinning after a flick and slow down like an iOS scroll. */
   inertia?: boolean;
@@ -66,6 +79,7 @@ export function Root(props: RootProps) {
     defaultValue,
     onValueChange,
     onValueCommitted,
+    onInteractionChange,
     onDraggingChange,
     onTick,
     min = 0,
@@ -89,6 +103,7 @@ export function Root(props: RootProps) {
   const value = clamp(valueProp ?? internalValue, min, max);
   const [dragging, setDragging] = React.useState(false);
   const [coasting, setCoasting] = React.useState(false);
+  const [progressRevision, syncProgress] = React.useReducer((revision: number) => revision + 1, 0);
 
   const rootRef = React.useRef<HTMLDivElement>(null);
   const ringRef = React.useRef<HTMLElement>(null);
@@ -107,6 +122,7 @@ export function Root(props: RootProps) {
     dragging: false,
     coasting: false,
     wheeling: false,
+    interaction: null as InteractionSource | null,
     wheelTimer: 0,
     samples: [] as Sample[],
     velocity: 0,
@@ -119,6 +135,7 @@ export function Root(props: RootProps) {
   // between renders never sees stale gearing or callbacks.
   const propsSnapshot = {
     value,
+    controlled: valueProp !== undefined,
     min,
     max,
     step,
@@ -130,23 +147,42 @@ export function Root(props: RootProps) {
     disabled,
     onValueChange,
     onValueCommitted,
+    onInteractionChange,
     onDraggingChange,
     onTick,
   };
   const latest = React.useRef(propsSnapshot);
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     latest.current = propsSnapshot;
   });
+
+  const beginInteraction = (source: InteractionSource) => {
+    if (g.current.interaction) return;
+    g.current.interaction = source;
+    latest.current.onInteractionChange?.(true, { source, cancelled: false });
+  };
+
+  const endInteraction = (cancelled = false) => {
+    const source = g.current.interaction;
+    if (!source) return;
+    g.current.interaction = null;
+    latest.current.onInteractionChange?.(false, { source, cancelled });
+    syncProgress();
+  };
 
   const emit = (raw: number, commit: boolean) => {
     const L = latest.current;
     const next = stepValue(raw, L.min, L.max, L.step);
+    const details = { source: g.current.interaction ?? "keyboard" };
     if (next !== g.current.emitted) {
       g.current.emitted = next;
-      setInternalValue(next);
-      L.onValueChange?.(next);
+      if (!L.controlled) setInternalValue(next);
+      L.onValueChange?.(next, details);
     }
-    if (commit) L.onValueCommitted?.(next);
+    if (commit) {
+      L.onValueCommitted?.(next, details);
+      endInteraction();
+    }
   };
 
   const spin = (deltaDeg: number) => {
@@ -169,10 +205,13 @@ export function Root(props: RootProps) {
 
   const crossDetents = (prev: number, next: number) => {
     const L = latest.current;
-    const direction = detentCrossing(prev, next, L.min, L.detent);
-    if (direction === 0) return;
+    const crossings = detentCrossings(prev, next, L.min, L.detent);
+    if (crossings === 0) return;
     if (L.haptics) haptic();
-    L.onTick?.(direction);
+    const direction = crossings > 0 ? 1 : -1;
+    if (L.onTick) {
+      for (let i = 0; i < Math.abs(crossings); i++) L.onTick(direction);
+    }
   };
 
   /** Turn the ring by an angle: rotate the rotor, move the value, tick detents. */
@@ -209,6 +248,8 @@ export function Root(props: RootProps) {
 
   /** The interaction is over: the pointer lifted with no flick, or the coast ran out. */
   const settle = () => {
+    window.clearTimeout(g.current.wheelTimer);
+    g.current.wheeling = false;
     if (g.current.onWindowBlur) {
       window.removeEventListener("blur", g.current.onWindowBlur);
       g.current.onWindowBlur = null;
@@ -227,9 +268,28 @@ export function Root(props: RootProps) {
     setCoast(false);
   };
 
+  const cancelInteraction = () => {
+    const s = g.current;
+    if (!s.interaction) return;
+    const pointerId = s.pointerId;
+    s.pointerId = -1;
+    cancelCoast();
+    window.clearTimeout(s.wheelTimer);
+    s.wheeling = false;
+    if (s.onWindowBlur) {
+      window.removeEventListener("blur", s.onWindowBlur);
+      s.onWindowBlur = null;
+    }
+    endDrag();
+    if (pointerId !== -1 && ringRef.current?.hasPointerCapture?.(pointerId)) {
+      ringRef.current.releasePointerCapture(pointerId);
+    }
+    endInteraction(true);
+  };
+
   /** Stop a coast from the outside (scroll, keys): the wheel settles where it is. */
-  const interrupt = () => {
-    if (!g.current.frame) return;
+  const interrupt = (includeWheel = false) => {
+    if (!g.current.frame && !(includeWheel && g.current.wheeling)) return;
     cancelCoast();
     settle();
   };
@@ -243,13 +303,17 @@ export function Root(props: RootProps) {
     const frame = (now: number) => {
       const L = latest.current;
       const s = g.current;
+      if (L.disabled) {
+        cancelInteraction();
+        return;
+      }
       const dt = Math.min(now - s.lastFrame, 64);
       s.lastFrame = now;
       const stepped = coastStep(s.velocity, dt, L.decelerationRate);
       s.velocity = stepped.velocity;
       turnBy(stepped.delta);
       const atEnd = (s.float <= L.min && s.velocity < 0) || (s.float >= L.max && s.velocity > 0);
-      if (Math.abs(s.velocity) < MIN_VELOCITY || atEnd || L.disabled) {
+      if (Math.abs(s.velocity) < MIN_VELOCITY || atEnd) {
         s.frame = 0;
         settle();
         return;
@@ -261,14 +325,18 @@ export function Root(props: RootProps) {
 
   /** Move the value by whole units: keyboard and programmatic steps. */
   const nudge = (deltaUnits: number) => {
+    if (g.current.dragging) cancelInteraction();
+    const wasInteracting = g.current.interaction !== null;
+    const previous = wasInteracting ? g.current.emitted : latest.current.value;
+    interrupt(true);
     const L = latest.current;
-    interrupt();
-    g.current.float = L.value;
-    g.current.emitted = L.value;
-    spin(unitsToDegrees(deltaUnits, L.unitsPerTurn));
-    const next = clamp(L.value + deltaUnits, L.min, L.max);
+    beginInteraction("keyboard");
+    g.current.emitted = previous;
+    const next = stepValue(previous + deltaUnits, L.min, L.max, L.step);
+    g.current.float = next;
+    spin(unitsToDegrees(next - previous, L.unitsPerTurn));
     writeProgress(next);
-    crossDetents(L.value, next);
+    crossDetents(previous, next);
     emit(next, true);
   };
 
@@ -281,6 +349,7 @@ export function Root(props: RootProps) {
     const ring = ringRef.current;
     if (!ring) return;
     if (centerRef.current?.contains(e.target as Node)) return;
+    if (g.current.wheeling) interrupt(true);
     const rect = ring.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
@@ -311,16 +380,17 @@ export function Root(props: RootProps) {
     // blurry is the signal that the pointer is gone.
     const onWindowBlur = () => {
       if (g.current.pointerId === -1) return;
-      g.current.pointerId = -1;
-      settle();
+      cancelInteraction();
     };
+    if (g.current.onWindowBlur) window.removeEventListener("blur", g.current.onWindowBlur);
     g.current.onWindowBlur = onWindowBlur;
     window.addEventListener("blur", onWindowBlur);
+    beginInteraction("pointer");
     beginDrag();
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
-    if (g.current.pointerId !== e.pointerId) return;
+    if (latest.current.disabled || g.current.pointerId !== e.pointerId) return;
     const angle = angleOf(e);
     const delta = arcDelta(g.current.lastAngle, angle);
     g.current.lastAngle = angle;
@@ -346,14 +416,16 @@ export function Root(props: RootProps) {
   // After a normal release the pointer id is already cleared, so this no-ops.
   const onPointerCancel = (e: React.PointerEvent) => {
     if (g.current.pointerId !== e.pointerId) return;
-    g.current.pointerId = -1;
-    settle();
+    cancelInteraction();
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     const L = latest.current;
     if (L.disabled) return;
-    const deltaUnits = keyDelta(e.key, L);
+    const deltaUnits = keyDelta(e.key, {
+      ...L,
+      value: g.current.interaction && !g.current.dragging ? g.current.emitted : L.value,
+    });
     if (deltaUnits === null) return;
     e.preventDefault();
     nudge(deltaUnits);
@@ -365,11 +437,13 @@ export function Root(props: RootProps) {
     const L = latest.current;
     if (L.disabled) return;
     e.preventDefault();
+    if (g.current.dragging) return;
     interrupt();
     const scale = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1;
     const px = (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : -e.deltaY) * scale;
     if (!g.current.wheeling) {
       g.current.wheeling = true;
+      beginInteraction("wheel");
       if (g.current.pointerId === -1) {
         g.current.float = L.value;
         g.current.emitted = L.value;
@@ -393,16 +467,34 @@ export function Root(props: RootProps) {
       window.clearTimeout(gesture.wheelTimer);
       if (gesture.frame) cancelAnimationFrame(gesture.frame);
       if (gesture.onWindowBlur) window.removeEventListener("blur", gesture.onWindowBlur);
+      if (gesture.dragging) latest.current.onDraggingChange?.(false);
+      if (gesture.interaction) {
+        latest.current.onInteractionChange?.(false, { source: gesture.interaction, cancelled: true });
+      }
+      gesture.interaction = null;
+      gesture.dragging = false;
+      gesture.coasting = false;
+      gesture.wheeling = false;
+      gesture.pointerId = -1;
+      gesture.frame = 0;
     };
   }, []);
 
-  // Outside changes to the value (playback, a reset) land here. A value that
-  // is our own last emit keeps the continuous position already on screen.
+  const cancelWhenDisabled = React.useEffectEvent(() => {
+    if (disabled) cancelInteraction();
+  });
   React.useLayoutEffect(() => {
-    if (g.current.dragging || g.current.coasting || g.current.wheeling) return;
-    if (value === g.current.emitted) return;
-    writeProgress(value);
-  }, [value, min, max, unitsPerTurn]);
+    cancelWhenDisabled();
+  }, [disabled]);
+
+  // Keep continuous gesture progress until it settles, then use the accepted value.
+  React.useLayoutEffect(() => {
+    if (g.current.interaction) return;
+    const root = rootRef.current;
+    if (!root) return;
+    root.style.setProperty("--click-wheel-fraction", String(max > min ? (value - min) / (max - min) : 0));
+    root.style.setProperty("--click-wheel-turns", String((value - min) / unitsPerTurn));
+  }, [value, min, max, unitsPerTurn, dragging, coasting, progressRevision]);
 
   // The first paint gets the variables inline; after that they are written
   // directly, so React never overwrites a position mid-turn.
@@ -428,7 +520,7 @@ export function Root(props: RootProps) {
 
   return (
     <ClickWheelContext.Provider value={context}>
-      {renderPart(
+      {useRenderPart(
         "div",
         state,
         {
@@ -436,7 +528,7 @@ export function Root(props: RootProps) {
           children: (
             <>
               {children}
-              {name ? <input type="hidden" name={name} value={value} /> : null}
+              {name ? <input type="hidden" name={name} value={value} disabled={disabled} /> : null}
             </>
           ),
         },

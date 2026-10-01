@@ -1,10 +1,9 @@
 import * as React from "react";
 import type { Block, DocPageDef } from "@/content/docs";
-import { readExample, readNativeExample } from "@/lib/examples";
+import { readExample } from "@/lib/examples";
 import { CodeBlock } from "./code-block";
 import { DocPage } from "./doc-shell";
 import { EXAMPLES, type ExampleId } from "./examples-registry";
-import { HapticsDemo } from "./haptics-demo";
 import { InstallCommand } from "./install-command";
 import { Inline, P } from "./prose";
 import { ThemesBlock } from "./themes-block";
@@ -47,24 +46,18 @@ function DataTable({ block }: { block: Extract<Block, { type: "table" }> }) {
   );
 }
 
-/** A live preview above its source, read from src/examples so the two never drift. */
+/** A live preview beside its source, read from src/examples so the two never drift. */
 async function Example({ id, file }: { id: ExampleId; file: string }) {
   const Preview = EXAMPLES[id];
   const source = await readExample(file);
   return (
-    <div className="space-y-3">
-      <div className="flex min-h-[320px] items-center justify-center rounded-xl border bg-card bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:18px_18px] p-8">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(300px,2fr)_minmax(0,3fr)]">
+      <div className="flex min-h-[320px] min-w-0 items-center justify-center rounded-xl border bg-card bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:18px_18px] px-4 py-8">
         <Preview />
       </div>
-      <CodeBlock code={source} title={`examples/${file}`} />
+      <CodeBlock code={source} title={`examples/${file}`} className="min-w-0 [&_pre]:max-h-[440px]" />
     </div>
   );
-}
-
-/** Source from native/examples: type-checked there, shown here without a preview. */
-async function NativeFile({ file, title }: { file: string; title: string }) {
-  const source = await readNativeExample(file);
-  return <CodeBlock code={source} title={title} />;
 }
 
 export function BlockView({ block }: { block: Block }) {
@@ -83,12 +76,8 @@ export function BlockView({ block }: { block: Block }) {
       return <InstallCommand item={block.item} />;
     case "example":
       return <Example id={block.id} file={block.file} />;
-    case "file":
-      return <NativeFile file={block.file} title={block.title} />;
     case "themes":
       return <ThemesBlock />;
-    case "demo":
-      return <HapticsDemo />;
   }
 }
 
