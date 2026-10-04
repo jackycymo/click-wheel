@@ -185,3 +185,49 @@ final result: passed
 Reviewed every original and the rendered collage. Reframed the Sculptor to show more of its numbered arc, centered the Stratocaster volume knob without the distracting second knob, and centered the Fellow temperature dial more tightly. Braun, Fender amp, 1176, La Marzocco, iPod and MXR already retain the key control and identifying context. The Sculptor source itself cuts the bottom of the wheel; the tile intentionally remains a detail crop. Browser review and lint passed.
 
 final result: passed
+
+## Follow-up: native playable reference controls
+
+Built all nine hover previews from HTML, Tailwind gradients, borders, shadows, native text and the existing icon SVGs. Each uses ClickWheel.Root/Ring; iPod also uses Center and Rotor. There are no raster images, generated assets or image textures inside the interactive controls. Real photographs remain the resting layer. Generated studies were removed from public assets and retained only under ignored/local output for design history.
+
+Compared the original photo gallery and each rendered native preview together. Preserved each object's colors, primary knob, scale, material cues and surrounding panel. Deliberate adaptations: frontal geometry for angled product shots, CSS approximations of materials/lettering, and a small live value readout. These are web recreations, not pixel-identical photographs. Refined La Marzocco flutes, corrected numbered-scale alignment, and matched signed gearing to each visual rotation. Braun's rim, scale, lettering and white hub remain stationary; only its red indicator rotates.
+
+Browser validation: pointer drags changed all nine values at desktop and 390px mobile width. Arrow keys increment/decrement every control; Home/End clamp all nine to their limits. Scroll gestures changed all nine without scrolling the page. Dragging Braun's central hub left its value unchanged; computed-style comparison across the full Braun subtree found only the red-indicator wrapper rotating. iPod center started its simulated timer, looped at the end, paused, and retained its paused position. Hover exit restores photographs; keyboard focus reveals the active control. All active layers contain zero img elements. A fresh browser load produced no errors or warnings. Mobile grid remains three columns without horizontal overflow. Real touch hardware was not available; pointer interaction was tested at mobile dimensions.
+
+Lint, production build (TypeScript and 22 routes), and whitespace checks passed. Evidence: output/design-review/playable/native-photos.jpg, native-{braun,sculptor,amplifier,guitar,fellow,compressor,espresso,ipod,mxr}.jpg, native-mobile.jpg, and native-final.jpg. No outstanding functional findings in the tested browser. Native material/perspective differences above are intentional.
+
+final result: passed
+
+## Follow-up: Braun and espresso fidelity correction
+
+The previous pass accepted too much visual drift in these two tiles. Reopened the original `braun-sk2-detail.jpg` and `linea-micra-steam-knob.png`, compared the resting crops against the active previews, and corrected the following findings:
+
+- [P1, fixed] Espresso had a flat, petal-shaped front silhouette. Rebuilt it as an oblique barrel with an elliptical silver cap, recessed longitudinal slots, a rounded rear profile, circumferential MICRA lettering and chrome machine context. The slots and cap rotate with the controlled value. Expanded its invisible hit area over the barrel for mobile dragging.
+- [P2, fixed] Braun's face was too small, its hub sat too low, the grille was generic dots, and the logo was too heavy/wide. Matched the cropped oversized disc, fixed hub position/size, perforated metal grille, narrower lettering, frequency label positions and grey/olive palette. Preserved the user's requirement: only the red indicator moves.
+- [P2, fixed during comparison] Espresso's first revised grooves ran end-to-end and the axis tilted too much. Shortened the grooves into recessed slots, reduced the barrel angle and adjusted the end-cap size against the photo close-up.
+
+User instruction explicitly requires native web recreation; therefore SVG/CSS geometry is intentional and supersedes the image-to-code skill's raster-asset preference. There are no new generated images or raster textures. Native surfaces remain smoother than photographed wear/reflections (P3), and the simulated value badge is an intentional UI addition. Surrounding gallery layout, copy, typography and all other controls are unchanged.
+
+Fidelity review: typography/lettering, crop/alignment, palette, material treatment, and copy checked together against the sources. Evidence in `output/design-review/playable/`: full-view `refinement-photos.jpg`, `refinement-braun.jpg`, `refinement-espresso.jpg`; focused source/native pairs `braun-source-detail.jpg` / `braun-native-detail.jpg` and `espresso-source-detail.jpg` / `espresso-native-detail.jpg`; mobile `refinement-mobile.jpg`. Desktop CSS viewport 1200×900, approximately 196px square tiles, captured at the browser's single-density output and compared at matching crop sizes. Original file sizes are 2000×1333 and 4000×2667; source crops remain the existing 1333px and 1150px squares. Focused captured pairs are 195px squares. Different indicator angles in final captures reflect the drag tests.
+
+Validation: desktop pointer drags changed Braun 88→96.6 and espresso 0→34; both Home/End and arrow keys passed. Mobile 390×844 pointer drags changed Braun 96.6→88.1 and espresso 0→33, including a drag starting on the barrel. No horizontal overflow. Braun's static SVG remained byte-identical across a value change. Fresh page load had zero console errors/warnings. Lint, TypeScript, production build (22 routes) and whitespace checks passed. Real touch hardware remains untested.
+
+final result: passed
+
+## Follow-up: remove preview value badges
+
+Removed the shared top-right output badge from all nine reference previews. Browser inspection confirmed zero remaining badge elements and all nine sliders still expose their formatted values through aria-valuetext. Lint and whitespace checks passed. Evidence: `output/design-review/playable/no-value-labels.jpg`.
+
+final result: passed
+
+## Follow-up: 1176 scale alignment
+
+Corrected the scale's offset relative to the knob by placing the labels, ticks and rotor inside one shared square. Moved ticks outside the knob and gave them the same angular range as the labels. Centered the pointer stripe and calibrated its rotation to the printed scale's unequal 36–48 interval. Browser measurements at 0, 6, 12, 18, 24, 30, 36 and 48 confirmed zero center offset and less than 0.02° between each label and pointer. Visually checked 39 between 36 and 48. Value badges remain removed. Lint, production build and whitespace checks passed. Evidence: `output/design-review/playable/compressor-aligned.jpg`.
+
+final result: passed
+
+## Follow-up: frontal espresso and unbranded radio preview
+
+Changed the espresso recreation to a straight-on circular view, retaining its dark fluted rim, silver MICRA cap and chrome trim. Removed the drawn Braun wordmark from the interactive radio face. Resting reference photographs remain original. Browser visual inspection confirmed both changes, a circular espresso hit area, and a drag changing steam value 33→66. Lint, production build and whitespace checks passed. Evidence: `output/design-review/playable/braun-simplified.jpg` and `espresso-simplified.jpg`.
+
+final result: passed
