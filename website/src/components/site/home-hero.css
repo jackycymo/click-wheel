@@ -195,8 +195,13 @@
 
 .home-hero-device .retro-ring,
 .home-hero-device .retro-ring[data-dragging] {
+  inset: 0;
   background: transparent;
   box-shadow: none;
+}
+
+.home-hero-device .retro-rotor {
+  inset: 15%;
 }
 
 .home-hero-device .retro-rotor::after {
