@@ -1,34 +1,36 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { IconWheel } from "./icons";
-import { ThemeToggle } from "./theme-toggle";
 
 const NAV = [
-  ["Docs", "/docs"],
-  ["Examples", "/examples/default"],
+  ["Docs", "/docs", "/docs"],
+  ["Examples", "/examples/default", "/examples"],
 ];
 
 export function Header() {
+  const pathname = usePathname();
+
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-5">
-        <Link href="/" className="flex items-center gap-2 text-sm font-medium">
+    <header className="site-header">
+      <div className="site-header-inner flex items-center justify-between">
+        <Link href="/" className="site-header-brand flex items-center font-medium">
           <IconWheel width={24} height={24} />
           Click Wheel
         </Link>
-        <nav className="flex items-center gap-1 text-sm text-muted-foreground">
-          {NAV.map(([label, href]) => (
+        <nav aria-label="Main" className="flex items-center">
+          {NAV.map(([label, href, section]) => (
             <Link
               key={href}
               href={href}
-              className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground"
+              aria-current={pathname === section || pathname.startsWith(`${section}/`) ? "location" : undefined}
+              className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               {label}
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-1">
-          <ThemeToggle />
-        </div>
       </div>
     </header>
   );

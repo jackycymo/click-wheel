@@ -7,40 +7,35 @@ import { MusicCredits } from "@/components/site/music-credits";
 
 export default function Home() {
   return (
-    <>
+    <div className="home-page">
       <Header />
       <main>
         <HomeHero>
           <h1 id="hero-title">Click Wheel</h1>
-          <p className="home-hero-description">
-            Bring the joy of the iPod style click wheel back. A tactile React component for
-            playback, volume, and everything you used to slide.
-          </p>
-          <div className="home-hero-actions mt-8 flex flex-wrap gap-3">
+          <div className="home-hero-intro">
+            <p className="home-hero-description">
+              Bring the joy of the iPod style click wheel back. A tactile React component for
+              playback, volume, and everything you used to slide.
+            </p>
             <Link
               href="/docs"
-              className="inline-flex h-10 items-center gap-3 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-xs transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+              className="home-text-link"
             >
-              Start building <span aria-hidden="true">↗</span>
+              Start building
             </Link>
-            <a
-              href="#themes"
-              className="inline-flex h-10 items-center rounded-md border bg-background/70 px-4 text-sm font-medium shadow-xs transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-            >
-              Explore the themes
-            </a>
           </div>
         </HomeHero>
 
-        <div className="mx-auto w-full max-w-5xl px-5 pb-40">
-          <div className="border-b py-8">
-            <div className="min-w-0 space-y-2">
+        <div className="home-content">
+          <div className="home-install">
+            <a href="#themes" className="home-text-link">Explore the themes</a>
+            <div className="home-install-command">
               <InstallCommand />
             </div>
           </div>
 
-          <section id="themes" className="scroll-mt-20 py-14">
-            <h2 className="text-xl font-semibold tracking-tight">Themes</h2>
+          <section id="themes" className="home-themes scroll-mt-24">
+            <h2>Themes</h2>
             <div className="mt-8">
               <ThemesBlock />
             </div>
@@ -56,6 +51,6 @@ export default function Home() {
           </footer>
         </div>
       </main>
-    </>
+    </div>
   );
 }

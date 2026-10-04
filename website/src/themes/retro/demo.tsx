@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { IconPause, IconPlay } from "@/components/site/icons";
 import { fmt, speakTime, usePlayer, type Mode } from "@/components/site/use-player";
 import { Wheel } from "./wheel";
@@ -8,38 +7,19 @@ import "./demo.css";
 
 const CELLS = 20;
 
-const ACCENTS = [
-  { id: "peacock", label: "Peacock Blue" },
-  { id: "scarlet", label: "Scarlet" },
-  { id: "ocher", label: "Yellow Ocher" },
-  { id: "sea", label: "Sea Green" },
-];
-
-/** Site chrome: a grey panel with a small OLED. The four keys pick the accent. Not part of the skin. */
-export function Demo({ mode, defaultClicker = false }: { mode: Mode; defaultClicker?: boolean }) {
+/** Site chrome: a grey panel with a small OLED. Not part of the skin. */
+export function Demo({ mode, defaultClicker = false }: {
+  mode: Mode;
+  defaultClicker?: boolean;
+}) {
   const p = usePlayer({ mode, defaultClicker });
-  const [accent, setAccent] = React.useState("peacock");
   const seek = mode === "seek";
   const pct = seek ? (p.position / p.track.duration) * 100 : p.volume;
   const on = Math.round((pct / 100) * CELLS);
 
   return (
-    <div className="retro-body" data-accent={accent}>
-      <div className="retro-head">
-        {seek ? null : <span className="retro-label">vol</span>}
-        <div className="retro-keys" role="group" aria-label="Accent">
-          {ACCENTS.map((a) => (
-            <button
-              key={a.id}
-              type="button"
-              aria-label={a.label}
-              aria-pressed={a.id === accent}
-              data-accent={a.id}
-              onClick={() => setAccent(a.id)}
-            />
-          ))}
-        </div>
-      </div>
+    <div className="retro-body">
+      {seek ? null : <span className="retro-label">vol</span>}
       <div className="retro-screen">
         <div className="retro-screen-top">
           <span>{p.track.title}</span>

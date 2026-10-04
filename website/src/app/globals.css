@@ -2,18 +2,23 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* shadcn/ui zinc tokens. The site and the stock wheel skin use only these. */
+/* Shared site surfaces and shadcn/ui tokens for the stock wheel skin. */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(1 0 0);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --border: oklch(0.92 0.004 286.32);
-  --primary: oklch(0.21 0.006 285.885);
-  --primary-foreground: oklch(0.985 0 0);
-  --accent: oklch(0.967 0.001 286.375);
-  --ring: oklch(0.705 0.015 286.067);
+  --site-width: 1440px;
+  --site-content-width: 856px;
+  --site-gutter: clamp(24px, 4.5vw, 64px);
+  --background: #eeede7;
+  --foreground: #242520;
+  --card: #f5f4ef;
+  --muted: #e3e2db;
+  --muted-foreground: #5b5d53;
+  --border: #c7c7bc;
+  --primary: #242520;
+  --primary-foreground: #f8f7f2;
+  --accent: #deddd4;
+  --ring: #ac3a1d;
+  --site-signal: #bc3c20;
+  --site-header-height: 72px;
   /* The stock wheel skin: the hub and the tick texture. Neutral here; a duotone recolors them. */
   --hub: var(--background);
   --hub-foreground: var(--foreground);
@@ -21,17 +26,64 @@
   --radius: 0.625rem;
 }
 
-.dark {
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --border: oklch(1 0 0 / 10%);
-  --primary: oklch(0.92 0.004 286.32);
-  --primary-foreground: oklch(0.21 0.006 285.885);
-  --accent: oklch(0.274 0.006 286.033);
-  --ring: oklch(0.552 0.016 285.938);
+.site-container {
+  width: 100%;
+  max-width: var(--site-width);
+  margin-inline: auto;
+  padding-inline: var(--site-gutter);
+}
+
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding-inline: var(--site-gutter);
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-archivo), Arial, sans-serif;
+}
+
+.site-header-inner {
+  width: 100%;
+  max-width: calc(var(--site-width) - var(--site-gutter) - var(--site-gutter));
+  height: var(--site-header-height);
+  margin-inline: auto;
+  gap: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.site-header-brand {
+  gap: 12px;
+  font-size: 20px;
+  letter-spacing: -0.035em;
+}
+
+.site-header-brand svg {
+  width: 30px;
+  height: 30px;
+}
+
+.site-header nav {
+  margin-left: auto;
+  gap: 18px;
+  font-size: 16px;
+}
+
+.site-header nav a[aria-current] {
+  color: var(--site-signal);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+
+@media (max-width: 760px) {
+  :root { --site-header-height: 68px; }
+  .site-header-inner { gap: 12px; flex-wrap: wrap; }
+  .site-header-brand { font-size: 16px; gap: 8px; }
+  .site-header-brand svg { width: 24px; height: 24px; }
+  .site-header nav { gap: 4px; font-size: 14px; }
+  .site-header nav a { padding-inline: 6px; }
 }
 
 /* Duotone: the same Tailwind skin under two colors with fixed roles. The primary
@@ -121,15 +173,15 @@
     scroll-behavior: smooth;
   }
 
-  html.dark {
-    color-scheme: dark;
-  }
-
   body {
     background: var(--background);
     color: var(--foreground);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   }
 
   :where(button, [role="button"], [role="tab"], [role="switch"], [role="checkbox"], input[type="button"], input[type="submit"], input[type="reset"], input[type="checkbox"], input[type="radio"]):not(:disabled):not([aria-disabled="true"]):not([data-disabled]) {
@@ -142,16 +194,11 @@
   }
 }
 
-/* Shiki dual-theme output: the tokens carry both colors, CSS picks one. */
+/* Use the light syntax palette throughout the site. */
 .shiki,
 .shiki span {
   color: var(--shiki-light);
   background-color: transparent !important;
-}
-
-.dark .shiki,
-.dark .shiki span {
-  color: var(--shiki-dark);
 }
 
 .shiki {

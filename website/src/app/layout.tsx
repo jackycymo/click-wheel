@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Doto, Geist, Geist_Mono, Tiny5 } from "next/font/google";
+import { Archivo, DM_Sans, Doto, Geist, Geist_Mono, Tiny5 } from "next/font/google";
 import { PlayerDock } from "@/components/site/player-dock";
 import { PlayerProvider } from "@/components/site/player-provider";
 import "./globals.css";
@@ -9,6 +9,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 const tiny5 = Tiny5({ variable: "--font-tiny5", weight: "400", subsets: ["latin"] });
 const doto = Doto({ variable: "--font-doto", subsets: ["latin"] });
 const archivo = Archivo({ variable: "--font-archivo", subsets: ["latin"] });
+const dmSans = DM_Sans({ variable: "--font-dm-sans", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Click Wheel",
@@ -16,26 +17,17 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
-  ],
+  themeColor: "#eeede7",
+  colorScheme: "light",
 };
-
-// Runs before paint so the theme never flashes. No stored choice means: follow the browser.
-const THEME_SCRIPT = `try{var t=localStorage.getItem("theme");var d=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d)}catch(e){}`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
-      suppressHydrationWarning
       data-scroll-behavior="smooth"
-      className={`${geist.variable} ${geistMono.variable} ${tiny5.variable} ${doto.variable} ${archivo.variable} h-full`}
+      className={`${geist.variable} ${geistMono.variable} ${tiny5.variable} ${doto.variable} ${archivo.variable} ${dmSans.variable} h-full`}
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
-      </head>
       <body className="flex min-h-full flex-col font-sans">
         <PlayerProvider>
           {children}

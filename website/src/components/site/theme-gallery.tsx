@@ -59,7 +59,11 @@ export function ThemeGallery({ sources }: { sources: Record<ThemeId, React.React
 
       <div className="min-w-0">
         {THEMES.map((t) => (
-          <Tabs.Panel key={t.id} value={t.id} className="space-y-3 outline-none">
+          <Tabs.Panel
+            key={t.id}
+            value={t.id}
+            className="space-y-3 outline-none [&_pre]:max-h-80 [&_pre]:overflow-auto sm:[&_pre]:max-h-[440px]"
+          >
             {sources[t.id]}
           </Tabs.Panel>
         ))}
