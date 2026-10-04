@@ -60,6 +60,7 @@ export function DesignReflection() {
               />
             </ReferenceControl>
           ))}
+          <p className="col-span-3 mt-2 text-center text-sm text-[#606354] [@media(min-width:761px)_and_(hover:hover)]:hidden">Tap a photo to try the dial</p>
         </div>
       </div>
     </section>

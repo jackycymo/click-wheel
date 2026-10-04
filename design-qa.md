@@ -231,3 +231,13 @@ final result: passed
 Changed the espresso recreation to a straight-on circular view, retaining its dark fluted rim, silver MICRA cap and chrome trim. Removed the drawn Braun wordmark from the interactive radio face. Resting reference photographs remain original. Browser visual inspection confirmed both changes, a circular espresso hit area, and a drag changing steam value 33→66. Lint, production build and whitespace checks passed. Evidence: `output/design-review/playable/braun-simplified.jpg` and `espresso-simplified.jpg`.
 
 final result: passed
+
+## Follow-up: expanded mobile reference controls
+
+Replaced the touch/blur photo reveal with a tap-to-open dialog on narrow screens and devices without hover. Each photo opens a larger, persistent control with a Close button. Dragging or tapping outside cannot dismiss it, values survive reopening, and closing pauses the iPod timer. Desktop hover previews remain inline and stay visible while dragging or coasting. Added a short tap hint below the gallery.
+
+Browser pointer tests at 390×844 changed all nine expanded dial values without hiding their controls. The interaction stage is 333px square versus the previous 105px tile. Verified outside-click persistence, focus return, retained values, iPod playback/pause on close, and no images inside the expanded control. Layout checks at 320×568 and 844×390 showed reachable Close buttons, fully visible stages and no horizontal overflow. Desktop at 1200×900 retains nine inline controls with hidden dialog triggers; an espresso drag changed 33→67 without opening a dialog. No browser errors or warnings were observed. Real touch hardware remains untested; these checks used pointer input at mobile viewport sizes.
+
+Lint, TypeScript, production build (22 routes) and whitespace checks passed. Evidence: `output/design-review/playable/mobile-expanded-espresso.jpg`.
+
+final result: passed for tested browser inputs and viewport sizes

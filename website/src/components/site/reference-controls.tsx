@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useId, type ReactNode } from "react";
 import { ClickWheel } from "click-wheel";
+import { Dialog } from "@base-ui/react/dialog";
 import { IconNext, IconPause, IconPlay } from "./icons";
 
 export type ReferenceKind = "braun" | "sculptor" | "amplifier" | "guitar" | "fellow" | "compressor" | "espresso" | "ipod" | "mxr";
@@ -239,37 +240,69 @@ function MXR() {
   </>;
 }
 
+function ReferenceDial({ kind, value, onValueChange, playing, onToggle, className = "" }: {
+  kind: ReferenceKind;
+  value: number;
+  onValueChange: (value: number) => void;
+  playing: boolean;
+  onToggle: () => void;
+  className?: string;
+}) {
+  const config = settings[kind];
+  return <ClickWheel.Root
+    value={value} onValueChange={onValueChange}
+    min={config.min} max={config.max} step={config.step}
+    unitsPerTurn={(config.max - config.min) * 360 / config.sweep}
+    detent={kind === "sculptor" ? 0.5 : config.step}
+    className={`absolute inset-0 [&_[role=slider]]:z-10 ${className}`}
+    aria-label={`${config.name} interactive preview`}
+  >
+    <div className="absolute inset-0 [&_[role=slider]]:touch-none">
+      {kind === "braun" ? <Braun /> : kind === "sculptor" ? <Sculptor /> : kind === "amplifier" ? <Amplifier /> : kind === "guitar" ? <Guitar /> : kind === "fellow" ? <Fellow /> : kind === "compressor" ? <Compressor /> : kind === "espresso" ? <Espresso value={value} /> : kind === "ipod" ? <IPod playing={playing} onToggle={onToggle} /> : <MXR />}
+    </div>
+  </ClickWheel.Root>;
+}
+
 export function ReferenceControl({ kind, children }: { kind: ReferenceKind; children: ReactNode }) {
   const config = settings[kind];
   const [value, setValue] = useState<number>(config.initial);
   const [playing, setPlaying] = useState(false);
-  const [touchPreview, setTouchPreview] = useState(false);
+  const togglePlaying = () => setPlaying(current => !current);
   useEffect(() => {
     if (!playing) return;
     const timer = window.setInterval(() => setValue(current => current >= 180 ? 0 : current + 1), 1000);
     return () => window.clearInterval(timer);
   }, [playing]);
-  return <figure
-    data-reference={kind}
-    data-touch-preview={touchPreview || undefined}
-    className="group/reference relative aspect-square min-w-0 overflow-hidden bg-[#eeede7] [container-type:inline-size]"
-    onPointerDownCapture={event => { if (event.pointerType === "touch") setTouchPreview(true); }}
-    onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setTouchPreview(false); }}
-  >
-    <div className="pointer-events-none absolute inset-0">{children}</div>
-    <ClickWheel.Root
-      value={value} onValueChange={setValue}
-      min={config.min} max={config.max} step={config.step}
-      unitsPerTurn={(config.max - config.min) * 360 / config.sweep}
-      detent={kind === "sculptor" ? 0.5 : config.step}
-      className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover/reference:opacity-100 group-has-[:focus-visible]/reference:opacity-100 group-data-[touch-preview]/reference:opacity-100 motion-reduce:transition-none [&_[role=slider]]:z-10"
-      aria-label={`${config.name} interactive preview`}
-    >
-      <div className="sr-only" id={`help-${kind}`}>Drag around the dial, scroll, or use the arrow keys. Home and End select the limits.</div>
-      <div className="absolute inset-0 [&_[role=slider]]:touch-none">
-        {kind === "braun" ? <Braun /> : kind === "sculptor" ? <Sculptor /> : kind === "amplifier" ? <Amplifier /> : kind === "guitar" ? <Guitar /> : kind === "fellow" ? <Fellow /> : kind === "compressor" ? <Compressor /> : kind === "espresso" ? <Espresso value={value} /> : kind === "ipod" ? <IPod playing={playing} onToggle={() => setPlaying(!playing)} /> : <MXR />}
+  return <Dialog.Root disablePointerDismissal onOpenChange={open => { if (!open) setPlaying(false); }}>
+    <figure data-reference={kind} className="group/reference relative aspect-square min-w-0 overflow-hidden bg-[#eeede7] [container-type:inline-size]">
+      <div className="pointer-events-none absolute inset-0">{children}</div>
+      <div className="absolute inset-0 hidden [@media(min-width:761px)_and_(hover:hover)]:block">
+        <ReferenceDial
+          kind={kind} value={value} onValueChange={setValue} playing={playing} onToggle={togglePlaying}
+          className="opacity-0 transition-opacity duration-300 group-hover/reference:opacity-100 group-has-[:focus-visible]/reference:opacity-100 data-[dragging]:opacity-100 data-[coasting]:opacity-100 motion-reduce:transition-none"
+        />
       </div>
-    </ClickWheel.Root>
-    <figcaption className="sr-only">{config.name}. Interactive dial preview.</figcaption>
-  </figure>;
+      <Dialog.Trigger
+        aria-label={`Try ${config.name}`}
+        className="absolute inset-0 cursor-zoom-in touch-manipulation outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#606b35] [@media(min-width:761px)_and_(hover:hover)]:hidden"
+      />
+      <figcaption className="sr-only">{config.name}. Interactive dial preview.</figcaption>
+      <p className="sr-only" id={`help-${kind}`}>Drag around the dial, scroll, or use the arrow keys. Home and End select the limits.</p>
+    </figure>
+    <Dialog.Portal>
+      <Dialog.Backdrop className="fixed inset-0 z-50 bg-black/35 transition-opacity duration-200 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 motion-reduce:transition-none" />
+      <Dialog.Popup className="fixed bottom-0 left-1/2 z-50 max-h-[calc(100dvh-1rem)] w-full max-w-[520px] -translate-x-1/2 overflow-y-auto overscroll-contain rounded-t-2xl border border-[#cbcbbf] bg-[#eeede7] p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-[#30332b] shadow-[0_-12px_60px_#0002] outline-none transition-[opacity,translate] duration-200 data-[starting-style]:translate-y-6 data-[starting-style]:opacity-0 data-[ending-style]:translate-y-6 data-[ending-style]:opacity-0 motion-reduce:transition-none">
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <Dialog.Title className="text-base font-medium tracking-tight">{config.name}</Dialog.Title>
+          <Dialog.Close className="min-h-11 shrink-0 cursor-pointer rounded-full border border-[#cbcbbf] px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[#606b35]">Close</Dialog.Close>
+        </div>
+        <div data-reference-expanded={kind} className="relative mx-auto aspect-square w-[min(100%,calc(100dvh-12rem))] overflow-hidden bg-[#eeede7] [container-type:inline-size]">
+          <ReferenceDial kind={kind} value={value} onValueChange={setValue} playing={playing} onToggle={togglePlaying} />
+        </div>
+        <Dialog.Description className="mt-4 text-center text-sm leading-relaxed text-[#606354]">
+          {kind === "ipod" ? "Drag to seek. Press the center to play or pause." : "Drag around the dial to explore."}
+        </Dialog.Description>
+      </Dialog.Popup>
+    </Dialog.Portal>
+  </Dialog.Root>;
 }
