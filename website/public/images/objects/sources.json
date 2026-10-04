@@ -1,0 +1,163 @@
+{
+  "researched_on": "2026-10-05",
+  "purpose": "Higher-resolution original photographs for the rotary-control reflection gallery. Original files preserved; detail crops are CSS only.",
+  "selected": [
+    {
+      "title": "Braun SK2",
+      "file": "braun-sk2-detail.jpg",
+      "site_file": "/images/objects/braun-sk2-detail.jpg",
+      "source_page": "https://onlyonceshop.com/product/braun-sk-2-radio-tuner-2",
+      "image_url": "https://onlyonceshop.com/media/pages/product/braun-sk-2-radio-tuner-2/4e24ccced0-1777554761/braun_sk2_sk_2_dieter_rams_only_once_shop_1.jpg",
+      "width": 2000,
+      "height": 1333,
+      "crop": [
+        350,
+        0,
+        1333
+      ],
+      "previous_crop_pixels": 555,
+      "crop_pixels": 1333,
+      "rights_status": "Reference only \u2014 publication permission not established"
+    },
+    {
+      "title": "Timemore Sculptor",
+      "file": "sculptor-detail.jpg",
+      "site_file": "/images/objects/sculptor-detail.jpg",
+      "source_page": "https://hutsulcoffee.ca/products/timemore-sculptor-078s-all-purpose-grinder-120v",
+      "image_url": "https://hutsulcoffee.ca/cdn/shop/files/timemore_sculptor-078_black_close-up_01_bd6dacf8-800e-4227-b6ad-3f21b41f9331.jpg?v=1773367661",
+      "width": 1065,
+      "height": 1420,
+      "crop": [
+        180,
+        720,
+        700
+      ],
+      "previous_crop_pixels": 460,
+      "crop_pixels": 700,
+      "rights_status": "Reference only \u2014 publication permission not established"
+    },
+    {
+      "title": "Fender Deluxe Reverb",
+      "file": "fender-deluxe-reverb-detail.jpg",
+      "site_file": "/images/objects/fender-deluxe-reverb-detail.jpg",
+      "source_page": "https://www.russomusic.com/products/fender-1966-deluxe-reverb-combo-with-slip-cover-and-original-speaker-used",
+      "image_url": "https://cdn.shopify.com/s/files/1/1210/3886/products/ISS9950C-FENDERISS9950CUSED1966DELUXEREVERBCOMBOWSLIPCOVERANDORIGINALSPEAKER-9.jpg?v=1628539596",
+      "width": 2000,
+      "height": 2000,
+      "crop": [
+        550,
+        750,
+        650
+      ],
+      "previous_crop_pixels": 410,
+      "crop_pixels": 650,
+      "rights_status": "Reference only \u2014 publication permission not established"
+    },
+    {
+      "title": "Fender Stratocaster",
+      "file": "stratocaster-volume-detail.jpg",
+      "site_file": "/images/objects/stratocaster-volume-detail.jpg",
+      "source_page": "https://kcvintageguitars.com/products/2012-fender-stratocaster-oly-white-mim",
+      "image_url": "https://cdn.shopify.com/s/files/1/1771/7813/products/IMG_0695_f9074144-d4be-4f8f-9646-fb147cf3690a.jpg?v=1675491516",
+      "width": 5184,
+      "height": 3456,
+      "crop": [
+        2960,
+        840,
+        650
+      ],
+      "previous_crop_pixels": 360,
+      "crop_pixels": 650,
+      "rights_status": "Reference only \u2014 publication permission not established"
+    },
+    {
+      "title": "Fellow Stagg EKG",
+      "file": "stagg-ekg-detail.png",
+      "site_file": "/images/objects/stagg-ekg-detail.png",
+      "source_page": "https://espressoretro.com/en-hk/products/fellow-stagg-ekg-pro-electric-kettle",
+      "image_url": "https://espressoretro.com/cdn/shop/files/Stagg_EKG_Pro-Matte_Black-Base.png?v=1744988245",
+      "width": 3000,
+      "height": 3000,
+      "crop": [
+        1840,
+        1870,
+        600
+      ],
+      "previous_crop_pixels": 280,
+      "crop_pixels": 600,
+      "rights_status": "Reference only \u2014 publication permission not established"
+    },
+    {
+      "title": "Universal Audio 1176LN",
+      "file": "1176ln-detail.jpg",
+      "site_file": "/images/objects/1176ln-detail.jpg",
+      "source_page": "https://makenoiseproaudio.com/products/universal-audio-1176ln",
+      "image_url": "https://cdn.shopify.com/s/files/1/0521/1648/8370/files/B9067AF0-735F-45E3-816E-9C0BE007EF20.jpg?v=1790457261",
+      "width": 5787,
+      "height": 3858,
+      "crop": [
+        440,
+        1520,
+        930
+      ],
+      "previous_crop_pixels": 190,
+      "crop_pixels": 930,
+      "rights_status": "Reference only \u2014 publication permission not established"
+    },
+    {
+      "title": "La Marzocco Linea Micra",
+      "file": "linea-micra-steam-knob.png",
+      "site_file": "/images/objects/linea-micra-steam-knob.png",
+      "source_page": "https://idrinkcoffee.com/products/la-marzocco-linea-micra-espresso-machine-white",
+      "image_url": "https://cdn.shopify.com/s/files/1/1201/3604/files/124LaMarzoccoLineaMicraWhite.png?v=1762376245",
+      "width": 4000,
+      "height": 2667,
+      "crop": [
+        1370,
+        480,
+        1150
+      ],
+      "previous_crop_pixels": 340,
+      "crop_pixels": 1150,
+      "rights_status": "Reference only \u2014 publication permission not established"
+    },
+    {
+      "title": "Apple iPod",
+      "file": "ipod-4g-click-wheel.jpg",
+      "site_file": "/images/objects/ipod-4g-click-wheel.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:IPod4G.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/d7/IPod4G.jpg",
+      "width": 1831,
+      "height": 3007,
+      "crop": [
+        205,
+        1375,
+        1400
+      ],
+      "previous_crop_pixels": 410,
+      "crop_pixels": 1400,
+      "rights_status": "CC BY 4.0; attributed in the site footer",
+      "author": "KAMiKAZOW",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "edits": "Square detail crop displayed with CSS; source photo unmodified"
+    },
+    {
+      "title": "MXR Phase 90",
+      "file": "mxr-phase-90.jpg",
+      "site_file": "/images/objects/mxr-phase-90.jpg",
+      "source_page": "https://www.jimdunlop.com/mxr-phase-90/",
+      "image_url": "https://cdn11.bigcommerce.com/s-n26aknlnlm/images/stencil/original/products/589/6193/11101000001.MAIN__38391.1663874793.jpg?c=2",
+      "width": 1400,
+      "height": 1400,
+      "crop": [
+        400,
+        130,
+        600
+      ],
+      "previous_crop_pixels": null,
+      "crop_pixels": 600,
+      "rights_status": "Reference only \u2014 publication permission not established"
+    }
+  ]
+}

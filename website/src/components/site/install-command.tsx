@@ -14,7 +14,7 @@ export function InstallCommand({ item = "click-wheel", label }: { item?: string;
       <span className="shrink-0 text-muted-foreground" aria-hidden="true">
         $
       </span>
-      <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap">{command}</code>
+      <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">{command}</code>
       <CopyButton text={command} />
     </div>
   );

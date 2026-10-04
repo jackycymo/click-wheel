@@ -24,7 +24,7 @@ export async function CodeBlock({
         <span>{title ?? lang}</span>
         <CopyButton text={code.trim()} />
       </figcaption>
-      <div className="text-[13px]" dangerouslySetInnerHTML={{ __html: html }} />
+      <div className="text-[13px] [&_pre]:[scrollbar-width:none] [&_pre::-webkit-scrollbar]:hidden" dangerouslySetInnerHTML={{ __html: html }} />
     </figure>
   );
 }

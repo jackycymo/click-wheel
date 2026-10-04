@@ -4,6 +4,7 @@ import { HomeHero } from "@/components/site/home-hero";
 import { InstallCommand } from "@/components/site/install-command";
 import { ThemesBlock } from "@/components/site/themes-block";
 import { MusicCredits } from "@/components/site/music-credits";
+import { DesignReflection } from "@/components/site/design-reflection";
 
 export default function Home() {
   return (
@@ -26,6 +27,8 @@ export default function Home() {
           </div>
         </HomeHero>
 
+        <DesignReflection />
+
         <div className="home-content">
           <div className="home-install">
             <a href="#themes" className="home-text-link">Explore the themes</a>
@@ -42,7 +45,15 @@ export default function Home() {
           </section>
 
           <footer className="flex flex-wrap items-start justify-between gap-6 border-t pt-6 text-sm text-muted-foreground">
-            <MusicCredits />
+            <div className="space-y-3">
+              <MusicCredits />
+              <p className="text-xs leading-relaxed">
+                iPod photo by{" "}
+                <a className="underline underline-offset-2 hover:text-foreground" href="https://commons.wikimedia.org/wiki/File:IPod4G.jpg">KAMiKAZOW</a>
+                {" · "}<a className="underline underline-offset-2 hover:text-foreground" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+                {" · cropped"}
+              </p>
+            </div>
             <span className="font-mono text-xs">
               <a href="/llms.txt" className="hover:text-foreground">llms.txt</a> ·{" "}
               <a href="/docs.md" className="hover:text-foreground">docs.md</a> ·{" "}
