@@ -217,9 +217,9 @@ export function Root(props: RootProps) {
   /** Turn the ring by an angle: rotate the rotor, move the value, tick detents. */
   const turnBy = (deltaDeg: number) => {
     const L = latest.current;
-    spin(deltaDeg);
     const prev = g.current.float;
     const next = clamp(prev + degreesToUnits(deltaDeg, L.unitsPerTurn), L.min, L.max);
+    spin(unitsToDegrees(next - prev, L.unitsPerTurn));
     g.current.float = next;
     writeProgress(next);
     crossDetents(prev, next);

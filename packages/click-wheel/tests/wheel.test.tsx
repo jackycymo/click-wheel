@@ -29,6 +29,7 @@ async function mount(
   const ring = () => container.querySelector<HTMLElement>('[role="slider"]')!;
   const value = () => Number(ring().getAttribute("aria-valuenow"));
   const css = (name: string) => Number((container.firstElementChild as HTMLElement).style.getPropertyValue(`--click-wheel-${name}`));
+  const rotation = () => parseFloat((container.firstElementChild as HTMLElement).style.getPropertyValue("--click-wheel-rotation") || "0");
   const key = async (key: string) => {
     await React.act(async () => ring().dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true })));
   };
@@ -41,7 +42,7 @@ async function mount(
   const scroll = async (deltaY: number) => {
     await React.act(async () => ring().dispatchEvent(new WheelEvent("wheel", { deltaY, bubbles: true, cancelable: true })));
   };
-  return { container, root, render, ring, value, css, key, pointer, scroll };
+  return { container, root, render, ring, value, css, rotation, key, pointer, scroll };
 }
 
 describe("value and progress", () => {
@@ -107,6 +108,54 @@ describe("value and progress", () => {
     expect(ticks).toEqual([1, 1, 1, 1]);
     await wheel.key("PageDown");
     expect(ticks).toEqual([1, 1, 1, 1, -1, -1, -1, -1]);
+  });
+});
+
+describe("rotation limits", () => {
+  test.each([1, -1])("dragging stops at the bound and reverses immediately (direction %s)", async (direction) => {
+    const wheel = await mount({ min: 10, max: 110, defaultValue: direction > 0 ? 100 : 20, unitsPerTurn: 100 });
+    const bound = direction > 0 ? 110 : 10;
+    await wheel.pointer("pointerdown", 100, 50);
+    await wheel.pointer("pointermove", 50, 50 + direction * 50);
+    expect(wheel.value()).toBe(bound);
+    expect(wheel.rotation()).toBeCloseTo(direction * 36);
+    await wheel.pointer("pointermove", 0, 50);
+    expect(wheel.rotation()).toBeCloseTo(direction * 36);
+    await wheel.pointer("pointermove", 50, 50 + direction * 50);
+    expect(wheel.value()).toBe(bound - direction * 25);
+    expect(wheel.rotation()).toBeCloseTo(-direction * 54);
+    await wheel.pointer("pointerup", 50, 50 + direction * 50);
+  });
+
+  test.each([1, -1])("scrolling stops at the bound and reverses immediately (direction %s)", async (direction) => {
+    const wheel = await mount({ min: 10, max: 110, defaultValue: direction > 0 ? 100 : 20, unitsPerTurn: 100 });
+    const bound = direction > 0 ? 110 : 10;
+    await wheel.scroll(-direction * 225);
+    expect(wheel.value()).toBe(bound);
+    expect(wheel.rotation()).toBeCloseTo(direction * 36);
+    await wheel.scroll(-direction * 225);
+    expect(wheel.rotation()).toBeCloseTo(direction * 36);
+    await wheel.scroll(direction * 225);
+    expect(wheel.value()).toBe(bound - direction * 25);
+    expect(wheel.rotation()).toBeCloseTo(-direction * 54);
+  });
+
+  test.each([1, -1])("coasting stops exactly at the bound (direction %s)", async (direction) => {
+    const commits: number[] = [];
+    const wheel = await mount({
+      min: 10, max: 110, defaultValue: 60, unitsPerTurn: 100, inertia: true,
+      onValueCommitted: (value) => commits.push(value),
+    });
+    await wheel.pointer("pointerdown", 100, 50, 0);
+    await wheel.pointer("pointermove", 50, 50 + direction * 50, 20);
+    await wheel.pointer("pointerup", 50, 50 + direction * 50, 21);
+    expect(pendingFrames()).toBe(1);
+    await React.act(async () => advanceFrame(1085));
+    expect(wheel.value()).toBe(direction > 0 ? 110 : 10);
+    expect(wheel.rotation()).toBeCloseTo(direction * 180);
+    expect(wheel.ring().hasAttribute("data-coasting")).toBe(false);
+    expect(pendingFrames()).toBe(0);
+    expect(commits).toEqual([direction > 0 ? 110 : 10]);
   });
 });
 

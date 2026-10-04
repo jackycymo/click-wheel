@@ -14,7 +14,7 @@ const ROTOR_STYLE = {
 
 /**
  * A decorative element that rotates 1:1 with the finger, like the texture of
- * a real wheel. Give it a texture; it does the turning.
+ * a real wheel, stopping at the value bounds. Give it a texture; it does the turning.
  */
 export function Rotor(props: RotorProps) {
   const { state } = useClickWheelContext("Rotor");
