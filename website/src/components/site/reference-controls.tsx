@@ -263,7 +263,7 @@ export function ReferenceControl({ kind, children }: { kind: ReferenceKind; chil
       <Dialog.Popup className="fixed bottom-0 left-1/2 z-50 max-h-[calc(100svh-1rem)] w-full max-w-[520px] -translate-x-1/2 overflow-y-auto overscroll-contain rounded-t-2xl border border-[#cbcbbf] bg-[#eeede7] p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-[#30332b] shadow-[0_-12px_60px_#0002] outline-none transition-[opacity,translate] duration-200 data-[starting-style]:translate-y-6 data-[starting-style]:opacity-0 data-[ending-style]:translate-y-6 data-[ending-style]:opacity-0 motion-reduce:transition-none">
         <div className="mb-4 flex items-center justify-between gap-4">
           <Dialog.Title className="text-base font-medium tracking-tight">{config.name}</Dialog.Title>
-          <Dialog.Close className="min-h-11 shrink-0 cursor-pointer rounded-full border border-[#cbcbbf] px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[#606b35]">Close</Dialog.Close>
+          <Dialog.Close className="min-h-11 shrink-0 cursor-pointer rounded-md px-3 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">Close</Dialog.Close>
         </div>
         <div data-reference-expanded={kind} className="relative mx-auto aspect-square w-[min(100%,calc(100svh-12rem))] overflow-hidden bg-[#eeede7] [container-type:inline-size]">
           <ReferenceDial kind={kind} value={value} onValueChange={setValue} playing={playing} onToggle={togglePlaying} />
