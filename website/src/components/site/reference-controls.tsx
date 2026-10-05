@@ -8,13 +8,14 @@ import { IconNext, IconPause, IconPlay } from "./icons";
 export type ReferenceKind = "braun" | "sculptor" | "amplifier" | "guitar" | "fellow" | "compressor" | "espresso" | "ipod" | "mxr";
 
 const settings = {
-  braun: { sweep: -126, label: "Braun radio frequency", min: 88, max: 100, step: 0.1, initial: 94, unit: "MHz", name: "Braun SK2" },
+  // The shared UKW/MW scale spans the whole arc; model travel, not a single band.
+  braun: { sweep: -151, label: "Braun radio tuning position", min: 0, max: 100, step: 0.1, initial: 44.4, unit: "% travel", name: "Braun SK2" },
   sculptor: { sweep: -340, label: "Timemore grind size", min: 0, max: 18, step: 0.1, initial: 8, unit: "grind", name: "Timemore Sculptor" },
-  amplifier: { sweep: -300, label: "Fender amplifier volume", min: 1, max: 10, step: 0.1, initial: 3, unit: "volume", name: "Fender Deluxe Reverb" },
-  guitar: { sweep: -300, label: "Stratocaster volume", min: 0, max: 10, step: 0.1, initial: 5, unit: "volume", name: "Fender Stratocaster" },
+  amplifier: { sweep: 300, label: "Fender amplifier volume", min: 1, max: 10, step: 0.1, initial: 3, unit: "volume", name: "Fender Deluxe Reverb" },
+  guitar: { sweep: 300, label: "Stratocaster volume", min: 0, max: 10, step: 0.1, initial: 5, unit: "volume", name: "Fender Stratocaster" },
   fellow: { sweep: 270, label: "Fellow kettle temperature", min: 40, max: 100, step: 1, initial: 92, unit: "°C", name: "Fellow Stagg EKG" },
-  compressor: { sweep: -270, label: "1176 input level", min: 0, max: 48, step: 1, initial: 24, unit: "dB", name: "Universal Audio 1176LN" },
-  espresso: { sweep: 270, label: "La Marzocco steam valve", min: 0, max: 100, step: 1, initial: 0, unit: "% steam", name: "La Marzocco Linea Micra" },
+  compressor: { sweep: -270, label: "1176 input attenuation", min: 0, max: 48, step: 1, initial: 24, unit: "dB attenuation", name: "Universal Audio 1176LN" },
+  espresso: { sweep: -270, label: "La Marzocco steam valve", min: 0, max: 100, step: 1, initial: 0, unit: "% steam", name: "La Marzocco Linea Micra" },
   ipod: { sweep: 270, label: "iPod playback position", min: 0, max: 180, step: 1, initial: 42, unit: "", name: "Apple iPod" },
   mxr: { sweep: 270, label: "MXR phase speed", min: 0, max: 100, step: 1, initial: 50, unit: "% speed", name: "MXR Phase 90" },
 } as const;
@@ -48,7 +49,7 @@ function Ticks({ count = 41, start = -140, sweep = 280, className = "" }: { coun
 }
 
 function MovingFace({ children, className = "", start = -135, sweep = 270 }: { children?: ReactNode; className?: string; start?: number; sweep?: number }) {
-  return <div aria-hidden="true" className={`pointer-events-none absolute inset-0 rounded-full ${className}`} style={{ rotate: `calc(${start}deg + var(--click-wheel-fraction) * ${sweep}deg)` }}>{children}</div>;
+  return <div aria-hidden="true" className={`pointer-events-none absolute inset-0 rounded-full will-change-transform ${className}`} style={{ rotate: `calc(${start}deg + var(--click-wheel-fraction) * ${sweep}deg)` }}>{children}</div>;
 }
 
 function Pointer({ className = "" }: { className?: string }) {
@@ -56,50 +57,18 @@ function Pointer({ className = "" }: { className?: string }) {
 }
 
 function Braun() {
-  const id = useId();
   return <>
-    <svg aria-hidden="true" viewBox="0 0 1000 1000" className="pointer-events-none absolute inset-0 size-full">
-      <defs>
-        <pattern id={`${id}-grille`} width="95" height="95" patternUnits="userSpaceOnUse" patternTransform="rotate(2)">
-          <rect width="95" height="95" fill="#d8dadb" />
-          <circle cx="38" cy="39" r="24" fill="#808586" />
-          <circle cx="36" cy="36" r="21" fill="#32383b" />
-          <path d="M16 30H57 M16 42H57 M31 16V56 M44 17V55" stroke="#b8bbbc" strokeWidth="3" opacity=".7" />
-          <path d="M15 36A22 22 0 0 1 37 14" fill="none" stroke="#f4f4f1" strokeWidth="4" />
-        </pattern>
-        <linearGradient id={`${id}-rim`} x1="0" y1="0" x2="1" y2="1">
-          <stop stopColor="#aaa994" /><stop offset=".4" stopColor="#c1bfac" /><stop offset=".75" stopColor="#969883" /><stop offset="1" stopColor="#c3c4b1" />
-        </linearGradient>
-        <radialGradient id={`${id}-glass`} cx=".6" cy=".35" r=".7">
-          <stop stopColor="#fff" stopOpacity=".16" /><stop offset=".7" stopColor="#fff" stopOpacity="0" /><stop offset="1" stopColor="#1e292d" stopOpacity=".35" />
-        </radialGradient>
-        <filter id={`${id}-grain`}><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" seed="4" /><feColorMatrix type="saturate" values="0" /></filter>
-        <clipPath id={`${id}-disc`}><circle cx="520" cy="378" r="533" /></clipPath>
-      </defs>
-      <rect width="1000" height="1000" fill={`url(#${id}-grille)`} />
-      <circle cx="525" cy="392" r="581" fill="#414747" opacity=".25" />
-      <circle cx="520" cy="378" r="579" fill={`url(#${id}-rim)`} stroke="#bec0ad" strokeWidth="4" />
-      <circle cx="520" cy="378" r="551" fill="none" stroke="#dcdecb" strokeOpacity=".3" strokeWidth="3" />
-      <g clipPath={`url(#${id}-disc)`}>
-        <rect x="-50" y="-180" width="1140" height="560" fill="#a5a7a9" />
-        <rect x="-50" y="380" width="1140" height="570" fill="#777b7e" />
-        <circle cx="520" cy="378" r="533" fill={`url(#${id}-glass)`} />
-        <rect x="-50" y="-180" width="1140" height="1140" filter={`url(#${id}-grain)`} opacity=".1" />
-      </g>
-      <path d="M205 303 A326 326 0 0 1 835 303" fill="none" stroke="#42494c" strokeWidth="2.4" />
-      {[-76,-54,-33,-13,8,30,51,73].map(angle => <path key={angle} d="M-5-355H5V-339H-5Z" fill="#525b60" transform={`translate(520 378) rotate(${angle})`} />)}
-      <g fill="#30373b" fontFamily="Arial, Helvetica, sans-serif" fontWeight="400" fontSize="59" textAnchor="middle">
-        <text x="325" y="255">100</text><text x="480" y="146">96</text><text x="655" y="178">92</text><text x="749" y="324">88</text>
-        <text x="120" y="291">1,6</text><text x="197" y="151">1,4</text><text x="315" y="36">1,2</text><text x="756" y="56">0,7</text><text x="863" y="171">0,6</text>
-        <text x="271" y="355">UKW</text><text x="873" y="351">MW</text>
-      </g>
-    </svg>
-    <ClickWheel.Ring aria-label={settings.braun.label} aria-describedby="help-braun" getAriaValueText={value => formatValue("braun", value)} className={`absolute -top-[20%] -left-[6%] size-[116%] rounded-full ${focusRing}`}>
-      <MovingFace start={75} sweep={-126}>
-        <span data-tuning-indicator className="absolute top-[21.3%] left-[48.4%] size-[3.2%] rounded-full bg-[#b40902] shadow-[inset_0_0.4px_1px_#d43826,0_0_1px_#820900]" />
-      </MovingFace>
+    {/* Keep the grain and lighting in a cached image while the indicator turns. */}
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[url('/images/objects/braun-sk2-face.svg')] bg-cover" />
+    <ClickWheel.Ring aria-label={settings.braun.label} aria-describedby="help-braun" getAriaValueText={value => formatValue("braun", value)} className={`absolute -top-[18.4%] -left-[5.9%] size-[115.8%] rounded-full ${focusRing}`}>
+      {/* Cast the glass marker's shadow in a fixed light direction as it turns. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 [filter:drop-shadow(0.6cqw_1.3cqw_0.65cqw_#20251f80)]">
+        <MovingFace start={75} sweep={settings.braun.sweep}>
+          <span data-tuning-indicator className="absolute top-[20.25%] left-[48.4%] size-[3.2%] rounded-full bg-[#bd1709] shadow-[inset_0_0.4px_1px_#ed5032,0_0_1px_#820900]" />
+        </MovingFace>
+      </div>
     </ClickWheel.Ring>
-    <ClickWheel.Center render={<div />} aria-hidden="true" className="absolute top-[21.7%] left-[34%] z-20 size-[35.5%] rounded-full bg-[linear-gradient(130deg,#f0f0f3,#dedee0_80%,#d3d4d4)] shadow-[inset_0_1px_1px_#ffffffcc,inset_0_-1px_1px_#aaa,1.5cqw_2.8cqw_3cqw_#242b3066]" />
+    <ClickWheel.Center render={<div />} aria-hidden="true" className="absolute top-[21.8%] left-[34.3%] z-20 size-[35.4%] rounded-full" />
   </>;
 }
 
@@ -107,9 +76,9 @@ function Sculptor() {
   return <>
     <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(115deg,#333630,#141612)]" /><div aria-hidden="true" className="absolute -top-[25%] left-[10%] h-[40%] w-[80%] rounded-b-[5cqw] bg-[linear-gradient(90deg,#131513,#62665d_7%,#242821_16%,#11150f_74%,#63685d_96%,#111)] shadow-[0_4px_6px_#000]" />
     <ClickWheel.Ring aria-label={settings.sculptor.label} aria-describedby="help-sculptor" getAriaValueText={value => formatValue("sculptor", value)} className={`absolute top-[10.8%] left-[9.2%] size-[81.3%] rounded-full bg-[repeating-conic-gradient(#111_0deg_1deg,#30322e_1deg_2deg)] shadow-[0_-4px_4px_#000,0_4px_8px_#000] ${focusRing}`}>
-      <MovingFace start={0} sweep={-340} className="inset-[2%]! bg-[radial-gradient(ellipse_at_30%_20%,#242723,#111310)] shadow-[inset_0_1px_2px_#5557]">
+      <MovingFace start={0} sweep={settings.sculptor.sweep} className="inset-[2%]! bg-[radial-gradient(ellipse_at_30%_20%,#242723,#111310)] shadow-[inset_0_1px_2px_#5557]">
         <Ticks count={73} start={0} sweep={355} className="text-[#a3a79c]" />
-        <Scale labels={Array.from({ length: 19 }, (_, i) => i)} radius={40} start={0} sweep={340} rotate className="text-[5cqw] font-light text-[#aeb0a7]" />
+        <Scale labels={Array.from({ length: 19 }, (_, i) => i)} radius={40} start={0} sweep={-settings.sculptor.sweep} rotate className="text-[5cqw] font-light text-[#aeb0a7]" />
       </MovingFace>
     </ClickWheel.Ring>
     <span aria-hidden="true" className="absolute top-[8%] left-[49.5%] h-[4%] w-[1%] bg-[#babbb3]" />
@@ -118,10 +87,10 @@ function Sculptor() {
 
 function Amplifier() {
   return <>
-    <div aria-hidden="true" className="absolute inset-0 bg-[#3e4648] bg-[radial-gradient(#9ea5a644_0.5px,transparent_0.9px)] bg-size-[3px_3px]" /><div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-[24%] border-t-[1.5cqw] border-[#bcb99d] bg-[#514f43] bg-[repeating-linear-gradient(0deg,transparent_0_2px,#beb396_2px_3px),repeating-linear-gradient(90deg,#d6cbae99_0_1px,transparent_1px_4px)]" /><span aria-hidden="true" className="absolute top-[65%] left-[17%] text-[7cqw] font-bold tracking-[-0.03em] text-[#e4e6e0]">VOLUME</span><span aria-hidden="true" className="absolute top-[6%] left-[38%] h-[4%] w-[1%] bg-[#eee]" />
+    <div aria-hidden="true" className="absolute inset-0 bg-[#3e4648] bg-[radial-gradient(#9ea5a644_0.5px,transparent_0.9px)] bg-size-[3px_3px]" /><div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-[24%] border-t-[1.5cqw] border-[#bcb99d] bg-[#514f43] bg-[repeating-linear-gradient(0deg,transparent_0_2px,#beb396_2px_3px),repeating-linear-gradient(90deg,#d6cbae99_0_1px,transparent_1px_4px)]" /><span aria-hidden="true" className="absolute top-[65%] left-[38.5%] -translate-x-1/2 text-[7cqw] font-bold tracking-[-0.03em] text-[#e4e6e0]">VOLUME</span><span aria-hidden="true" className="absolute top-[6%] left-[38%] h-[4%] w-[1%] bg-[#eee]" />
     <ClickWheel.Ring aria-label={settings.amplifier.label} aria-describedby="help-amplifier" getAriaValueText={value => formatValue("amplifier", value)} className={`absolute top-[8%] left-[11%] size-[55%] rounded-full bg-[#13191b] shadow-[3px_5px_9px_#000b,inset_0_1px_3px_#bbc5c555] ${focusRing}`}>
-      <MovingFace start={15} sweep={-300}>
-        <Scale labels={[1,2,3,4,5,6,7,8,9,10]} start={-15} sweep={300} radius={39} rotate className="font-serif text-[8cqw] text-[#e9ebe4]" />
+      <MovingFace start={-15} sweep={settings.amplifier.sweep}>
+        <Scale labels={[1,2,3,4,5,6,7,8,9,10]} start={15} sweep={-settings.amplifier.sweep} radius={39} rotate className="[font-family:Arial,Helvetica,sans-serif] text-[7.5cqw] text-[#e9ebe4]" />
         <div className="absolute inset-[25%] rounded-full bg-[repeating-conic-gradient(#121818_0deg_4deg,#657071_4deg_6deg)] shadow-[2px_3px_4px_#000]">
           <div className={`absolute inset-[13%] rounded-full ${metal} shadow-[inset_0_0_3px_#fff]`} />
         </div>
@@ -134,8 +103,8 @@ function Guitar() {
   return <>
     <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(135deg,#f2f3ed,#e4e8df_70%,#d8ded3)]" /><div aria-hidden="true" className={`absolute -top-[5%] left-[43%] size-[15%] rounded-full ${metal} shadow-[0_2px_3px_#5556]`}><span className="absolute top-[46%] left-[20%] h-[7%] w-[60%] rotate-45 bg-[#555]" /></div>
     <ClickWheel.Ring aria-label={settings.guitar.label} aria-describedby="help-guitar" getAriaValueText={value => formatValue("guitar", value)} className={`absolute top-[15.5%] left-[16%] size-[67.5%] rounded-full bg-[linear-gradient(140deg,#fffef5,#cdd2c5)] shadow-[3px_6px_7px_#78806a66,inset_0_1px_2px_#fff] ${focusRing}`}>
-      <MovingFace start={150} sweep={-300}>
-        <Scale labels={[0,1,2,3,4,5,6,7,8,9,10]} start={-150} sweep={300} rotate radius={41} className="font-serif text-[7cqw] text-[#9a845a] [text-shadow:0_1px_0_#fff]" />
+      <MovingFace start={-150} sweep={settings.guitar.sweep}>
+        <Scale labels={[0,1,2,3,4,5,6,7,8,9,10]} start={150} sweep={-settings.guitar.sweep} rotate radius={41} className="[font-family:Arial,Helvetica,sans-serif] text-[6.5cqw] text-[#9a845a] [text-shadow:0_1px_0_#fff]" />
         <div className="absolute inset-[18%] rounded-full bg-[repeating-conic-gradient(#bfc4b5_0deg_1deg,#f7f7ed_1deg_4deg)] shadow-[1px_4px_3px_#87907966]">
           <div className="absolute inset-[6%] flex items-center justify-center rounded-full bg-[linear-gradient(130deg,#fffffa,#e6e9df)] text-[5.2cqw] font-medium tracking-[-0.035em] text-[#a28f6d]">VOLUME</div>
         </div>
@@ -176,7 +145,7 @@ function Compressor() {
 
 function Espresso({ value }: { value: number }) {
   const id = useId();
-  const angle = value * 2.7;
+  const angle = value / settings.espresso.max * settings.espresso.sweep;
   return <>
     <svg aria-hidden="true" viewBox="0 0 1000 1000" className="pointer-events-none absolute inset-0 size-full">
       <defs>
@@ -253,7 +222,7 @@ function ReferenceDial({ kind, value, onValueChange, playing, onToggle, classNam
     value={value} onValueChange={onValueChange}
     min={config.min} max={config.max} step={config.step}
     unitsPerTurn={(config.max - config.min) * 360 / config.sweep}
-    detent={kind === "sculptor" ? 0.5 : config.step}
+    detent={kind === "braun" ? 1 : kind === "sculptor" ? 0.5 : config.step}
     className={`absolute inset-0 [&_[role=slider]]:z-10 ${className}`}
     aria-label={`${config.name} interactive preview`}
   >
@@ -291,12 +260,12 @@ export function ReferenceControl({ kind, children }: { kind: ReferenceKind; chil
     </figure>
     <Dialog.Portal>
       <Dialog.Backdrop className="fixed inset-0 z-50 bg-black/35 transition-opacity duration-200 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 motion-reduce:transition-none" />
-      <Dialog.Popup className="fixed bottom-0 left-1/2 z-50 max-h-[calc(100dvh-1rem)] w-full max-w-[520px] -translate-x-1/2 overflow-y-auto overscroll-contain rounded-t-2xl border border-[#cbcbbf] bg-[#eeede7] p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-[#30332b] shadow-[0_-12px_60px_#0002] outline-none transition-[opacity,translate] duration-200 data-[starting-style]:translate-y-6 data-[starting-style]:opacity-0 data-[ending-style]:translate-y-6 data-[ending-style]:opacity-0 motion-reduce:transition-none">
+      <Dialog.Popup className="fixed bottom-0 left-1/2 z-50 max-h-[calc(100svh-1rem)] w-full max-w-[520px] -translate-x-1/2 overflow-y-auto overscroll-contain rounded-t-2xl border border-[#cbcbbf] bg-[#eeede7] p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-[#30332b] shadow-[0_-12px_60px_#0002] outline-none transition-[opacity,translate] duration-200 data-[starting-style]:translate-y-6 data-[starting-style]:opacity-0 data-[ending-style]:translate-y-6 data-[ending-style]:opacity-0 motion-reduce:transition-none">
         <div className="mb-4 flex items-center justify-between gap-4">
           <Dialog.Title className="text-base font-medium tracking-tight">{config.name}</Dialog.Title>
           <Dialog.Close className="min-h-11 shrink-0 cursor-pointer rounded-full border border-[#cbcbbf] px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[#606b35]">Close</Dialog.Close>
         </div>
-        <div data-reference-expanded={kind} className="relative mx-auto aspect-square w-[min(100%,calc(100dvh-12rem))] overflow-hidden bg-[#eeede7] [container-type:inline-size]">
+        <div data-reference-expanded={kind} className="relative mx-auto aspect-square w-[min(100%,calc(100svh-12rem))] overflow-hidden bg-[#eeede7] [container-type:inline-size]">
           <ReferenceDial kind={kind} value={value} onValueChange={setValue} playing={playing} onToggle={togglePlaying} />
         </div>
         <Dialog.Description className="mt-4 text-center text-sm leading-relaxed text-[#606354]">
