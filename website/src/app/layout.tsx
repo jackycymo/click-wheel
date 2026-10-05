@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Archivo, DM_Sans, Doto, Geist, Geist_Mono, Tiny5 } from "next/font/google";
 import { PlayerDock } from "@/components/site/player-dock";
 import { PlayerProvider } from "@/components/site/player-provider";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const geist = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -12,6 +13,7 @@ const archivo = Archivo({ variable: "--font-archivo", subsets: ["latin"] });
 const dmSans = DM_Sans({ variable: "--font-dm-sans", subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl()),
   title: "Click Wheel",
   description: "An iPod-style click wheel component for React",
 };

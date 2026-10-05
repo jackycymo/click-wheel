@@ -1,0 +1,82 @@
+.og-playground {
+  font-family: var(--font-archivo), Arial, sans-serif;
+}
+
+.og-preview-scroll {
+  overflow-x: auto;
+}
+
+.og-artboard {
+  position: relative;
+  isolation: isolate;
+  width: 1200px;
+  height: 630px;
+  overflow: hidden;
+  background: #eeede7;
+  color: #242520;
+}
+
+.og-player-art {
+  position: absolute;
+  inset: 0;
+  width: 1200px;
+  height: 630px;
+  /* Hide the generated lettering while retaining the original player pixels. */
+  mask-image: linear-gradient(to right, transparent 54%, #000 57%);
+}
+
+.og-copy {
+  position: absolute;
+  left: 44px;
+  top: 111px;
+}
+
+.og-copy h1 {
+  margin: 0;
+  line-height: 0.9;
+}
+
+.og-copy h1 span {
+  display: block;
+}
+
+.og-copy p {
+  max-width: 520px;
+  margin: 40px 0 0 6px;
+  font-size: 29px;
+  line-height: 1.3;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.og-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  max-width: 1200px;
+  padding: 24px 44px 32px;
+  border: 0;
+}
+
+.og-controls legend {
+  padding-top: 20px;
+  font-size: 14px;
+}
+
+.og-controls label {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 24px;
+  width: 240px;
+  font-size: 14px;
+}
+
+.og-controls output {
+  font-variant-numeric: tabular-nums;
+}
+
+.og-controls input {
+  grid-column: 1 / -1;
+  width: 100%;
+  accent-color: var(--site-signal);
+}
