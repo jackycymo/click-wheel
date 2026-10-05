@@ -1,1 +1,1 @@
-Click Wheel — Bring the joy of the iPod style click wheel to web. An ivory music player with a circular dial beside bold black typography.
+Click Wheel: an ivory music player with a circular dial, red position marker, and black playback display.

@@ -31,6 +31,19 @@
   top: 111px;
 }
 
+.og-artboard-square {
+  width: 630px;
+}
+
+.og-artboard-square .og-player-art {
+  left: -576px;
+  max-width: none;
+}
+
+.og-artboard-square .og-copy {
+  display: none;
+}
+
 .og-copy h1 {
   margin: 0;
   line-height: 0.9;
@@ -79,4 +92,15 @@
   grid-column: 1 / -1;
   width: 100%;
   accent-color: var(--site-signal);
+}
+
+.og-controls select {
+  grid-column: 1 / -1;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.og-controls input:disabled {
+  opacity: 0.35;
 }
