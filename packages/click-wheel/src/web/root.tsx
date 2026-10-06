@@ -440,7 +440,7 @@ export function Root(props: RootProps) {
     if (g.current.dragging) return;
     interrupt();
     const scale = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1;
-    const px = (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : -e.deltaY) * scale;
+    const px = (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) * scale;
     if (!g.current.wheeling) {
       g.current.wheeling = true;
       beginInteraction("wheel");

@@ -130,12 +130,12 @@ describe("rotation limits", () => {
   test.each([1, -1])("scrolling stops at the bound and reverses immediately (direction %s)", async (direction) => {
     const wheel = await mount({ min: 10, max: 110, defaultValue: direction > 0 ? 100 : 20, unitsPerTurn: 100 });
     const bound = direction > 0 ? 110 : 10;
-    await wheel.scroll(-direction * 225);
+    await wheel.scroll(direction * 225);
     expect(wheel.value()).toBe(bound);
     expect(wheel.rotation()).toBeCloseTo(direction * 36);
-    await wheel.scroll(-direction * 225);
-    expect(wheel.rotation()).toBeCloseTo(direction * 36);
     await wheel.scroll(direction * 225);
+    expect(wheel.rotation()).toBeCloseTo(direction * 36);
+    await wheel.scroll(-direction * 225);
     expect(wheel.value()).toBe(bound - direction * 25);
     expect(wheel.rotation()).toBeCloseTo(-direction * 54);
   });
@@ -184,8 +184,8 @@ describe("interaction lifecycle", () => {
       onInteractionChange: (active, details) => interactions.push([active, details]),
       onValueCommitted: (value) => commits.push(value),
     });
-    await wheel.scroll(-10);
-    await wheel.scroll(-10);
+    await wheel.scroll(10);
+    await wheel.scroll(10);
     expect(interactions).toEqual([[true, { source: "wheel", cancelled: false }]]);
     expect(commits).toEqual([]);
     await React.act(async () => { await new Promise((resolve) => setTimeout(resolve, 180)); });
@@ -262,7 +262,7 @@ describe("interaction lifecycle", () => {
       onInteractionChange: (value, details) => { active.push(value); cancelled = details.cancelled; },
       onValueCommitted: () => commits++,
     });
-    await wheel.scroll(-10);
+    await wheel.scroll(10);
     await React.act(async () => wheel.root.unmount());
     mounted.pop();
     wheel.container.remove();
