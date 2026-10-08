@@ -2,7 +2,7 @@
 
 An unstyled rotary input for React. Supports drag, scroll, keyboard input, haptics and optional inertia.
 
-[![Click Wheel theme demos](https://raw.githubusercontent.com/jackycymo/click-wheel/main/website/public/demo/click-wheel.gif)](https://github.com/jackycymo/click-wheel/raw/refs/heads/main/website/public/demo/click-wheel.mp4)
+[![Click Wheel theme demos](https://click-wheel.vercel.app/demo/click-wheel.gif)](https://click-wheel.vercel.app/demo/click-wheel.mp4)
 
 [Docs](https://click-wheel.vercel.app/docs) · [Examples](https://click-wheel.vercel.app/examples/default) · [Themes](https://click-wheel.vercel.app/examples/themes)
 

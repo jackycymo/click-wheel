@@ -45,7 +45,7 @@
     "url": "git+https://github.com/jackycymo/click-wheel.git",
     "directory": "packages/click-wheel"
   },
-  "homepage": "https://github.com/jackycymo/click-wheel#readme",
+  "homepage": "https://click-wheel.vercel.app",
   "bugs": {
     "url": "https://github.com/jackycymo/click-wheel/issues"
   },
