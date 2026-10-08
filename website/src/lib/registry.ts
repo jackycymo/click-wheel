@@ -24,7 +24,9 @@ const WEB_FILES = [
 const PACKAGE_SRC = path.join(PACKAGE_DIR, "src");
 
 /** In the package the core sits one level up; in a registry copy it sits beside the parts. */
-const flatten = (source: string) => source.replace(/from "\.\.\/core"/g, 'from "./core"');
+const flatten = (source: string) => source
+  .replace(/from "(\.{1,2}\/[^\"]+)\.js"/g, 'from "$1"')
+  .replace(/from "\.\.\/core"/g, 'from "./core"');
 
 async function readCore(target: string): Promise<SourceFile> {
   return { path: target, content: await fs.readFile(path.join(PACKAGE_SRC, "core.ts"), "utf8") };
@@ -68,7 +70,7 @@ function toRegistryFiles(files: SourceFile[]) {
   return files.map((f) => ({ path: f.path, target: f.path, type: "registry:component", content: f.content }));
 }
 
-/** A shadcn registry item: `npx shadcn@latest add <site>/r/<name>.json`. */
+/** A shadcn registry item: `pnpm dlx shadcn@latest add <site>/r/<name>.json`. */
 export async function registryItem(name: string) {
   const site = siteUrl();
   if (name === "click-wheel") {
@@ -92,8 +94,7 @@ export async function registryItem(name: string) {
     type: "registry:component",
     title: THEME_META[theme].title,
     description: THEME_META[theme].description,
-    dependencies: [],
-    registryDependencies: [`${site}/r/click-wheel.json`],
+    dependencies: ["click-wheel"],
     files: toRegistryFiles(await readThemeFiles(theme)),
     docs: `Import { Wheel } from "@/components/click-wheel-${theme}/wheel". Docs: ${site}/docs.md`,
   };

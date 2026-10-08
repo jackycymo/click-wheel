@@ -33,7 +33,6 @@ export function Demo({ mode }: { mode: Mode }) {
         onCenterClick={p.togglePlay}
         centerLabel={p.playing ? "Pause" : "Play"}
       />
-      <p className="galley-engraved">push · turn</p>
     </div>
   );
 }

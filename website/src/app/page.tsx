@@ -8,19 +8,19 @@ import { DesignReflection } from "@/components/site/design-reflection";
 
 export default function Home() {
   return (
-    <div className="home-page">
+    <div className="bg-background text-foreground [font-family:var(--font-archivo),Arial,sans-serif]">
       <Header />
       <main>
         <HomeHero>
-          <h1 id="hero-title">Click Wheel</h1>
-          <div className="home-hero-intro">
-            <p className="home-hero-description">
+          <h1 id="hero-title" className="text-[clamp(48px,14.4vw,60px)] leading-[0.98] font-semibold tracking-[-0.08em] min-[421px]:text-[clamp(56px,12vw,88px)] min-[761px]:text-[clamp(64px,9.7vw,140px)]">Click Wheel</h1>
+          <div>
+            <p className="max-w-[440px] text-base leading-normal tracking-[-0.02em] min-[761px]:text-[17px] min-[1101px]:text-[19px]">
               Bring the joy of the iPod style click wheel back. A tactile React component for
               playback, volume, and everything you used to slide.
             </p>
             <Link
               href="/docs"
-              className="home-text-link"
+              className="mt-3 min-[761px]:mt-4 inline-flex w-fit items-center justify-between gap-7 border-b border-current py-2 text-base leading-[1.35] text-(--site-signal) no-underline transition-colors duration-150 ease-[ease] hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-[6px] focus-visible:outline-ring min-[761px]:text-[19px]"
             >
               Start building
             </Link>
@@ -29,22 +29,22 @@ export default function Home() {
 
         <DesignReflection />
 
-        <div className="home-content">
-          <div className="home-install">
-            <a href="#themes" className="home-text-link">Explore the themes</a>
-            <div className="home-install-command">
-              <InstallCommand />
+        <div className="mx-auto w-full max-w-[calc(var(--site-content-width)+var(--site-gutter)*2)] px-(--site-gutter) pb-[120px]">
+          <div className="grid grid-cols-1 items-center gap-6 border-t py-7 min-[761px]:grid-cols-[1fr_minmax(0,520px)] min-[761px]:gap-10 min-[761px]:py-[42px]">
+            <a href="#themes" className="inline-flex w-fit items-center justify-between gap-7 border-b border-current py-2 text-base leading-[1.35] text-(--site-signal) no-underline transition-colors duration-150 ease-[ease] hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-[6px] focus-visible:outline-ring min-[761px]:text-[19px]">Explore the themes</a>
+            <div className="min-w-0">
+              <InstallCommand spacious />
             </div>
           </div>
 
-          <section id="themes" className="home-themes scroll-mt-24">
-            <h2>Themes</h2>
+          <section id="themes" className="scroll-mt-24 pt-10 pb-14 min-[761px]:pt-16 min-[761px]:pb-20">
+            <h2 className="text-[32px] leading-[1.1] font-medium tracking-[-0.045em] min-[761px]:text-[42px]">Themes</h2>
             <div className="mt-8">
-              <ThemesBlock />
+              <ThemesBlock plainTabs />
             </div>
           </section>
 
-          <footer className="flex flex-wrap items-start justify-between gap-6 border-t pt-6 text-sm text-muted-foreground">
+          <footer className="border-t pt-6 text-sm text-muted-foreground">
             <div className="space-y-3">
               <MusicCredits />
               <p className="text-xs leading-relaxed">
@@ -54,11 +54,6 @@ export default function Home() {
                 {" · cropped"}
               </p>
             </div>
-            <span className="font-mono text-xs">
-              <a href="/llms.txt" className="hover:text-foreground">llms.txt</a> ·{" "}
-              <a href="/docs.md" className="hover:text-foreground">docs.md</a> ·{" "}
-              <a href="/r/registry.json" className="hover:text-foreground">registry.json</a>
-            </span>
           </footer>
         </div>
       </main>

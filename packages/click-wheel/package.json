@@ -5,15 +5,27 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": "./src/web/index.ts",
-    "./core": "./src/core.ts"
+    ".": {
+      "types": "./dist/web/index.d.ts",
+      "import": "./dist/web/index.js",
+      "default": "./dist/web/index.js"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js",
+      "default": "./dist/core.js"
+    }
   },
   "files": [
+    "dist",
     "src"
   ],
   "scripts": {
     "check": "tsc -p tsconfig.web.json && tsc -p tsconfig.tests.json",
-    "test": "bun test --preload ./tests/setup.ts ./tests"
+    "test": "bun test --preload ./tests/setup.ts ./tests",
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "pnpm run build",
+    "prepublishOnly": "pnpm run check && pnpm run test"
   },
   "peerDependencies": {
     "react": ">=19.2"
@@ -26,5 +38,29 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "typescript": "^5"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackycymo/click-wheel.git",
+    "directory": "packages/click-wheel"
+  },
+  "homepage": "https://github.com/jackycymo/click-wheel#readme",
+  "bugs": {
+    "url": "https://github.com/jackycymo/click-wheel/issues"
+  },
+  "keywords": [
+    "react",
+    "click-wheel",
+    "rotary",
+    "slider",
+    "headless",
+    "haptics"
+  ],
+  "main": "./dist/web/index.js",
+  "types": "./dist/web/index.d.ts",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

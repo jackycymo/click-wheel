@@ -1,93 +1,40 @@
 # Click Wheel
 
-An unstyled, iPod-style click wheel for React. A slider with gearing instead
-of length: one revolution moves the value by `unitsPerTurn`, so range and
-precision are a prop you choose, not a function of screen space.
+An unstyled rotary input for React. Supports drag, scroll, keyboard input, haptics and optional inertia.
 
-- Parts, not a black box: `Root`, `Ring`, `Rotor`, `Center`, in the style of
-  [Base UI](https://base-ui.com). No classes, no visual styles.
-- State reaches CSS as `data-dragging` / `data-coasting` / `data-disabled`, the CSS variables
-  `--click-wheel-fraction` and `--click-wheel-rotation`, and `className` /
-  `style` functions of state. Every part takes a `render` prop.
-- Pointer drag, scroll wheel, and full keyboard support. Announced as a slider.
-- Opt-in inertia: flick it and it coasts like an iOS scroll, detents clicking
-  as it slows. A touch grabs it again.
-- Haptics on detents: Vibration API on Android, the switch trick on iOS 17.4
-  to 26.4, and `<HapticTap />` for real taps on iOS 26.5+.
-- Zero dependencies beyond React 19.2. Copy the files from the
-  registry, or import `click-wheel` from the package.
+[![Click Wheel theme demos](website/public/demo/click-wheel.gif)](website/public/demo/click-wheel.mp4)
 
-```bash
-bun install
-bun dev   # http://localhost:3000 — best tried on a phone
+[Docs](https://click-wheel.vercel.app/docs) · [Examples](https://click-wheel.vercel.app/examples/default) · [Themes](https://click-wheel.vercel.app/examples/themes)
+
+## Install
+
+```sh
+pnpm add click-wheel
 ```
 
-## Layout
-
-```
-packages/click-wheel   the publishable package: src/core.ts, src/web
-website                the docs site, a Next.js app that depends on the package
-```
-
-`bun install` at the root links the workspace. `bun run check` type-checks
-the package and tests, `bun run test` runs the behavior tests, `bun run dev`
-starts the site, and `bun run build` builds it.
-
-## Usage
+Requires React 19.2 or newer.
 
 ```tsx
-import { ClickWheel } from "@/components/click-wheel";
-
-<ClickWheel.Root
-  value={seconds}
-  onValueChange={setSeconds}
-  max={duration}
-  unitsPerTurn={60}
-  detent={5}
->
-  <ClickWheel.Ring aria-label="Playback position">
-    <ClickWheel.Rotor />
-  </ClickWheel.Ring>
-  <ClickWheel.Center aria-label="Play" onClick={togglePlay}>
-    <PlayIcon />
-  </ClickWheel.Center>
-</ClickWheel.Root>
+import { ClickWheel } from "click-wheel";
 ```
 
-## Themes
+Use the [basic example](https://click-wheel.vercel.app/examples/default#basic) to get started. The parts are unstyled; add your own CSS or use one of the website's themes.
 
-`src/themes/` holds four skins of the same parts:
+Themes can also be added with the shadcn CLI:
 
-| Theme   | How                                    |
-| ------- | -------------------------------------- |
-| Duotone | shadcn/ui tokens and Tailwind classes with two-color palettes |
-| iPod    | plain CSS, printed glyphs, a domed hub |
-| Retro   | plain CSS, soft-shadow knob in a well, one accent index, four accents |
-| Galley  | plain CSS, soft metal knob with a knurled rim and lit segments |
+```sh
+pnpm dlx shadcn@latest add https://click-wheel.vercel.app/r/click-wheel-shadcn.json
+```
 
-Each `wheel.tsx` is the copyable part. `demo.tsx` and `demo.css` are the
-site chrome around it.
+## Development
 
-## For agents
+```sh
+pnpm install
+pnpm dev
+```
 
-The site is agent-readable by design. One content source renders both the
-HTML docs and their Markdown twin, so they never drift.
+The site runs at `http://localhost:3000`. Run `pnpm check`, `pnpm test`, `pnpm lint` and `pnpm build` before publishing. Tests use Bun's test runner.
 
-| URL | What |
-| --- | --- |
-| `/llms.txt` | The index an agent reads first: summary, install, links, quick reference |
-| `/llms-full.txt` | The docs plus every source file, in one document |
-| `/docs.md` | The docs page as Markdown (also `Accept: text/markdown` on `/docs`) |
-| `/r/registry.json` | shadcn registry index; `npx shadcn@latest add <site>/r/click-wheel.json` installs the component |
+After editing the package, run `pnpm build:package` to update the site's workspace dependency.
 
-Set `NEXT_PUBLIC_SITE_URL` so the absolute links point at your deployment.
-
-## Site
-
-Next.js App Router, Tailwind CSS v4, Base UI for the small controls, shiki
-for code. The home page is the hero demo and the theme gallery. The docs
-(`/docs`, `/docs/styling`, `/docs/api`) and the examples
-(`/examples/default`, `/examples/themes`) all render from
-one content file, `website/src/content/docs.ts`. Example previews live in
-`website/src/examples/`; the page reads each file from disk, so the code shown
-is the code that runs.
+MIT. See [LICENSE](packages/click-wheel/LICENSE). Demo assets retain their own licenses.

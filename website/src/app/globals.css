@@ -26,64 +26,8 @@
   --radius: 0.625rem;
 }
 
-.site-container {
-  width: 100%;
-  max-width: var(--site-width);
-  margin-inline: auto;
-  padding-inline: var(--site-gutter);
-}
-
-
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  padding-inline: var(--site-gutter);
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-archivo), Arial, sans-serif;
-}
-
-.site-header-inner {
-  width: 100%;
-  max-width: calc(var(--site-width) - var(--site-gutter) - var(--site-gutter));
-  height: var(--site-header-height);
-  margin-inline: auto;
-  gap: 24px;
-  border-bottom: 1px solid var(--border);
-}
-
-.site-header-brand {
-  gap: 12px;
-  font-size: 20px;
-  letter-spacing: -0.035em;
-}
-
-.site-header-brand svg {
-  width: 30px;
-  height: 30px;
-}
-
-.site-header nav {
-  margin-left: auto;
-  gap: 18px;
-  font-size: 16px;
-}
-
-.site-header nav a[aria-current] {
-  color: var(--site-signal);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 6px;
-}
-
 @media (max-width: 760px) {
   :root { --site-header-height: 68px; }
-  .site-header-inner { gap: 12px; flex-wrap: wrap; }
-  .site-header-brand { font-size: 16px; gap: 8px; }
-  .site-header-brand svg { width: 24px; height: 24px; }
-  .site-header nav { gap: 4px; font-size: 14px; }
-  .site-header nav a { padding-inline: 6px; }
 }
 
 /* Duotone: the same Tailwind skin under two colors with fixed roles. The primary

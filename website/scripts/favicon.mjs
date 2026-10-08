@@ -1,5 +1,5 @@
-// Renders src/app/icon.svg to favicon.ico (16, 32, 48) and apple-icon.png (180).
-// Run: bun scripts/favicon.mjs   (or: node scripts/favicon.mjs)
+// Renders src/app/icon.svg to favicon.ico (16, 32, 48, 64) and apple-icon.png (180).
+// Run: node scripts/favicon.mjs
 import fs from "node:fs/promises";
 import { ImageResponse } from "next/og";
 
@@ -13,7 +13,12 @@ async function png(size) {
     {
       type: "div",
       props: {
-        style: { display: "flex", width: size, height: size },
+        style: {
+          display: "flex",
+          width: size,
+          height: size,
+          backgroundColor: size === 180 ? "#eeede7" : "transparent",
+        },
         children: { type: "img", props: { src, width: size, height: size } },
       },
     },
@@ -45,7 +50,7 @@ function ico(entries) {
   return Buffer.concat([header, dir, ...entries.map((e) => e.data)]);
 }
 
-const sizes = [16, 32, 48];
+const sizes = [16, 32, 48, 64];
 const entries = await Promise.all(sizes.map(async (size) => ({ size, data: await png(size) })));
 await fs.writeFile("src/app/favicon.ico", ico(entries));
 await fs.writeFile("src/app/apple-icon.png", await png(180));

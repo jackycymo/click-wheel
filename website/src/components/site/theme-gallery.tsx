@@ -25,7 +25,7 @@ const DEMOS: Record<ThemeId, React.ComponentType<{ mode: Mode }>> = {
 };
 
 /** Pick a skin on the left, read its source on the right. */
-export function ThemeGallery({ sources }: { sources: Record<ThemeId, React.ReactNode> }) {
+export function ThemeGallery({ sources, plainTabs = false }: { sources: Record<ThemeId, React.ReactNode>; plainTabs?: boolean }) {
   const [theme, setTheme] = React.useState<ThemeId>("duotone");
   const Demo = DEMOS[theme];
 
@@ -38,13 +38,13 @@ export function ThemeGallery({ sources }: { sources: Record<ThemeId, React.React
       <div className="min-w-0 md:sticky md:top-20">
         <Tabs.List
           aria-label="Theme"
-          className="inline-flex h-9 max-w-full items-center overflow-x-auto overflow-y-hidden rounded-lg border bg-muted p-1 text-sm font-medium [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className={`inline-flex max-w-full items-center overflow-x-auto overflow-y-hidden text-sm font-medium [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${plainTabs ? "h-11 gap-4" : "h-9 rounded-lg border bg-muted p-1"}`}
         >
           {THEMES.map((t) => (
             <Tabs.Tab
               key={t.id}
               value={t.id}
-              className="h-full shrink-0 rounded-md px-2.5 text-muted-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring data-[active]:bg-background data-[active]:text-foreground data-[active]:shadow-xs sm:px-3"
+              className={`h-full shrink-0 text-muted-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring data-[active]:text-foreground ${plainTabs ? "data-[active]:underline data-[active]:decoration-(--site-signal) data-[active]:decoration-1 data-[active]:underline-offset-[6px]" : "rounded-md px-2.5 data-[active]:bg-background data-[active]:shadow-xs sm:px-3"}`}
             >
               {t.name}
             </Tabs.Tab>

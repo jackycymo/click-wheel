@@ -29,7 +29,7 @@ export interface DocPageDef {
   sections: DocSectionDef[];
 }
 
-export const ANATOMY = `import { ClickWheel } from "@/components/click-wheel";
+export const ANATOMY = `import { ClickWheel } from "click-wheel";
 
 <ClickWheel.Root
   value={seconds}
@@ -84,17 +84,13 @@ export const PAGES: DocPageDef[] = [
     group: "Basics",
     title: "Getting Started",
     description:
-      "Click Wheel is a rotary input component for React. A slider with gearing instead of length: one revolution moves the value by exactly as much as you say. It ships unstyled; you bring the styles.",
+      "An unstyled rotary input for React. Supports dragging, scrolling, keyboard input, haptics and optional inertia.",
     sections: [
       {
         id: "installation",
         title: "Installation",
         blocks: [
           { type: "install" },
-          {
-            type: "p",
-            text: "The command copies ten files into `components/click-wheel`, including `core.ts`, the wheel math. There are no dependencies beyond React 19.2. You can also copy the folder by hand.",
-          },
         ],
       },
       {
@@ -104,7 +100,7 @@ export const PAGES: DocPageDef[] = [
           { type: "code", code: ANATOMY, lang: "tsx", title: "player.tsx" },
           {
             type: "p",
-            text: "`Root` owns the value and the gestures. `Ring` is the slider: drag around it, scroll over it, focus it. `Rotor` is decoration that rotates 1:1 with the finger. `Center` is a button; presses there never start a turn. Controlled with `value`, uncontrolled with `defaultValue`.",
+            text: "`Root` manages the value and interactions. `Ring` handles pointer, scroll and keyboard input. `Rotor` rotates with the gesture. `Center` is a button that does not start a drag. Use `value` for controlled state or `defaultValue` for uncontrolled state.",
           },
         ],
       },
@@ -114,7 +110,7 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: "The parts render with no classes. This is the same wheel with Tailwind classes: a ring, a tick texture that turns, a hub. Styling covers data attributes, CSS variables and the render prop.",
+            text: "Add styles with `className` or `style`. This example uses Tailwind classes.",
           },
           { type: "example", id: "basic", file: "basic.tsx" },
         ],
@@ -127,7 +123,7 @@ export const PAGES: DocPageDef[] = [
     group: "Basics",
     title: "Styling",
     description:
-      "Parts render plain elements with no classes and no visual styles. State reaches your CSS three ways.",
+      "Style the parts with data attributes, CSS variables or functions of state.",
     sections: [
       {
         id: "data-attributes",
@@ -135,7 +131,7 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: "Every part carries `data-dragging` while a pointer holds the ring, `data-coasting` while it spins on after a flick with no hand on it, and `data-disabled` when the wheel is disabled. Works with Tailwind variants or attribute selectors.",
+            text: "Every part exposes `data-dragging`, `data-coasting` and `data-disabled`. Use them with Tailwind variants or CSS attribute selectors.",
           },
           { type: "code", code: STYLE_TAILWIND, lang: "tsx", title: "Tailwind" },
         ],
@@ -146,12 +142,12 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: "`Root` sets three variables. `--click-wheel-fraction` is the value as a number from 0 to 1. `--click-wheel-turns` is the value's distance from `min` in revolutions, so 1.5 means one and a half laps; draw one ring per lap and the arc always matches the finger. `--click-wheel-rotation` is the cumulative angle of the rotor in degrees. During a gesture they update directly from the continuous position. When it ends, progress reconciles to the accepted value, including any step rounding. Changes to bounds and gearing also update progress.",
+            text: "`Root` sets three variables. `--click-wheel-fraction` is the value as a number from 0 to 1. `--click-wheel-turns` is the value's distance from `min` in revolutions, so 1.5 means one and a half revolutions. `--click-wheel-rotation` is the cumulative angle of the rotor in degrees. During a gesture they update directly from the continuous position. When it ends, progress reconciles to the accepted value, including any step rounding. Changes to bounds and gearing also update progress.",
           },
           { type: "code", code: STYLE_CSS, lang: "css", title: "wheel.css" },
           {
             type: "p",
-            text: "The `Rotor` sets `will-change: transform`, so a turn moves a cached layer instead of repainting the texture on every pointer sample. Do not put a transition on its `rotate`: a ramp that restarts on every touch sample stutters on phones.",
+            text: "`Rotor` sets `will-change: transform` to reduce repainting during rotation. Avoid CSS transitions on `rotate`; restarting a transition on each pointer update can cause stuttering.",
           },
         ],
       },
@@ -184,7 +180,6 @@ export const PAGES: DocPageDef[] = [
     href: "/docs/api",
     group: "Basics",
     title: "API Reference",
-    description: "Four parts, one namespace. Every part also takes the common props at the end.",
     sections: [
       {
         id: "anatomy",
@@ -210,15 +205,15 @@ export const PAGES: DocPageDef[] = [
               ["unitsPerTurn", "number", "100", "The gearing: how far one full revolution moves the value."],
               ["detent", "number", "0", "Units between detents. onTick fires for every crossing, including multiple crossings in one update. 0 disables detents."],
               ["haptics", "boolean", "true", "Pulse the motor when detents are crossed, where supported. Multiple crossings in one update share a pulse."],
-              ["inertia", "boolean", "false", "Keep spinning after a flick and slow down like an iOS scroll. A touch grabs the wheel; scroll and keys stop it."],
-              ["decelerationRate", "number", "0.998", "Velocity kept per millisecond while coasting. 0.998 is the iOS default; 0.99 stops fast."],
+              ["inertia", "boolean", "false", "Continue spinning after release. Touch resumes dragging; scroll and keyboard input stop coasting."],
+              ["decelerationRate", "number", "0.998", "Velocity retained per millisecond while coasting. Lower values stop sooner."],
               ["disabled", "boolean", "false", "Inert. Cancels an active interaction without committing, sets data-disabled on every part, and omits the hidden input from form submission."],
               ["name", "string", "—", "Renders a hidden input with this name, for forms."],
               ["onValueChange", "(value: number, details: ChangeDetails) => void", "—", "Fires on every change while dragging, coasting, scrolling or keying."],
               ["onValueCommitted", "(value: number, details: ChangeDetails) => void", "—", "Fires once when an interaction completes, even if the value did not change. With inertia, waits until the wheel settles. Cancelled interactions do not commit."],
               ["onInteractionChange", "(active: boolean, details: InteractionDetails) => void", "—", "Brackets pointer, scroll and keyboard interactions, including coasting. Always ends, including cancellation and unmount."],
               ["onDraggingChange", "(dragging: boolean) => void", "—", "Reports only when a pointer takes or releases the ring. Use onInteractionChange to track the full interaction, including coasting, scroll and keyboard input."],
-              ["onTick", "(direction: 1 | -1) => void", "—", "Fires per detent crossing. Wire up a click sound."],
+              ["onTick", "(direction: 1 | -1) => void", "—", "Fires per detent crossing, with the direction of travel."],
             ],
           },
         ],
@@ -257,7 +252,7 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: "Renders an `aria-hidden` `div` with `rotate: var(--click-wheel-rotation)`. Give it a texture; it does the turning. No props of its own.",
+            text: "Renders an `aria-hidden` `div` with `rotate: var(--click-wheel-rotation)`. Rotates with pointer movement. Has no additional props.",
           },
         ],
       },
@@ -302,7 +297,7 @@ export const PAGES: DocPageDef[] = [
             rows: [
               ["value", "number", "The current value."],
               ["dragging", "boolean", "A pointer is holding the ring."],
-              ["coasting", "boolean", "The ring is spinning on after a flick, with no hand on it."],
+              ["coasting", "boolean", "The ring is coasting after release."],
               ["disabled", "boolean", "The wheel is disabled."],
             ],
           },
@@ -319,7 +314,7 @@ export const PAGES: DocPageDef[] = [
             mono: [0, 1],
             rows: [
               ["haptic(ms?)", "(durationMs?: number) => void", "One pulse. The duration applies to the Vibration API, default 4."],
-              ["hapticsSupported()", "() => boolean", "True when this browser has any path to a pulse."],
+              ["hapticsSupported()", "() => boolean", "Whether the browser supports a haptics method used by the component."],
               ["<HapticTap />", "input props", "An invisible switch that covers its parent so a real tap ticks on iOS. The click still bubbles."],
             ],
           },
@@ -354,7 +349,7 @@ export const PAGES: DocPageDef[] = [
     href: "/examples/default",
     group: "Examples",
     title: "Default",
-    description: "The most basic setup for a click wheel, then the props that make it yours.",
+    description: "Examples of styling, gearing, detents, inertia and controlled state.",
     sections: [
       {
         id: "basic",
@@ -368,12 +363,20 @@ export const PAGES: DocPageDef[] = [
         ],
       },
       {
+        id: "theme-installation",
+        title: "Theme installation",
+        blocks: [
+          { type: "p", text: "The following examples use the shadcn theme. Add it to a project configured for shadcn before copying the examples." },
+          { type: "install", item: "click-wheel-shadcn" },
+        ],
+      },
+      {
         id: "gearing",
         title: "Gearing",
         blocks: [
           {
             type: "p",
-            text: "`unitsPerTurn` decides what one lap means. Thirty seconds for surgical edits, five minutes to cross a podcast. The range never changes; only the precision does.",
+            text: "`unitsPerTurn` sets the value change per revolution. A smaller value gives finer control without changing `min` or `max`.",
           },
           { type: "example", id: "gearing", file: "gearing.tsx" },
         ],
@@ -395,7 +398,7 @@ export const PAGES: DocPageDef[] = [
         blocks: [
           {
             type: "p",
-            text: "Opt in with `inertia` and a flick keeps the wheel spinning, slowing like an iOS scroll. Detents keep clicking as it coasts and a touch grabs it. `onDraggingChange` reports only the hand; `data-coasting` marks the spin after release; `onValueCommitted` waits until it settles. `decelerationRate` is the velocity kept per millisecond: 0.998 is the iOS default, 0.99 stops fast.",
+            text: "Enable `inertia` to keep the wheel spinning after release. Touching the ring resumes dragging; scroll and keyboard input stop coasting. `data-coasting` marks this state, and `onValueCommitted` fires when it settles. `decelerationRate` controls the slowdown: lower values stop sooner.",
           },
           { type: "example", id: "inertia", file: "inertia.tsx" },
         ],
@@ -437,4 +440,4 @@ export const EXAMPLE_PAGES = PAGES.filter((page) => page.group === "Examples");
 
 /** The shortest useful description, shared by llms.txt, metadata and the README. */
 export const SUMMARY =
-  "An unstyled, iPod-style rotary input for React. A slider with gearing instead of length: one revolution moves the value by `unitsPerTurn`. Parts in the Base UI style (Root, Ring, Rotor, Center), data attributes, CSS variables, haptics, zero dependencies.";
+  "An unstyled rotary input for React with pointer, scroll and keyboard controls, haptics and optional inertia.";

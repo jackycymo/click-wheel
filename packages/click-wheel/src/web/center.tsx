@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { useClickWheelContext, type ClickWheelState } from "./context";
-import { useRenderPart, useMergedRefs, type PartProps } from "./render";
+import { useClickWheelContext, type ClickWheelState } from "./context.js";
+import { useRenderPart, useMergedRefs, type PartProps } from "./render.js";
 
 export type CenterProps = PartProps<ClickWheelState, "button">;
 

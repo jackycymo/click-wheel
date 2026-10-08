@@ -1,15 +1,17 @@
 {
   "name": "click-wheel-workspace",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "website"
-  ],
   "scripts": {
-    "dev": "cd website && bun run dev",
-    "build": "cd website && bun run build",
+    "dev": "pnpm --filter website dev",
+    "build": "pnpm --filter website build",
     "lint": "eslint website/src packages/click-wheel/src/web",
-    "check": "cd packages/click-wheel && bun run check",
-    "test": "cd packages/click-wheel && bun run test"
+    "check": "pnpm --filter click-wheel check",
+    "test": "pnpm --filter click-wheel test",
+    "build:package": "pnpm --filter click-wheel build"
+  },
+  "packageManager": "pnpm@10.28.1",
+  "devDependencies": {
+    "eslint": "^9",
+    "eslint-config-next": "16.3.8"
   }
 }

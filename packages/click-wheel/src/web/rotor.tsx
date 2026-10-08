@@ -1,7 +1,7 @@
 "use client";
 
-import { useClickWheelContext, type ClickWheelState } from "./context";
-import { useRenderPart, type PartProps } from "./render";
+import { useClickWheelContext, type ClickWheelState } from "./context.js";
+import { useRenderPart, type PartProps } from "./render.js";
 
 export type RotorProps = PartProps<ClickWheelState, "div">;
 

@@ -62,12 +62,12 @@ export function Wheel({
         style={{ inset: grooves * GROOVE + 4 }}
         className="absolute cursor-grab rounded-full border border-border bg-muted shadow-sm outline-none ring-offset-2 ring-offset-background focus-visible:ring-2 focus-visible:ring-ring data-[dragging]:cursor-grabbing data-[disabled]:cursor-default data-[disabled]:opacity-50"
       >
-        <ClickWheel.Rotor className="absolute inset-0 rounded-full opacity-25 transition-opacity [background:repeating-conic-gradient(var(--ticks)_0_1deg,transparent_1deg_15deg)] [mask:radial-gradient(circle_closest-side,transparent_56%,black_57%_82%,transparent_83%)] data-[dragging]:opacity-60 data-[coasting]:opacity-60" />
+        <ClickWheel.Rotor className="absolute inset-0 rounded-full opacity-25 transition-opacity [background:repeating-conic-gradient(var(--ticks,var(--foreground))_0_1deg,transparent_1deg_15deg)] [mask:radial-gradient(circle_closest-side,transparent_56%,black_57%_82%,transparent_83%)] data-[dragging]:opacity-60 data-[coasting]:opacity-60" />
       </ClickWheel.Ring>
       <ClickWheel.Center
         aria-label={centerLabel}
         onClick={onCenterClick}
-        className="absolute left-1/2 top-1/2 flex size-[38%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-hub text-hub-foreground shadow-xs outline-none transition-transform active:scale-95 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 [&>svg]:size-[36%]"
+        className="absolute left-1/2 top-1/2 flex size-[38%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-border [background:var(--hub,var(--background))] [color:var(--hub-foreground,var(--foreground))] shadow-xs outline-none transition-transform active:scale-95 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 [&>svg]:size-[36%]"
       >
         {icon}
       </ClickWheel.Center>

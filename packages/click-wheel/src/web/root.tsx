@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ClickWheelContext, type ClickWheelContextValue, type ClickWheelState } from "./context";
+import { ClickWheelContext, type ClickWheelContextValue, type ClickWheelState } from "./context.js";
 import {
   angleAt,
   arcDelta,
@@ -19,9 +19,9 @@ import {
   unitsToDegrees,
   VELOCITY_WINDOW_MS,
   WHEEL_DEG_PER_PX,
-} from "../core";
-import { haptic } from "./haptics";
-import { useRenderPart, useMergedRefs, type PartProps } from "./render";
+} from "../core.js";
+import { haptic } from "./haptics.js";
+import { useRenderPart, useMergedRefs, type PartProps } from "./render.js";
 
 export type InteractionSource = "pointer" | "wheel" | "keyboard";
 

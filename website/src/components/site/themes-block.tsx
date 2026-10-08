@@ -1,12 +1,12 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { forReaders } from "@/lib/examples";
+import { InstallCommand } from "./install-command";
 import { CodeBlock } from "./code-block";
 import { ThemeGallery } from "./theme-gallery";
 
 // Statically scoped to src/themes so the build traces only that folder.
 const read = async (file: string) =>
-  forReaders(await fs.readFile(path.join(process.cwd(), "src", "themes", file), "utf8"));
+  fs.readFile(path.join(process.cwd(), "src", "themes", file), "utf8");
 
 export const DUOTONE_CSS = `.theme-navy-orange {
   --duo-primary: #12354e;
@@ -51,7 +51,7 @@ export const DUOTONE_CSS = `.theme-navy-orange {
 </div>`;
 
 /** The theme picker with live previews and the source of each skin. */
-export async function ThemesBlock() {
+export async function ThemesBlock({ plainTabs = false }: { plainTabs?: boolean }) {
   const [shadcnSrc, ipodSrc, ipodCss, retroSrc, retroCss, galleySrc, galleyCss] = await Promise.all([
     read("shadcn/wheel.tsx"),
     read("ipod/wheel.tsx"),
@@ -63,33 +63,41 @@ export async function ThemesBlock() {
   ]);
 
   return (
-    <ThemeGallery
-      sources={{
-        duotone: (
-          <>
-            <CodeBlock code={shadcnSrc} title="themes/shadcn/wheel.tsx" />
-            <CodeBlock code={DUOTONE_CSS} lang="css" title="globals.css" />
-          </>
-        ),
-        ipod: (
-          <>
-            <CodeBlock code={ipodSrc} title="themes/ipod/wheel.tsx" />
-            <CodeBlock code={ipodCss} lang="css" title="themes/ipod/ipod.css" />
-          </>
-        ),
-        retro: (
-          <>
-            <CodeBlock code={retroSrc} title="themes/retro/wheel.tsx" />
-            <CodeBlock code={retroCss} lang="css" title="themes/retro/retro.css" />
-          </>
-        ),
-        galley: (
-          <>
-            <CodeBlock code={galleySrc} title="themes/galley/wheel.tsx" />
-            <CodeBlock code={galleyCss} lang="css" title="themes/galley/galley.css" />
-          </>
-        ),
-      }}
-    />
+    <div className="space-y-4">
+      <p className="text-sm text-muted-foreground">Add a theme with the shadcn CLI, or copy its source. Each theme uses the click-wheel package.</p>
+      <ThemeGallery
+        plainTabs={plainTabs}
+        sources={{
+          duotone: (
+            <>
+              <InstallCommand item="click-wheel-shadcn" label="Install with shadcn/ui" />
+              <CodeBlock code={shadcnSrc} title="themes/shadcn/wheel.tsx" />
+              <CodeBlock code={DUOTONE_CSS} lang="css" title="globals.css" />
+            </>
+          ),
+          ipod: (
+            <>
+              <InstallCommand item="click-wheel-ipod" label="Install with shadcn/ui" />
+              <CodeBlock code={ipodSrc} title="themes/ipod/wheel.tsx" />
+              <CodeBlock code={ipodCss} lang="css" title="themes/ipod/ipod.css" />
+            </>
+          ),
+          retro: (
+            <>
+              <InstallCommand item="click-wheel-retro" label="Install with shadcn/ui" />
+              <CodeBlock code={retroSrc} title="themes/retro/wheel.tsx" />
+              <CodeBlock code={retroCss} lang="css" title="themes/retro/retro.css" />
+            </>
+          ),
+          galley: (
+            <>
+              <InstallCommand item="click-wheel-galley" label="Install with shadcn/ui" />
+              <CodeBlock code={galleySrc} title="themes/galley/wheel.tsx" />
+              <CodeBlock code={galleyCss} lang="css" title="themes/galley/galley.css" />
+            </>
+          ),
+        }}
+      />
+    </div>
   );
 }

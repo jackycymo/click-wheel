@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { useClickWheelContext, type ClickWheelState } from "./context";
-import { stepValue } from "../core";
-import { useRenderPart, useMergedRefs, type PartProps } from "./render";
+import { useClickWheelContext, type ClickWheelState } from "./context.js";
+import { stepValue } from "../core.js";
+import { useRenderPart, useMergedRefs, type PartProps } from "./render.js";
 
 export interface RingProps extends PartProps<ClickWheelState, "div"> {
   /** Formats the value for assistive tech, e.g. seconds to "1 min 20 sec". */

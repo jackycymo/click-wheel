@@ -76,7 +76,7 @@ export function IconChevron(props: Props) {
 export function IconWheel(props: Props) {
   return (
     <svg {...base} fill="currentColor" stroke="none" {...props}>
-      <path fillRule="evenodd" d="M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM17.2 12a5.2 5.2 0 1 1-10.4 0 5.2 5.2 0 0 1 10.4 0ZM18.8 6.6a1.4 1.4 0 1 1-2.8 0 1.4 1.4 0 0 1 2.8 0Z" />
+      <path fillRule="evenodd" d="M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM18.8 6.6a1.4 1.4 0 1 1-2.8 0 1.4 1.4 0 0 1 2.8 0Z" />
     </svg>
   );
 }
