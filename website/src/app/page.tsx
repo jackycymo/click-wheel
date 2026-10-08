@@ -44,7 +44,7 @@ export default function Home() {
             </div>
           </section>
 
-          <footer className="border-t pt-6 text-sm text-muted-foreground">
+          <footer className="flex flex-col justify-between gap-6 border-t pt-6 text-sm text-muted-foreground min-[761px]:flex-row">
             <div className="space-y-3">
               <MusicCredits />
               <p className="text-xs leading-relaxed">
@@ -54,6 +54,17 @@ export default function Home() {
                 {" · cropped"}
               </p>
             </div>
+            <p className="shrink-0 text-right">
+              By{" "}
+              <a
+                href="https://jackymo.me"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+              >
+                @jackycymo
+              </a>
+            </p>
           </footer>
         </div>
       </main>
