@@ -1,0 +1,31 @@
+Click Wheel film — soundtrack credits
+
+"A Little Shade" — HoliznaCC0, Lofi And Chill
+https://holiznacc0.bandcamp.com/track/a-little-shade
+CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/
+Adaptation: excerpts, level adjustment, fades, and scene-duration retiming.
+Used for the hero and inertia scenes.
+
+"funk guitar riff.wav" — mareproduction
+https://freesound.org/people/mareproduction/sounds/188088/
+CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/
+Adaptation: excerpts from the project's guitar-funk.mp3, level automation,
+four-stage all-pass phaser with automated speed, fades, and scene retiming.
+Used for the guitar and phaser scenes.
+
+"NPR News Now" — NPR, prerecorded US news intro
+https://www.npr.org/podcasts/500005/npr-news-now
+Source episode: 8am ET, October 10 | The latest headlines from NPR
+Broadcast audio © NPR. No Creative Commons or public-domain license.
+Permission for public promotional use has not been obtained.
+Adaptation: short excerpt, pitch-preserving time compression, band-limited
+filtering, synthesized tuning noise, level automation, fades, and scene retiming.
+Used for the radio scene. Recording source: https://prfx.byspotify.com/e/play.podtrac.com/npr-500005/npr.simplecastaudio.com/368f8510-314e-46f1-8d26-5b87ed6ab6eb/episodes/17bd9f67-721a-4bc3-97c3-7d1259ce8350/audio/128/default.mp3?awCollectionId=368f8510-314e-46f1-8d26-5b87ed6ab6eb&awEpisodeId=17bd9f67-721a-4bc3-97c3-7d1259ce8350&feed=O9WlY7a5&t=podcast&e=nx-s1-20261010-0800-long&p=500005&d=280&size=4586728
+
+Music metadata retained from public/audio/LICENSE.txt and
+public/audio/objects/LICENSE.txt; radio source and episode are listed above.
+Keep these credits with the film. Attribution does not grant broadcast reuse rights.
+
+Clicker sounds: synthesized from the project’s 1800 Hz square-wave blip,
+with an exponential decay and film mix gain. Timed to animated detent crossings
+in the hero and inertia scenes.
