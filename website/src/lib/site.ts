@@ -1,4 +1,5 @@
 export const SITE_NAME = "Click Wheel";
+export const GITHUB_URL = "https://github.com/jackycymo/click-wheel";
 
 /** Absolute site URL for links agents will follow (registry, llms.txt). */
 export function siteUrl(): string {

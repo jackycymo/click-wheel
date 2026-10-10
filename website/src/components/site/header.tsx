@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IconWheel } from "./icons";
+import { GITHUB_URL } from "@/lib/site";
+import { IconGitHub, IconWheel } from "./icons";
 
 const NAV = [
   ["Docs", "/docs", "/docs"],
@@ -30,6 +31,16 @@ export function Header() {
               {label}
             </Link>
           ))}
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-md px-1.5 py-1.5 transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring min-[761px]:px-2.5"
+          >
+            <IconGitHub className="size-[18px]" />
+            <span className="sr-only min-[761px]:not-sr-only">GitHub</span>
+            <span className="sr-only"> (opens in a new tab)</span>
+          </a>
         </nav>
       </div>
     </header>

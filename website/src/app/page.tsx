@@ -5,6 +5,7 @@ import { InstallCommand } from "@/components/site/install-command";
 import { ThemesBlock } from "@/components/site/themes-block";
 import { MusicCredits } from "@/components/site/music-credits";
 import { DesignReflection } from "@/components/site/design-reflection";
+import { GITHUB_URL } from "@/lib/site";
 
 export default function Home() {
   return (
@@ -55,6 +56,16 @@ export default function Home() {
               </p>
             </div>
             <p className="shrink-0 text-right">
+              <a
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+              >
+                Source on GitHub
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+              {" · "}
               By{" "}
               <a
                 href="https://jackymo.me"
