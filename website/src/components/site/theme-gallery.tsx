@@ -3,23 +3,23 @@
 import * as React from "react";
 import { Tabs } from "@base-ui/react/tabs";
 import { DuotoneDemo } from "@/themes/shadcn/demo";
-import { Demo as IpodDemo } from "@/themes/ipod/demo";
+import { Demo as ClassicPlayerDemo } from "@/themes/classic-player/demo";
 import { Demo as RetroDemo } from "@/themes/retro/demo";
 import { Demo as GalleyDemo } from "@/themes/galley/demo";
 import type { Mode } from "./use-player";
 
-export type ThemeId = "duotone" | "ipod" | "retro" | "galley";
+export type ThemeId = "duotone" | "classic-player" | "retro" | "galley";
 
 const THEMES: Array<{ id: ThemeId; name: string }> = [
   { id: "duotone", name: "Duotone" },
-  { id: "ipod", name: "iPod" },
+  { id: "classic-player", name: "Classic Player" },
   { id: "retro", name: "Retro" },
   { id: "galley", name: "Galley" },
 ];
 
 const DEMOS: Record<ThemeId, React.ComponentType<{ mode: Mode }>> = {
   duotone: DuotoneDemo,
-  ipod: IpodDemo,
+  "classic-player": ClassicPlayerDemo,
   retro: RetroDemo,
   galley: GalleyDemo,
 };

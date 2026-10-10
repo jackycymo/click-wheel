@@ -1,0 +1,128 @@
+/* Demo chrome only: the compact player body and its mono LCD. */
+.classic-player-body {
+  --classic-player-body: #f6f6f4;
+  --classic-player-body-2: #e9e9e6;
+  --classic-player-edge: rgba(0, 0, 0, 0.12);
+  --classic-player-lcd: #cdd5c9;
+  --classic-player-lcd-ink: #1e2a22;
+  --classic-player-lcd-dim: rgba(30, 42, 34, 0.5);
+  width: min(100%, 250px);
+  margin: 0 auto;
+  padding: 20px 20px 26px;
+  border-radius: 26px;
+  background: linear-gradient(180deg, #fcfcfb 0%, var(--classic-player-body) 30%, var(--classic-player-body-2) 100%);
+  border: 1px solid var(--classic-player-edge);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 14px 30px -18px rgba(0, 0, 0, 0.4);
+}
+
+.dark .classic-player-body {
+  --classic-player-body: #212123;
+  --classic-player-body-2: #161618;
+  --classic-player-edge: rgba(255, 255, 255, 0.1);
+  --classic-player-lcd: #1a2834;
+  --classic-player-lcd-ink: #bdd5e8;
+  --classic-player-lcd-dim: rgba(189, 213, 232, 0.5);
+  background: linear-gradient(180deg, #2c2c2f 0%, var(--classic-player-body) 30%, var(--classic-player-body-2) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 14px 30px -18px rgba(0, 0, 0, 0.9);
+}
+
+.classic-player-screen {
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 4 / 3.1;
+  padding: 5px 8px 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  background: var(--classic-player-lcd);
+  color: var(--classic-player-lcd-ink);
+  /* Tiny5 sits on a 5px grid; 15px is three device pixels per dot. */
+  font-family: var(--font-pixel);
+  font-size: 15px;
+  line-height: 1.25;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+.classic-player-bar {
+  display: grid;
+  grid-template-columns: 22px 1fr 22px;
+  align-items: center;
+  text-align: center;
+  font-weight: 700;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--classic-player-lcd-ink);
+}
+
+.classic-player-play {
+  font-size: 9px;
+  text-align: left;
+}
+
+.classic-player-batt {
+  position: relative;
+  justify-self: end;
+  width: 18px;
+  height: 9px;
+  padding: 1px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+
+.classic-player-batt::after {
+  content: "";
+  position: absolute;
+  right: -3px;
+  top: 2px;
+  width: 2px;
+  height: 3px;
+  background: currentColor;
+}
+
+.classic-player-batt i {
+  display: block;
+  height: 100%;
+  width: 72%;
+  background: currentColor;
+}
+
+.classic-player-meta {
+  flex: 1;
+  padding-top: 8px;
+  text-align: center;
+}
+
+.classic-player-title {
+  font-weight: 700;
+}
+
+.classic-player-meta p + p {
+  color: var(--classic-player-lcd-dim);
+}
+
+.classic-player-progress {
+  height: 9px;
+  padding: 1px;
+  border: 1px solid var(--classic-player-lcd-ink);
+  border-radius: 2px;
+}
+
+.classic-player-progress i {
+  display: block;
+  height: 100%;
+  background: var(--classic-player-lcd-ink);
+}
+
+.classic-player-times {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 3px;
+  font-size: 15px;
+}
+
+.classic-player-slot {
+  width: 78%;
+  margin: 22px auto 0;
+}

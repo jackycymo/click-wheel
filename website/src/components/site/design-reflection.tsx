@@ -5,17 +5,7 @@ import { Newsreader } from "next/font/google";
 
 const newsreader = Newsreader({ subsets: ["latin"], weight: "400" });
 
-const objects = [
-  { kind: "braun", name: "Braun SK2", file: "braun-sk2-detail.jpg", width: 2000, height: 1333, crop: [350, 0, 1333], alt: "The tuning knob, frequency scale, and perforated grille of a Braun SK2 radio" },
-  { kind: "sculptor", name: "Timemore Sculptor", file: "sculptor-detail.jpg", width: 1065, height: 1420, crop: [180, 720, 700], alt: "A close detail of the numbered grind adjustment dial on a black Timemore Sculptor" },
-  { kind: "amplifier", name: "Fender Deluxe Reverb", file: "fender-deluxe-reverb-detail.jpg", width: 2000, height: 2000, crop: [550, 750, 650], alt: "The silver-capped volume knob and numbered skirt on a vintage Fender Deluxe Reverb amplifier" },
-  { kind: "guitar", name: "Fender Stratocaster", file: "stratocaster-volume-detail.jpg", width: 5184, height: 3456, crop: [2960, 840, 650], alt: "The ribbed white volume knob and gold numbers on a Fender Stratocaster" },
-  { kind: "fellow", name: "Fellow Stagg EKG", file: "stagg-ekg-detail.png", width: 3000, height: 3000, crop: [1840, 1870, 600], alt: "The temperature dial and menu button on a black Fellow Stagg EKG Pro base" },
-  { kind: "compressor", name: "Universal Audio 1176LN", file: "1176ln-detail.jpg", width: 5787, height: 3858, crop: [440, 1520, 930], alt: "The silver input knob and white decibel scale of a Universal Audio 1176LN compressor" },
-  { kind: "espresso", name: "La Marzocco Linea Micra", file: "linea-micra-steam-knob.png", width: 4000, height: 2667, crop: [1370, 480, 1150], alt: "A close detail of the fluted steam knob on a white La Marzocco Linea Micra" },
-  { kind: "ipod", name: "Apple iPod", file: "ipod-4g-click-wheel.jpg", width: 1831, height: 3007, crop: [205, 1375, 1400], alt: "The gray Click Wheel, playback symbols, and white center button on a fourth-generation iPod" },
-  { kind: "mxr", name: "MXR Phase 90", file: "mxr-phase-90.jpg", width: 1400, height: 1400, crop: [400, 130, 600], alt: "The black speed knob and MXR logo against the orange casing of a Phase 90 guitar pedal" },
-] as const;
+const objects = ["braun", "sculptor", "amplifier", "guitar", "fellow", "compressor", "espresso", "ipod", "mxr"] as const;
 
 export function DesignReflection() {
   return (
@@ -43,27 +33,31 @@ export function DesignReflection() {
 
         <ReferenceAudioProvider>
         <div className="grid min-w-0 grid-cols-3 gap-1.5 min-[761px]:gap-2.5" aria-label="Details of everyday rotary controls">
-          {objects.map(({ kind, file, width, height, crop: [x, y, size], alt }) => (
-            <ReferenceControl key={file} kind={kind}>
-              <Image
-                className="absolute max-w-none"
-                src={`/images/objects/${file}`}
-                alt={alt}
-                width={width}
-                height={height}
-                quality={90}
-                sizes={`(max-width: 1023px) ${Math.ceil(33 * width / size)}vw, ${Math.ceil(245 * width / size)}px`}
-                style={{
-                  width: `${width / size * 100}%`,
-                  height: `${height / size * 100}%`,
-                  left: `${-x / size * 100}%`,
-                  top: `${-y / size * 100}%`,
-                }}
-              />
+          {objects.map(kind => (
+            <ReferenceControl key={kind} kind={kind}>
+              {kind === "ipod" ? (
+                <Image
+                  className="absolute max-w-none"
+                  src="/images/objects/ipod-4g-click-wheel.jpg"
+                  alt="The gray wheel and white center button on a fourth-generation Apple iPod"
+                  width={1831}
+                  height={3007}
+                  quality={90}
+                  sizes="(max-width: 1023px) 44vw, 321px"
+                  style={{ width: "130.786%", height: "214.786%", left: "-14.643%", top: "-98.214%" }}
+                />
+              ) : null}
             </ReferenceControl>
           ))}
         </div>
         </ReferenceAudioProvider>
+        <p className="text-xs leading-relaxed text-muted-foreground lg:col-span-2">
+          Independent dial studies inspired by the products referenced here. This
+          project is not affiliated with, sponsored by, or endorsed by their
+          manufacturers. Brand and product names identify the original products;
+          the interactions and sound effects are our own approximations, not
+          manufacturer simulations. Radio and music playback use the credited sources.
+        </p>
       </div>
     </section>
   );

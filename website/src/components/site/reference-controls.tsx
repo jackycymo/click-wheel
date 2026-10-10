@@ -152,7 +152,7 @@ function Espresso({ value }: { value: number }) {
           <circle r="174" fill={`url(#${id}-silver)`} stroke="#090e16" strokeWidth="5" />
           <circle r="163" fill="none" stroke="#9aa3a9" strokeWidth="1.5" />
           <text fill="#737b82" fontFamily="Arial, sans-serif" fontSize="27" fontWeight="500" textLength="866" lengthAdjust="spacing">
-            <textPath href={`#${id}-lettering`}>MICRA · MICRA · MICRA · MICRA · </textPath>
+            <textPath href={`#${id}-lettering`}>STEAM · STEAM · STEAM · STEAM · </textPath>
           </text>
           <path d="M-41-26A49 49 0 0 1 34-35M41 26A49 49 0 0 1-34 35" fill="none" stroke="#8a9299" strokeWidth="4" />
           <path d="M-42-28A49 49 0 0 1 32-38M42 28A49 49 0 0 1-32 38" fill="none" stroke="#f7f8f7" strokeWidth="3" />
@@ -182,7 +182,7 @@ function IPod({ playing, onToggle }: { playing: boolean; onToggle: () => void })
 
 function MXR() {
   return <>
-    <div aria-hidden="true" className="absolute inset-0 bg-[#ff911f] bg-[radial-gradient(#ffd48b99_0.6px,transparent_0.9px),linear-gradient(110deg,#ffa333,#ff8d19)] bg-size-[3px_3px,100%_100%]" /><span aria-hidden="true" className="absolute top-[62%] left-1/2 -translate-x-1/2 text-[7cqw] font-black text-[#20140b]">SPEED</span><span aria-hidden="true" className="absolute top-[79%] left-[23%] flex h-[18%] w-[54%] items-center justify-center rounded-[4cqw] border-[1.7cqw] border-[#1f150c] text-[16cqw] leading-none font-black tracking-[-0.08em] text-[#1f150c]">MXR</span><span aria-hidden="true" className="absolute bottom-[6%] left-[2%] -rotate-90 text-[4cqw] font-bold text-[#2e1c0d]">OUTPUT</span><span aria-hidden="true" className="absolute bottom-[6%] right-[3%] rotate-90 text-[4cqw] font-bold text-[#2e1c0d]">INPUT</span>
+    <div aria-hidden="true" className="absolute inset-0 bg-[#ff911f] bg-[radial-gradient(#ffd48b99_0.6px,transparent_0.9px),linear-gradient(110deg,#ffa333,#ff8d19)] bg-size-[3px_3px,100%_100%]" /><span aria-hidden="true" className="absolute top-[62%] left-1/2 -translate-x-1/2 text-[7cqw] font-black text-[#20140b]">SPEED</span><span aria-hidden="true" className="absolute bottom-[6%] left-[2%] -rotate-90 text-[4cqw] font-bold text-[#2e1c0d]">OUTPUT</span><span aria-hidden="true" className="absolute bottom-[6%] right-[3%] rotate-90 text-[4cqw] font-bold text-[#2e1c0d]">INPUT</span>
     <ClickWheel.Ring aria-label={settings.mxr.label} aria-describedby="help-mxr" getAriaValueText={value => formatValue("mxr", value)} className={`absolute top-[12%] left-[27%] size-[46%] rounded-full bg-[#090a08] shadow-[3px_5px_7px_#71340999,inset_0_1px_2px_#63452d] ${focusRing}`}>
       <MovingFace className="bg-[conic-gradient(from_15deg,#0d0e0c_0deg,#4a4d49_22deg,#050605_60deg,#0b0c0a_165deg,#9fa5a3_230deg,#d4d8d3_260deg,#222724_285deg,#080908_315deg)]" start={-135} sweep={270}>
         <div className="absolute inset-[9%] bg-[#050605] [clip-path:polygon(50%_0%,73%_8%,89%_26%,100%_50%,90%_73%,73%_90%,50%_100%,26%_90%,9%_74%,0%_50%,9%_25%,26%_9%)]" />
@@ -210,7 +210,7 @@ function ReferenceDial({ kind, value, onValueChange, playing, onToggle, onIntera
     unitsPerTurn={(config.max - config.min) * 360 / config.sweep}
     detent={kind === "braun" ? 1 : kind === "sculptor" ? 0.5 : config.step}
     className={`absolute inset-0 [&_[role=slider]]:z-10 ${className}`}
-    aria-label={`${config.name} interactive preview`}
+    aria-label={`Dial study inspired by ${config.name}`}
   >
     <div className="absolute inset-0 [&_[role=slider]]:touch-none">
       {kind === "braun" ? <Braun /> : kind === "sculptor" ? <Sculptor /> : kind === "amplifier" ? <Amplifier /> : kind === "guitar" ? <Guitar /> : kind === "fellow" ? <Fellow /> : kind === "compressor" ? <Compressor /> : kind === "espresso" ? <Espresso value={value} /> : kind === "ipod" ? <IPod playing={playing} onToggle={onToggle} /> : <MXR />}
@@ -218,7 +218,7 @@ function ReferenceDial({ kind, value, onValueChange, playing, onToggle, onIntera
   </ClickWheel.Root>;
 }
 
-export function ReferenceControl({ kind, children }: { kind: ReferenceKind; children: ReactNode }) {
+export function ReferenceControl({ kind, children }: { kind: ReferenceKind; children?: ReactNode }) {
   const config = settings[kind];
   const engine = useReferenceAudio();
   const value = useSyncExternalStore(engine.subscribe, () => engine.getValue(kind), () => config.initial);
@@ -275,7 +275,11 @@ export function ReferenceControl({ kind, children }: { kind: ReferenceKind; chil
     }
   }}>
     <figure ref={figure} data-reference={kind} className="group/reference relative aspect-square min-w-0 overflow-clip bg-[#eeede7] [container-type:inline-size]">
-      <div className="pointer-events-none absolute inset-0">{children}</div>
+      {children ? <div className="pointer-events-none absolute inset-0">{children}</div> : (
+        <div inert aria-hidden="true" className="pointer-events-none absolute inset-0 [@media(min-width:761px)_and_(hover:hover)]:hidden">
+          <ReferenceDial {...dialProps} />
+        </div>
+      )}
       <div
         className="absolute inset-0 hidden [@media(min-width:761px)_and_(hover:hover)]:block"
         onPointerEnter={event => {
@@ -314,18 +318,18 @@ export function ReferenceControl({ kind, children }: { kind: ReferenceKind; chil
           if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Home", "End", "PageUp", "PageDown"].includes(event.key)) { activate(); engine.interact(); }
         }}
       >
-        <ReferenceDial {...dialProps} className="opacity-0 transition-opacity duration-300 group-hover/reference:opacity-100 group-has-[:focus-visible]/reference:opacity-100 data-[dragging]:opacity-100 data-[coasting]:opacity-100 motion-reduce:transition-none" />
+        <ReferenceDial {...dialProps} className={children ? "opacity-0 transition-opacity duration-300 group-hover/reference:opacity-100 group-has-[:focus-visible]/reference:opacity-100 data-[dragging]:opacity-100 data-[coasting]:opacity-100 motion-reduce:transition-none" : ""} />
         {active ? <ReferenceAudioToolbar overlay /> : null}
       </div>
-      <Dialog.Trigger aria-label={`Try ${config.name}`} className="absolute inset-0 cursor-zoom-in touch-manipulation outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#606b35] [@media(min-width:761px)_and_(hover:hover)]:hidden" />
-      <figcaption className="sr-only">{config.name}. Interactive dial preview.</figcaption>
+      <Dialog.Trigger aria-label={`Try the dial study inspired by ${config.name}`} className="absolute inset-0 cursor-zoom-in touch-manipulation outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#606b35] [@media(min-width:761px)_and_(hover:hover)]:hidden" />
+      <figcaption className="sr-only">Dial study inspired by {config.name}.</figcaption>
       <p className="sr-only" id={`help-${kind}`}>Drag around the dial, scroll, or use the arrow keys. Home and End select the limits.</p>
     </figure>
     <Dialog.Portal>
       <Dialog.Backdrop className="fixed inset-0 z-50 bg-black/35 transition-opacity duration-200 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 motion-reduce:transition-none" />
       <Dialog.Popup className="fixed bottom-0 left-1/2 z-50 max-h-[calc(100svh-1rem)] w-full max-w-[520px] -translate-x-1/2 overflow-y-auto overscroll-contain rounded-t-2xl border border-[#cbcbbf] bg-[#eeede7] p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-[#30332b] shadow-[0_-12px_60px_#0002] outline-none transition-[opacity,translate] duration-200 data-[starting-style]:translate-y-6 data-[ending-style]:translate-y-6 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 motion-reduce:transition-none">
         <div className="mb-4 flex items-center justify-between gap-4">
-          <Dialog.Title className="text-base font-medium tracking-tight">{config.name}</Dialog.Title>
+          <Dialog.Title className="text-base font-medium tracking-tight">Dial study inspired by {config.name}</Dialog.Title>
           <Dialog.Close className="min-h-11 shrink-0 cursor-pointer rounded-md px-3 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">Close</Dialog.Close>
         </div>
         <div data-reference-expanded={kind} className="relative mx-auto aspect-square w-[min(100%,calc(100svh-16rem))] overflow-clip bg-[#eeede7] [container-type:inline-size]">
@@ -334,6 +338,8 @@ export function ReferenceControl({ kind, children }: { kind: ReferenceKind; chil
         <ReferenceAudioToolbar />
         <Dialog.Description className="mt-2 text-center text-xs leading-relaxed text-[#606354]">
           {kind === "ipod" ? "Drag to seek. Press the center to play or pause." : kind === "braun" ? "Turn to explore eight live stations around the world." : kind === "espresso" ? "Turn clockwise to open the steam valve." : kind === "fellow" ? "Turn up the temperature to preview a rolling boil." : "Drag around the dial to hear the difference."}
+          {" "}Independent interaction and audio demonstration; not affiliated with
+          or endorsed by the manufacturer.
         </Dialog.Description>
       </Dialog.Popup>
     </Dialog.Portal>

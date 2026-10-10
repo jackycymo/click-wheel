@@ -52,10 +52,10 @@ export const DUOTONE_CSS = `.theme-navy-orange {
 
 /** The theme picker with live previews and the source of each skin. */
 export async function ThemesBlock({ plainTabs = false }: { plainTabs?: boolean }) {
-  const [shadcnSrc, ipodSrc, ipodCss, retroSrc, retroCss, galleySrc, galleyCss] = await Promise.all([
+  const [shadcnSrc, classicPlayerSrc, classicPlayerCss, retroSrc, retroCss, galleySrc, galleyCss] = await Promise.all([
     read("shadcn/wheel.tsx"),
-    read("ipod/wheel.tsx"),
-    read("ipod/ipod.css"),
+    read("classic-player/wheel.tsx"),
+    read("classic-player/classic-player.css"),
     read("retro/wheel.tsx"),
     read("retro/retro.css"),
     read("galley/wheel.tsx"),
@@ -75,11 +75,11 @@ export async function ThemesBlock({ plainTabs = false }: { plainTabs?: boolean }
               <CodeBlock code={DUOTONE_CSS} lang="css" title="globals.css" />
             </>
           ),
-          ipod: (
+          "classic-player": (
             <>
-              <InstallCommand item="click-wheel-ipod" label="Install with shadcn/ui" />
-              <CodeBlock code={ipodSrc} title="themes/ipod/wheel.tsx" />
-              <CodeBlock code={ipodCss} lang="css" title="themes/ipod/ipod.css" />
+              <InstallCommand item="click-wheel-classic-player" label="Install with shadcn/ui" />
+              <CodeBlock code={classicPlayerSrc} title="themes/classic-player/wheel.tsx" />
+              <CodeBlock code={classicPlayerCss} lang="css" title="themes/classic-player/classic-player.css" />
             </>
           ),
           retro: (

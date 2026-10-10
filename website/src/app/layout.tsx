@@ -11,7 +11,7 @@ const tiny5 = Tiny5({ variable: "--font-tiny5", weight: "400", subsets: ["latin"
 const doto = Doto({ variable: "--font-doto", subsets: ["latin"] });
 const archivo = Archivo({ variable: "--font-archivo", subsets: ["latin"] });
 const dmSans = DM_Sans({ variable: "--font-dm-sans", subsets: ["latin"] });
-const description = "Bring the joy of the iPod style click wheel to web.";
+const description = "Bring tactile wheel controls to the web.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),

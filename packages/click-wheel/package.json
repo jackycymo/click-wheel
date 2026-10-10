@@ -1,7 +1,7 @@
 {
   "name": "click-wheel",
   "version": "0.1.0",
-  "description": "The iPod click wheel for React. Unstyled parts, gearing instead of length, detents, haptics, inertia.",
+  "description": "A tactile rotary input for React. Unstyled parts, gearing instead of length, detents, haptics, inertia.",
   "type": "module",
   "sideEffects": false,
   "exports": {

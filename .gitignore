@@ -31,3 +31,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# Local copies of photographs without publication permission
+/output/legal-review/reference-only/

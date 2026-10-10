@@ -34,14 +34,14 @@ async function readCore(target: string): Promise<SourceFile> {
 
 const THEME_FILES: Record<ThemeId, string[]> = {
   shadcn: ["wheel.tsx"],
-  ipod: ["wheel.tsx", "ipod.css"],
+  "classic-player": ["wheel.tsx", "classic-player.css"],
   retro: ["wheel.tsx", "retro.css"],
   galley: ["wheel.tsx", "galley.css"],
 };
 
 const THEME_META: Record<ThemeId, { title: string; description: string }> = {
   shadcn: { title: "Click Wheel — shadcn skin", description: "The stock skin: shadcn/ui tokens and Tailwind classes." },
-  ipod: { title: "Click Wheel — iPod skin", description: "iPod classic: plain CSS, printed glyphs, a domed hub." },
+  "classic-player": { title: "Click Wheel — Classic Player skin", description: "Classic Player: plain CSS, printed glyphs, a domed hub." },
   retro: { title: "Click Wheel — Retro skin", description: "Retro hardware, soft: a knob raised from a pressed-in well, one accent index, a scale that fills. Four accents." },
   galley: { title: "Click Wheel — Galley skin", description: "The knob on an aircraft coffee maker: soft metal, a knurled rim, a pressed-in hub, indicator segments." },
 };
@@ -80,7 +80,7 @@ export async function registryItem(name: string) {
       type: "registry:component",
       title: SITE_NAME,
       description:
-        "The web component: an unstyled, iPod-style rotary input for React. Parts: Root, Ring, Rotor, Center. Zero dependencies.",
+        "The web component: an unstyled rotary input for React. Parts: Root, Ring, Rotor, Center. Zero dependencies.",
       dependencies: [],
       files: toRegistryFiles(await readComponentFiles()),
       docs: `Requires React 19.2 or newer. Import { ClickWheel } from "@/components/click-wheel". Docs: ${site}/docs.md`,

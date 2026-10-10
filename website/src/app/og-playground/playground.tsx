@@ -28,7 +28,7 @@ export function OgPlayground() {
               <span>Click</span>
               <span>Wheel</span>
             </h1>
-            <p>Bring the joy of the iPod style click wheel to web.</p>
+            <p>Bring tactile wheel controls to the web.</p>
           </div>
         </div>
       </div>

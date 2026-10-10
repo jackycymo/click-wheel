@@ -12,7 +12,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ nam
   const { name } = await params;
   if (!name.endsWith(".json")) return new Response("Not found", { status: 404 });
   const id = name.slice(0, -".json".length);
-  const item = id === "registry" ? registryIndex() : await registryItem(id);
+  const canonicalId = id === "click-wheel-ipod" ? "click-wheel-classic-player" : id;
+  const item = id === "registry" ? registryIndex() : await registryItem(canonicalId);
   if (!item) return new Response("Not found", { status: 404 });
   return Response.json(item);
 }

@@ -15,7 +15,7 @@ export default function Home() {
           <h1 id="hero-title" className="text-[clamp(48px,14.4vw,60px)] leading-[0.98] font-semibold tracking-[-0.08em] min-[421px]:text-[clamp(56px,12vw,88px)] min-[761px]:text-[clamp(64px,9.7vw,140px)]">Click Wheel</h1>
           <div>
             <p className="max-w-[440px] text-base leading-normal tracking-[-0.02em] min-[761px]:text-[17px] min-[1101px]:text-[19px]">
-              Bring the joy of the iPod style click wheel back. A tactile React component for
+              Bring tactile wheel controls to the web. A tactile React component for
               playback, volume, and everything you used to slide.
             </p>
             <Link
