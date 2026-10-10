@@ -2,7 +2,7 @@
 
 An unstyled rotary input for React. Supports drag, scroll, keyboard input, haptics and optional inertia.
 
-[![Click Wheel demo](website/public/demo/click-wheel.gif)](website/public/demo/click-wheel.mp4)
+[Watch the demo](https://github.com/jackycymo/click-wheel/raw/refs/heads/main/website/public/demo/click-wheel.mp4)
 
 20-second demo with sound · [Video credits](website/public/demo/click-wheel-credits.txt)
 
@@ -34,12 +34,5 @@ pnpm dlx shadcn@latest add https://click-wheel.jackymo.me/r/click-wheel-shadcn.j
 pnpm install
 pnpm dev
 ```
-
-The site runs at `http://localhost:3000`. Run `pnpm check`, `pnpm test`, `pnpm lint` and `pnpm build` before publishing. Tests use Bun's test runner.
-
-After editing the package, run `pnpm build:package` to update the site's workspace dependency.
-
-Absolute links default to `https://click-wheel.jackymo.me`. Set
-`NEXT_PUBLIC_SITE_URL` to override this for another deployment.
 
 MIT. See [LICENSE](packages/click-wheel/LICENSE). Demo assets retain their own licenses.
