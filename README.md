@@ -4,8 +4,6 @@ An unstyled rotary input for React. Supports drag, scroll, keyboard input, hapti
 
 https://github.com/user-attachments/assets/1ec59da0-32c7-4557-ab15-5e41e61b11ba
 
-20-second demo with sound · [Video credits](website/public/demo/click-wheel-credits.txt)
-
 [Docs](https://click-wheel.jackymo.me/docs) · [Examples](https://click-wheel.jackymo.me/examples/default) · [Themes](https://click-wheel.jackymo.me/examples/themes)
 
 ## Install
