@@ -2,7 +2,7 @@
 
 An unstyled rotary input for React. Supports drag, scroll, keyboard input, haptics and optional inertia.
 
-[Watch the demo](https://github.com/jackycymo/click-wheel/raw/refs/heads/main/website/public/demo/click-wheel.mp4)
+https://github.com/user-attachments/assets/1ec59da0-32c7-4557-ab15-5e41e61b11ba
 
 20-second demo with sound · [Video credits](website/public/demo/click-wheel-credits.txt)
 
