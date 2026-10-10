@@ -14,6 +14,7 @@ export function getRadioMedia(index = 0) {
     const audio = document.createElement("audio");
     audio.crossOrigin = "anonymous";
     audio.preload = "none";
+    audio.muted = true;
     audio.hidden = true;
     audio.dataset.previewRadio = String(index);
     document.body.append(audio);
@@ -25,6 +26,9 @@ export function getRadioMedia(index = 0) {
 function unlockRadioMedia(index: number) {
   const stream = getRadioMedia(index);
   if (stream.unlocked || stream.unlocking) return;
+  // Only prime silence or the selected station; a gesture elsewhere must not
+  // restart a paused radio stream.
+  if (stream.audio.getAttribute("src") && !stream.audio.src.endsWith("/audio/objects/silence.wav") && stream.audio.muted) return;
   if (!stream.audio.getAttribute("src")) stream.audio.src = "/audio/objects/silence.wav";
   stream.unlocking = true;
   // Safari grants HTML media permission per element, independently of AudioContext.
@@ -32,7 +36,10 @@ function unlockRadioMedia(index: number) {
   void stream.audio.play().then(() => {
     stream.unlocked = true;
     if (stream.audio.src.endsWith("/audio/objects/silence.wav")) stream.audio.pause();
-  }).catch(() => {}).finally(() => { stream.unlocking = false; });
+  }).catch(() => {}).finally(() => {
+    stream.unlocking = false;
+    listeners.forEach(listener => listener());
+  });
 }
 
 export function getAudioContext(): AudioContext {

@@ -95,14 +95,23 @@ export class ReferenceAudioEngine {
 
   interact() {
     // A direct dial gesture also unlocks audio, but never overrides an explicit mute.
-    if (!this.snapshot.muted) void enableAudio().catch(() => this.publish({ status: "blocked" }));
+    if (!this.snapshot.muted) void this.enableCurrentAudio().catch(() => this.publish({ status: "blocked" }));
   }
 
   async enable() {
     this.silence();
     this.publish({ muted: false, status: this.snapshot.kind ? "blocked" : "idle", message: "" });
     try { sessionStorage.setItem(MUTE_KEY, "false"); } catch { /* Optional preference storage. */ }
-    try { await enableAudio(); } catch { this.publish({ status: "blocked" }); }
+    try { await this.enableCurrentAudio(); } catch { this.publish({ status: "blocked" }); }
+  }
+
+  private enableCurrentAudio() {
+    if (this.snapshot.kind === "braun") {
+      this.radio ??= new RadioBuffer();
+      this.radio.retain();
+      this.radio.prepare(this.snapshot.value);
+    }
+    return enableAudio();
   }
 
   mute() {
@@ -195,6 +204,7 @@ export class ReferenceAudioEngine {
       if (this.snapshot.kind === "ipod") this.publish({ position });
       if (["guitar", "amplifier", "compressor", "mxr"].includes(this.snapshot.kind ?? "")) this.guitarPosition = position;
     }
+    if (!this.voice && this.snapshot.kind === "braun") this.radio?.release();
     this.voice?.stop();
     this.voice = null;
     clearInterval(this.meterTimer);

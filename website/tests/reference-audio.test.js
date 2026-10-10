@@ -42,6 +42,7 @@ class AudioContextStub extends EventTarget {
 
 class MediaStub {
   src = "";
+  muted = false;
   paused = true;
   readyState = 0;
   loads = 0;
@@ -282,12 +283,13 @@ test("radio intent prepares the current station and neighbors without claiming p
   expect([0, 1, 2].map(index => getRadioMedia(index).audio.dataset.radioStation).sort()).toEqual(["Jazz Sakura", "RTHK Radio 1", "Radio Swiss Jazz"]);
   expect(engine.getSnapshot().kind).toBeNull();
   expect(engine.getSnapshot().level).toBe(0);
+  expect([0, 1, 2].every(index => getRadioMedia(index).audio.paused && getRadioMedia(index).audio.muted)).toBe(true);
   engine.mute();
   engine.prepareRadio();
   expect([0, 1, 2].every(index => getRadioMedia(index).audio.src === "")).toBe(true);
 });
 
-test("a warm adjacent station plays immediately without restarting its connection", async () => {
+test("a preloaded adjacent station reuses its connection and pauses the previous station", async () => {
   await enableAudio();
   const buffer = new RadioBuffer();
   buffer.prepare(44.4);
@@ -297,10 +299,13 @@ test("a warm adjacent station plays immediately without restarting its connectio
   const status = mock();
   const voice = radioVoice(getAudioContext(), getAudioContext().destination, status, buffer);
   voice.update(44.4);
+  await settle();
   voice.update(59.2);
+  await settle();
   expect(status).toHaveBeenLastCalledWith("playing");
   expect(japan.audio.loads).toBe(loads);
   expect(japan.audio.paused).toBe(false);
+  expect(buffer.slots.filter(slot => !slot.audio.paused)).toEqual([japan]);
   voice.stop();
   buffer.dispose();
 });
@@ -317,6 +322,7 @@ test("a tuned radio keeps a noise floor while detuning masks the station with st
   const voice = radioVoice(context, context.destination, () => {}, buffer);
   try {
     voice.update(44.4);
+    await settle();
     const tunedNoise = gains.at(-1).gain.value;
     expect(tunedNoise).toBeGreaterThan(0);
     expect(gains.slice(1, 4).filter(node => node.gain.value > 0)).toHaveLength(1);
@@ -357,6 +363,127 @@ test("brief reverse tuning preserves the already-buffered station ahead", async 
   buffer.prepare(59.2);
   buffer.prepare(74);
   expect(melbourne.audio.loads).toBe(loads);
+  await settle();
   expect(melbourne.ready).toBe(true);
   buffer.dispose();
+});
+
+test("rapid radio tuning never plays two station media elements at once", async () => {
+  await enableAudio();
+  engine.activate("braun", 44.4);
+  for (const value of [59.2, 14.8, 88.8, 0, 100, 44.4]) {
+    engine.update("braun", value);
+    expect([0, 1, 2].filter(index => !getRadioMedia(index).audio.paused)).toHaveLength(1);
+    await settle();
+    expect([0, 1, 2].filter(index => !getRadioMedia(index).audio.paused)).toHaveLength(1);
+  }
+});
+
+test("switching tiles pauses radio streams before the next sound finishes loading", async () => {
+  await enableAudio();
+  engine.activate("braun", 44.4);
+  await settle();
+  const radios = [0, 1, 2].map(index => getRadioMedia(index).audio);
+  expect(radios.some(audio => !audio.paused)).toBe(true);
+  let resolve;
+  globalThis.fetch = mock(() => new Promise(done => { resolve = done; }));
+  engine.activate("sculptor", 8);
+  expect(engine.getSnapshot().status).toBe("loading");
+  expect(radios.every(audio => audio.paused && audio.muted)).toBe(true);
+  // Late media events must not restart a released buffer.
+  for (const audio of radios) {
+    audio.oncanplay?.();
+    audio.onwaiting?.();
+    audio.onplaying?.();
+  }
+  await settle();
+  expect(radios.every(audio => audio.paused && audio.muted)).toBe(true);
+  resolve(new Response(new ArrayBuffer(8)));
+  await settle();
+  expect(engine.getSnapshot().kind).toBe("sculptor");
+  expect(engine.getSnapshot().status).toBe("playing");
+});
+
+test("stopping the preview or starting music immediately pauses every radio stream", async () => {
+  await enableAudio();
+  for (const stop of [() => engine.stop(), () => claimAudio("music")]) {
+    engine.activate("braun", 44.4);
+    await settle();
+    stop();
+    expect([0, 1, 2].every(index => getRadioMedia(index).audio.paused && getRadioMedia(index).audio.muted)).toBe(true);
+    expect(engine.getSnapshot().kind).toBeNull();
+  }
+});
+
+test("a sound gesture elsewhere cannot unlock and restart inactive radio stations", async () => {
+  const streams = [0, 1, 2].map(index => getRadioMedia(index));
+  for (const stream of streams) stream.unlocked = stream.unlocking = false;
+  engine.prepareRadio();
+  await enableAudio();
+  await settle();
+  expect(streams.every(stream => stream.audio.paused && stream.audio.muted)).toBe(true);
+  engine.activate("braun", 44.4);
+  engine.interact();
+  await settle();
+  expect(streams.filter(stream => !stream.audio.paused)).toHaveLength(1);
+  engine.stop();
+  await enableAudio();
+  await settle();
+  expect(streams.every(stream => stream.audio.paused && stream.audio.muted)).toBe(true);
+});
+
+test("the first radio gesture unlocks only its selected station before context resume", async () => {
+  const streams = [0, 1, 2].map(index => getRadioMedia(index));
+  for (const stream of streams) stream.unlocked = stream.unlocking = false;
+  const context = getAudioContext();
+  const resume = context.resume;
+  let finish;
+  context.resume = () => new Promise(resolve => { finish = () => { context.state = "running"; resolve(); }; });
+  try {
+    engine.activate("braun", 44.4);
+    engine.interact();
+    expect(context.state).toBe("suspended");
+    expect(streams.filter(stream => !stream.audio.paused && !stream.audio.muted).map(stream => stream.audio.dataset.radioStation)).toEqual(["RTHK Radio 1"]);
+    finish();
+    await settle();
+    expect(engine.getSnapshot().status).toBe("playing");
+    expect(streams.every(stream => stream.unlocked)).toBe(true);
+    engine.mute();
+    await engine.enable();
+    await settle();
+    expect(engine.getSnapshot().status).toBe("playing");
+    expect(streams.filter(stream => !stream.audio.paused)).toHaveLength(1);
+  } finally {
+    context.resume = resume;
+  }
+});
+
+test("a rejected play from an old selection cannot pause a newly resumed station", async () => {
+  await enableAudio();
+  const buffer = new RadioBuffer();
+  buffer.prepare(44.4);
+  const station = buffer.slots.find(slot => slot.station?.place === "Hong Kong");
+  const play = station.audio.play;
+  let reject;
+  station.audio.play = () => {
+    station.audio.paused = false;
+    return new Promise((resolve, fail) => { reject = fail; });
+  };
+  const voice = radioVoice(getAudioContext(), getAudioContext().destination, () => {}, buffer);
+  try {
+    voice.update(44.4);
+    voice.update(59.2);
+    station.audio.play = play;
+    voice.update(44.4);
+    await settle();
+    reject(new Error("Late playback failure"));
+    await settle();
+    expect(station.error).toBeNull();
+    expect(station.audio.paused).toBe(false);
+    expect(station.ready).toBe(true);
+  } finally {
+    station.audio.play = play;
+    voice.stop();
+    buffer.dispose();
+  }
 });

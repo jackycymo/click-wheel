@@ -269,7 +269,10 @@ export function ReferenceControl({ kind, children }: { kind: ReferenceKind; chil
   return <Dialog.Root disablePointerDismissal onOpenChange={open => {
     state.current.expanded = open;
     if (open) { activate(); engine.interact(); }
-    else { engine.setScrubbing(false); engine.leave(kind); }
+    else {
+      engine.setScrubbing(false);
+      if (engine.getSnapshot().kind === kind) engine.stop();
+    }
   }}>
     <figure ref={figure} data-reference={kind} className="group/reference relative aspect-square min-w-0 overflow-clip bg-[#eeede7] [container-type:inline-size]">
       <div className="pointer-events-none absolute inset-0">{children}</div>

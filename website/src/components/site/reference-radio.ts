@@ -5,6 +5,7 @@ type Station = (typeof RADIO_STATIONS)[number];
 interface RadioSlot {
   audio: HTMLAudioElement;
   media: MediaElementAudioSourceNode;
+  readonly unlocked: boolean;
   station: Station | null;
   ready: boolean;
   error: "blocked" | "unavailable" | null;
@@ -12,8 +13,8 @@ interface RadioSlot {
   timeout: number;
 }
 
-// Keep live decoders rolling silently, rather than replacing the audible stream
-// on every turn. Only the current station and its neighbors use connections.
+// Preload neighboring stations, but only let the selected station play. Pausing
+// the media elements keeps playback exclusive independently of the audio graph.
 export class RadioBuffer {
   readonly slots: RadioSlot[];
   private listeners = new Set<() => void>();
@@ -25,10 +26,13 @@ export class RadioBuffer {
 
   constructor() {
     this.slots = Array.from({ length: RADIO_BUFFER_SIZE }, (_, index) => {
-      const { audio, media } = getRadioMedia(index);
-      const slot: RadioSlot = { audio, media, station: null, ready: false, error: null, generation: 0, timeout: 0 };
-      const current = () => !this.disposed && slot.station?.url === audio.currentSrc;
+      const stream = getRadioMedia(index);
+      const { audio, media } = stream;
+      const slot: RadioSlot = { audio, media, get unlocked() { return stream.unlocked; }, station: null, ready: false, error: null, generation: 0, timeout: 0 };
+      const current = () => !this.disposed && this.active && slot.station === this.selected && slot.station?.url === audio.currentSrc;
       audio.onplaying = () => {
+        if (this.disposed || slot.station?.url !== audio.currentSrc) return;
+        if (!this.active || slot.station !== this.selected) { this.pauseSlot(slot); return; }
         if (!current() || audio.paused || audio.readyState < 3) return;
         slot.ready = true;
         slot.error = null;
@@ -59,9 +63,13 @@ export class RadioBuffer {
     const selected = RADIO_STATIONS.indexOf(radioTuning(value).station);
     const wanted = RADIO_STATIONS.slice(Math.max(0, selected - 1), selected + 2);
     const station = RADIO_STATIONS[selected];
-    this.ensureStation(station, wanted);
-    if (this.selected !== station || !this.active) {
+    const changed = this.selected !== station;
+    if (changed) {
       this.selected = station;
+      this.slots.forEach(slot => { if (slot.station !== station) this.pauseSlot(slot); });
+    }
+    this.ensureStation(station, wanted);
+    if (changed || !this.active) {
       clearTimeout(this.neighborTimer);
       // Preserve the last neighboring buffer during a brief reversal. The
       // selected station is never delayed; only speculative eviction waits.
@@ -81,8 +89,6 @@ export class RadioBuffer {
     slot.station = station;
     slot.audio.dataset.radioStation = station.name;
     slot.audio.preload = "auto";
-    slot.audio.src = station.url;
-    slot.audio.load();
   }
 
   private prepareNeighbors(wanted: readonly Station[]) {
@@ -95,12 +101,24 @@ export class RadioBuffer {
   }
 
   resume() {
-    if (this.disposed || !isAudioReady()) return;
+    if (this.disposed) return;
+    this.slots.forEach(slot => {
+      if (!slot.unlocked && slot.audio.src.endsWith("/audio/objects/silence.wav")) return;
+      if (!this.active || slot.station !== this.selected) this.pauseSlot(slot);
+      // Leave unused, locked elements empty so the first gesture can prime them
+      // with silence. They can then play another station on a later dial turn.
+      if (slot.station && (slot.unlocked || (this.active && slot.station === this.selected)) && slot.audio.src !== slot.station.url) {
+        slot.audio.src = slot.station.url;
+        slot.audio.load();
+      }
+    });
     this.slots.forEach(slot => this.resumeSlot(slot));
   }
 
   private resumeSlot(slot: RadioSlot) {
-    if (!slot.station || slot.error || !isAudioReady() || !slot.audio.paused) return;
+    if (this.disposed || !this.active || !slot.station || slot.station !== this.selected || slot.error) return;
+    slot.audio.muted = false;
+    if (!isAudioReady() || !slot.audio.paused) return;
     const generation = slot.generation;
     this.armTimeout(slot);
     void slot.audio.play().catch(error => {
@@ -115,11 +133,17 @@ export class RadioBuffer {
   }
 
   private fail(slot: RadioSlot, error: RadioSlot["error"]) {
-    slot.ready = false;
     slot.error = error;
-    slot.audio.pause();
-    clearTimeout(slot.timeout);
+    this.pauseSlot(slot);
     this.emit();
+  }
+
+  private pauseSlot(slot: RadioSlot) {
+    ++slot.generation;
+    slot.audio.muted = true;
+    slot.audio.pause();
+    slot.ready = false;
+    clearTimeout(slot.timeout);
   }
 
   retain() {
@@ -129,17 +153,16 @@ export class RadioBuffer {
 
   release(delay = 15000) {
     this.active = false;
+    clearTimeout(this.neighborTimer);
+    this.slots.forEach(slot => this.pauseSlot(slot));
     clearTimeout(this.idleTimer);
     this.idleTimer = window.setTimeout(() => this.cool(), delay);
   }
 
   private clearSlot(slot: RadioSlot) {
-    ++slot.generation;
-    clearTimeout(slot.timeout);
     slot.station = null;
-    slot.ready = false;
     slot.error = null;
-    slot.audio.pause();
+    this.pauseSlot(slot);
     slot.audio.removeAttribute("src");
     delete slot.audio.dataset.radioStation;
     slot.audio.preload = "none";
@@ -147,6 +170,7 @@ export class RadioBuffer {
   }
 
   cool() {
+    this.active = false;
     clearTimeout(this.idleTimer);
     clearTimeout(this.neighborTimer);
     this.selected = null;
