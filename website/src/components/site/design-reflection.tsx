@@ -51,13 +51,6 @@ export function DesignReflection() {
           ))}
         </div>
         </ReferenceAudioProvider>
-        <p className="text-xs leading-relaxed text-muted-foreground lg:col-span-2">
-          Independent dial studies inspired by the products referenced here. This
-          project is not affiliated with, sponsored by, or endorsed by their
-          manufacturers. Brand and product names identify the original products;
-          the interactions and sound effects are our own approximations, not
-          manufacturer simulations. Radio and music playback use the credited sources.
-        </p>
       </div>
     </section>
   );

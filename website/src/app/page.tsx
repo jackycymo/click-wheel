@@ -45,36 +45,44 @@ export default function Home() {
             </div>
           </section>
 
-          <footer className="flex flex-col justify-between gap-6 border-t pt-6 text-sm text-muted-foreground min-[761px]:flex-row">
-            <div className="space-y-3">
-              <MusicCredits />
-              <p className="text-xs leading-relaxed">
-                iPod photo by{" "}
-                <a className="underline underline-offset-2 hover:text-foreground" href="https://commons.wikimedia.org/wiki/File:IPod4G.jpg">KAMiKAZOW</a>
-                {" · "}<a className="underline underline-offset-2 hover:text-foreground" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
-                {" · cropped"}
+          <footer className="space-y-6 border-t pt-6 text-sm text-muted-foreground">
+            <div className="flex flex-col justify-between gap-6 min-[761px]:flex-row">
+              <div className="space-y-3">
+                <MusicCredits />
+                <p className="text-xs leading-relaxed">
+                  iPod photo by{" "}
+                  <a className="underline underline-offset-2 hover:text-foreground" href="https://commons.wikimedia.org/wiki/File:IPod4G.jpg">KAMiKAZOW</a>
+                  {" · "}<a className="underline underline-offset-2 hover:text-foreground" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+                  {" · cropped"}
+                </p>
+              </div>
+              <p className="shrink-0 text-right">
+                <a
+                  href={GITHUB_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+                >
+                  Source on GitHub
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>
+                {" · "}
+                By{" "}
+                <a
+                  href="https://jackymo.me"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+                >
+                  @jackycymo
+                </a>
               </p>
             </div>
-            <p className="shrink-0 text-right">
-              <a
-                href={GITHUB_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2 transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-              >
-                Source on GitHub
-                <span className="sr-only"> (opens in a new tab)</span>
-              </a>
-              {" · "}
-              By{" "}
-              <a
-                href="https://jackymo.me"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2 transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-              >
-                @jackycymo
-              </a>
+            <p className="text-xs leading-relaxed">
+              Click Wheel is an independent project, not affiliated with, sponsored
+              by, or endorsed by the brands referenced. Product names identify
+              design inspirations. Interactive studies and sound effects are our
+              own approximations; music and radio sources are credited above.
             </p>
           </footer>
         </div>

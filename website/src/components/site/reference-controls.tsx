@@ -338,8 +338,6 @@ export function ReferenceControl({ kind, children }: { kind: ReferenceKind; chil
         <ReferenceAudioToolbar />
         <Dialog.Description className="mt-2 text-center text-xs leading-relaxed text-[#606354]">
           {kind === "ipod" ? "Drag to seek. Press the center to play or pause." : kind === "braun" ? "Turn to explore eight live stations around the world." : kind === "espresso" ? "Turn clockwise to open the steam valve." : kind === "fellow" ? "Turn up the temperature to preview a rolling boil." : "Drag around the dial to hear the difference."}
-          {" "}Independent interaction and audio demonstration; not affiliated with
-          or endorsed by the manufacturer.
         </Dialog.Description>
       </Dialog.Popup>
     </Dialog.Portal>
