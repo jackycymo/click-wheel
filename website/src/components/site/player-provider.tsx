@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { TRACKS, type Track } from "@/lib/playlist";
+import { claimAudio, enableAudio, getAudioOwner, subscribeAudioOwner } from "./audio";
 
 export interface PlayerApi {
   position: number;
@@ -102,6 +103,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const playRequestRef = React.useRef(0);
   const volumeRef = React.useRef(64);
   const resumeRef = React.useRef<{ position: number; playing: boolean } | null>(null);
+  const resumeAfterPreviewRef = React.useRef(false);
   const [trackIndex, setTrackIndex] = React.useState(0);
   const [position, setPositionState] = React.useState(0);
   const [duration, setDuration] = React.useState(TRACKS[0].duration);
@@ -127,6 +129,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const play = React.useCallback((quiet = false) => {
     const audio = audioRef.current;
     if (!audio) return;
+    if (quiet && getAudioOwner() === "preview") {
+      resumeAfterPreviewRef.current = true;
+      return;
+    }
+    if (!quiet) claimAudio("music");
+    void enableAudio().catch(() => {});
     const request = ++playRequestRef.current;
     setError(null);
     void audio.play().catch((error: unknown) => {
@@ -138,6 +146,24 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setError("Couldn't start this track. Press the center of the wheel to retry.");
     });
   }, [save]);
+
+  React.useEffect(() => {
+    return subscribeAudioOwner((owner, previous) => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      if (owner === "preview") {
+        resumeAfterPreviewRef.current = !audio.paused && !audio.ended;
+        ++playRequestRef.current;
+        audio.pause();
+      } else if (owner === "music") {
+        resumeAfterPreviewRef.current = false;
+      } else if (previous === "preview") {
+        const shouldResume = resumeAfterPreviewRef.current;
+        resumeAfterPreviewRef.current = false;
+        if (shouldResume && !document.hidden) play(true);
+      }
+    });
+  }, [play]);
 
   const loadTrack = React.useCallback(
     (index: number, autoplay: boolean, resumeAt?: number) => {
@@ -169,10 +195,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     const index = saved ? TRACKS.findIndex((track) => track.src === saved.src) : -1;
     if (saved && index >= 0) {
       resumeRef.current = { position: saved.position, playing: saved.playing };
-      loadTrack(index, false, saved.position);
-    } else {
-      loadTrack(Math.floor(Math.random() * TRACKS.length), false);
     }
+    // Synchronize browser-only session storage with the shared audio element and its UI.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadTrack(index >= 0 ? index : Math.floor(Math.random() * TRACKS.length), false, index >= 0 ? saved?.position : undefined);
   }, [loadTrack]);
 
   const api = React.useMemo<PlayerApi>(() => {

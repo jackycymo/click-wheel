@@ -1,4 +1,5 @@
 import { MUSIC_ARTIST, TRACKS } from "@/lib/playlist";
+import { RADIO_STATIONS, SOUND_CREDITS } from "./reference-data";
 
 export function MusicCredits() {
   return (
@@ -19,6 +20,16 @@ export function MusicCredits() {
           ))}
         </ul>
         <a className="mt-3 inline-block underline underline-offset-2 hover:text-foreground" href="/audio/LICENSE.txt">Full music credits</a>
+      </details>
+      <details>
+        <summary className="w-fit cursor-pointer hover:text-foreground">Object sounds &amp; world radio</summary>
+        <ul className="mt-3 space-y-1.5">
+          {SOUND_CREDITS.map(sound => <li key={sound.url}>
+            <a className="underline underline-offset-2" href={sound.url}>{sound.name}</a>{" — "}{sound.author}{" · "}<a className="underline underline-offset-2" href={sound.licenseUrl}>{sound.license}</a>{" · excerpted, looped, and processed"}
+          </li>)}
+          {RADIO_STATIONS.map(station => <li key={station.url}><a className="underline underline-offset-2" href={station.homepage}>{station.name}</a>{" · "}{station.place}{" · live stream"}</li>)}
+        </ul>
+        <p className="mt-3">The world dial uses curated station positions, not local AM/FM frequencies. Sound effects illustrate each control; they are not exact hardware models.</p>
       </details>
     </div>
   );

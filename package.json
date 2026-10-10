@@ -6,7 +6,7 @@
     "build": "pnpm --filter website build",
     "lint": "eslint website/src packages/click-wheel/src/web",
     "check": "pnpm --filter click-wheel check",
-    "test": "pnpm --filter click-wheel test",
+    "test": "pnpm --filter click-wheel test && pnpm --filter website test",
     "build:package": "pnpm --filter click-wheel build"
   },
   "packageManager": "pnpm@10.28.1",

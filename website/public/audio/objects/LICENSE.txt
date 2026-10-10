@@ -1,0 +1,33 @@
+Rotary-control demo recordings
+
+silence.wav: generated silence for browser media activation; no third-party audio.
+
+guitar-funk.mp3: "funk guitar riff.wav" by mareproduction
+https://freesound.org/people/mareproduction/sounds/188088/
+CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+Downloaded from the Freesound high-quality MP3 preview, 2026-10-10.
+Adaptations: mono conversion, peak normalization to -4 dBFS, 3 ms edge fades,
+and 192 kbps MP3 encoding. The complete four-bar, 109 BPM phrase is retained;
+no compression, distortion, modulation, delay or reverb is added to the asset.
+
+grinder.mp3: "grinding coffee 5" by casadalenha
+https://freesound.org/people/casadalenha/sounds/723041/
+CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+
+steam-wand.mp3: "Coffee_machine_expelling_steam_milk_frother.wav" by nickmaysoundmusic
+https://freesound.org/people/nickmaysoundmusic/sounds/503557/
+CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
+Downloaded from the Freesound high-quality MP3 preview, 2026-10-10.
+Adaptations: 6.8–14.4 second excerpt of a De'Longhi steam-wand purge, mono
+conversion, 160 Hz high-pass and 14 kHz low-pass filtering, a 250 ms equal-power
+loop-boundary crossfade, level normalization and 160 kbps MP3 encoding.
+
+kettle.mp3: "Kettle Boil" by OwlStorm (Ashe Kirk / Owlish Media)
+https://freesound.org/people/OwlStorm/sounds/212179/
+CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
+
+Other recordings downloaded from Freesound high-quality MP3 previews, 2026-10-09.
+Adaptations: mono conversion, excerpts, loop-boundary crossfades, volume
+normalization and MP3 encoding. Additional effects are applied live in the demo.
+These recordings illustrate the controls and are not recordings of the pictured
+hardware. Radio broadcasts are played directly from station streams, not bundled.

@@ -6,7 +6,8 @@
     "dev": "pnpm --filter click-wheel build && next dev",
     "build": "pnpm --filter click-wheel build && next build",
     "start": "next start",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "test": "bun test tests/reference-audio.test.js && bun test --preload ../packages/click-wheel/tests/setup.ts tests/player-audio.test.tsx"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

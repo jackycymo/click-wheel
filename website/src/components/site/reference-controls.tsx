@@ -1,29 +1,12 @@
 "use client";
 
-import { useState, useEffect, useId, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { ClickWheel } from "click-wheel";
 import { Dialog } from "@base-ui/react/dialog";
 import { IconNext, IconPause, IconPlay } from "./icons";
 
-export type ReferenceKind = "braun" | "sculptor" | "amplifier" | "guitar" | "fellow" | "compressor" | "espresso" | "ipod" | "mxr";
-
-const settings = {
-  // The shared UKW/MW scale spans the whole arc; model travel, not a single band.
-  braun: { sweep: -151, label: "Braun radio tuning position", min: 0, max: 100, step: 0.1, initial: 44.4, unit: "% travel", name: "Braun SK2" },
-  sculptor: { sweep: -340, label: "Timemore grind size", min: 0, max: 18, step: 0.1, initial: 8, unit: "grind", name: "Timemore Sculptor" },
-  amplifier: { sweep: 300, label: "Fender amplifier volume", min: 1, max: 10, step: 0.1, initial: 3, unit: "volume", name: "Fender Deluxe Reverb" },
-  guitar: { sweep: 300, label: "Stratocaster volume", min: 0, max: 10, step: 0.1, initial: 5, unit: "volume", name: "Fender Stratocaster" },
-  fellow: { sweep: 270, label: "Fellow kettle temperature", min: 40, max: 100, step: 1, initial: 92, unit: "°C", name: "Fellow Stagg EKG" },
-  compressor: { sweep: -270, label: "1176 input attenuation", min: 0, max: 48, step: 1, initial: 24, unit: "dB attenuation", name: "Universal Audio 1176LN" },
-  espresso: { sweep: -270, label: "La Marzocco steam valve", min: 0, max: 100, step: 1, initial: 0, unit: "% steam", name: "La Marzocco Linea Micra" },
-  ipod: { sweep: 270, label: "iPod playback position", min: 0, max: 180, step: 1, initial: 42, unit: "", name: "Apple iPod" },
-  mxr: { sweep: 270, label: "MXR phase speed", min: 0, max: 100, step: 1, initial: 50, unit: "% speed", name: "MXR Phase 90" },
-} as const;
-
-function formatValue(kind: ReferenceKind, value: number) {
-  if (kind === "ipod") return `${Math.floor(value / 60)}:${String(value % 60).padStart(2, "0")}`;
-  return `${Number(value.toFixed(1))}${kind === "fellow" ? "" : " "}${settings[kind].unit}`;
-}
+import { formatValue, settings, type ReferenceKind } from "./reference-data";
+import { ReferenceAudioToolbar, useReferenceAudio } from "./reference-audio";
 
 const focusRing = "outline-none focus-visible:ring-2 focus-visible:ring-[#cf613e] focus-visible:ring-offset-2 data-[dragging]:cursor-grabbing cursor-grab";
 const metal = "bg-[conic-gradient(from_25deg,#969898,#f8f8f5_16%,#9c9f9f_30%,#e4e4e1_48%,#888c8b_65%,#f7f7f4_82%,#969898)]";
@@ -209,17 +192,20 @@ function MXR() {
   </>;
 }
 
-function ReferenceDial({ kind, value, onValueChange, playing, onToggle, className = "" }: {
+function ReferenceDial({ kind, value, onValueChange, playing, onToggle, onInteractionChange, onValueCommitted, className = "" }: {
   kind: ReferenceKind;
   value: number;
   onValueChange: (value: number) => void;
   playing: boolean;
   onToggle: () => void;
+  onInteractionChange: (active: boolean) => void;
+  onValueCommitted: (value: number) => void;
   className?: string;
 }) {
   const config = settings[kind];
   return <ClickWheel.Root
     value={value} onValueChange={onValueChange}
+    onInteractionChange={onInteractionChange} onValueCommitted={onValueCommitted}
     min={config.min} max={config.max} step={config.step}
     unitsPerTurn={(config.max - config.min) * 360 / config.sweep}
     detent={kind === "braun" ? 1 : kind === "sculptor" ? 0.5 : config.step}
@@ -234,42 +220,117 @@ function ReferenceDial({ kind, value, onValueChange, playing, onToggle, classNam
 
 export function ReferenceControl({ kind, children }: { kind: ReferenceKind; children: ReactNode }) {
   const config = settings[kind];
-  const [value, setValue] = useState<number>(config.initial);
-  const [playing, setPlaying] = useState(false);
-  const togglePlaying = () => setPlaying(current => !current);
+  const engine = useReferenceAudio();
+  const value = useSyncExternalStore(engine.subscribe, () => engine.getValue(kind), () => config.initial);
+  const active = useSyncExternalStore(engine.subscribe, () => engine.getSnapshot().kind === kind, () => false);
+  const playing = useSyncExternalStore(engine.subscribe, () => engine.getSnapshot().kind === kind && engine.getSnapshot().status === "playing", () => false);
+  const figure = useRef<HTMLElement>(null);
+  const state = useRef({ hovering: false, focused: false, interacting: false, expanded: false, timer: 0 });
+  const activate = () => engine.activate(kind, engine.getValue(kind));
+  const leave = useCallback(() => {
+    const current = state.current;
+    clearTimeout(current.timer);
+    current.timer = 0;
+    // A conditional control (such as Retry) can disappear without firing blur.
+    const focused = current.focused && figure.current?.contains(document.activeElement);
+    if (!current.hovering && !focused && !current.interacting && !current.expanded) engine.leave(kind);
+  }, [engine, kind]);
   useEffect(() => {
-    if (!playing) return;
-    const timer = window.setInterval(() => setValue(current => current >= 180 ? 0 : current + 1), 1000);
-    return () => window.clearInterval(timer);
-  }, [playing]);
-  return <Dialog.Root disablePointerDismissal onOpenChange={open => { if (!open) setPlaying(false); }}>
-    <figure data-reference={kind} className="group/reference relative aspect-square min-w-0 overflow-hidden bg-[#eeede7] [container-type:inline-size]">
+    const current = state.current;
+    const observer = new IntersectionObserver(entries => {
+      if (!entries[0].isIntersecting && !current.expanded) {
+        current.hovering = current.focused = false;
+        clearTimeout(current.timer);
+        current.timer = 0;
+        engine.leave(kind);
+      }
+    });
+    if (figure.current) observer.observe(figure.current);
+    const nearby = kind === "braun" ? new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) engine.prepareRadio();
+      else engine.coolRadio();
+    }, { rootMargin: "180px" }) : null;
+    if (figure.current) nearby?.observe(figure.current);
+    return () => { clearTimeout(current.timer); observer.disconnect(); nearby?.disconnect(); };
+  }, [engine, kind]);
+
+  const dialProps = {
+    kind, value, playing,
+    onValueChange: (next: number) => engine.update(kind, next),
+    onValueCommitted: (next: number) => { if (kind === "ipod") engine.seek(next); },
+    onToggle: () => engine.toggleIpod(),
+    onInteractionChange: (active: boolean) => {
+      state.current.interacting = active;
+      if (kind === "ipod") engine.setScrubbing(active);
+      if (active) { activate(); engine.interact(); }
+      else leave();
+    },
+  };
+  return <Dialog.Root disablePointerDismissal onOpenChange={open => {
+    state.current.expanded = open;
+    if (open) { activate(); engine.interact(); }
+    else { engine.setScrubbing(false); engine.leave(kind); }
+  }}>
+    <figure ref={figure} data-reference={kind} className="group/reference relative aspect-square min-w-0 overflow-clip bg-[#eeede7] [container-type:inline-size]">
       <div className="pointer-events-none absolute inset-0">{children}</div>
-      <div className="absolute inset-0 hidden [@media(min-width:761px)_and_(hover:hover)]:block">
-        <ReferenceDial
-          kind={kind} value={value} onValueChange={setValue} playing={playing} onToggle={togglePlaying}
-          className="opacity-0 transition-opacity duration-300 group-hover/reference:opacity-100 group-has-[:focus-visible]/reference:opacity-100 data-[dragging]:opacity-100 data-[coasting]:opacity-100 motion-reduce:transition-none"
-        />
+      <div
+        className="absolute inset-0 hidden [@media(min-width:761px)_and_(hover:hover)]:block"
+        onPointerEnter={event => {
+          if (event.pointerType === "touch" || !event.currentTarget.contains(event.target as Node)) return;
+          state.current.hovering = true;
+          if (kind === "braun") engine.prepareRadio();
+          if (engine.getSnapshot().kind === kind) engine.hold();
+          clearTimeout(state.current.timer);
+          state.current.timer = 0;
+        }}
+        onPointerMove={event => {
+          if (event.pointerType === "touch" || !event.currentTarget.contains(event.target as Node) || engine.getSnapshot().kind === kind || state.current.timer) return;
+          state.current.timer = window.setTimeout(() => { state.current.timer = 0; activate(); }, 150);
+        }}
+        onPointerLeave={event => {
+          if (!event.currentTarget.contains(event.target as Node)) return;
+          state.current.hovering = false; leave();
+        }}
+        onPointerDownCapture={event => {
+          if ((event.target as Element).closest("[data-reference-audio-controls]")) return;
+          clearTimeout(state.current.timer); state.current.timer = 0; activate(); engine.interact();
+        }}
+        onFocusCapture={event => {
+          const toolbar = event.target.closest("[data-reference-audio-controls]");
+          if (toolbar || event.target.matches(":focus-visible")) {
+            state.current.focused = true;
+            engine.hold();
+            if (!toolbar) activate();
+          }
+        }}
+        onBlurCapture={event => {
+          if (!event.currentTarget.contains(event.relatedTarget)) { state.current.focused = false; leave(); }
+        }}
+        onKeyDownCapture={event => {
+          if ((event.target as Element).closest("[data-reference-audio-controls]")) return;
+          if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Home", "End", "PageUp", "PageDown"].includes(event.key)) { activate(); engine.interact(); }
+        }}
+      >
+        <ReferenceDial {...dialProps} className="opacity-0 transition-opacity duration-300 group-hover/reference:opacity-100 group-has-[:focus-visible]/reference:opacity-100 data-[dragging]:opacity-100 data-[coasting]:opacity-100 motion-reduce:transition-none" />
+        {active ? <ReferenceAudioToolbar overlay /> : null}
       </div>
-      <Dialog.Trigger
-        aria-label={`Try ${config.name}`}
-        className="absolute inset-0 cursor-zoom-in touch-manipulation outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#606b35] [@media(min-width:761px)_and_(hover:hover)]:hidden"
-      />
+      <Dialog.Trigger aria-label={`Try ${config.name}`} className="absolute inset-0 cursor-zoom-in touch-manipulation outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#606b35] [@media(min-width:761px)_and_(hover:hover)]:hidden" />
       <figcaption className="sr-only">{config.name}. Interactive dial preview.</figcaption>
       <p className="sr-only" id={`help-${kind}`}>Drag around the dial, scroll, or use the arrow keys. Home and End select the limits.</p>
     </figure>
     <Dialog.Portal>
       <Dialog.Backdrop className="fixed inset-0 z-50 bg-black/35 transition-opacity duration-200 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 motion-reduce:transition-none" />
-      <Dialog.Popup className="fixed bottom-0 left-1/2 z-50 max-h-[calc(100svh-1rem)] w-full max-w-[520px] -translate-x-1/2 overflow-y-auto overscroll-contain rounded-t-2xl border border-[#cbcbbf] bg-[#eeede7] p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-[#30332b] shadow-[0_-12px_60px_#0002] outline-none transition-[opacity,translate] duration-200 data-[starting-style]:translate-y-6 data-[starting-style]:opacity-0 data-[ending-style]:translate-y-6 data-[ending-style]:opacity-0 motion-reduce:transition-none">
+      <Dialog.Popup className="fixed bottom-0 left-1/2 z-50 max-h-[calc(100svh-1rem)] w-full max-w-[520px] -translate-x-1/2 overflow-y-auto overscroll-contain rounded-t-2xl border border-[#cbcbbf] bg-[#eeede7] p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-[#30332b] shadow-[0_-12px_60px_#0002] outline-none transition-[opacity,translate] duration-200 data-[starting-style]:translate-y-6 data-[ending-style]:translate-y-6 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 motion-reduce:transition-none">
         <div className="mb-4 flex items-center justify-between gap-4">
           <Dialog.Title className="text-base font-medium tracking-tight">{config.name}</Dialog.Title>
           <Dialog.Close className="min-h-11 shrink-0 cursor-pointer rounded-md px-3 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">Close</Dialog.Close>
         </div>
-        <div data-reference-expanded={kind} className="relative mx-auto aspect-square w-[min(100%,calc(100svh-12rem))] overflow-hidden bg-[#eeede7] [container-type:inline-size]">
-          <ReferenceDial kind={kind} value={value} onValueChange={setValue} playing={playing} onToggle={togglePlaying} />
+        <div data-reference-expanded={kind} className="relative mx-auto aspect-square w-[min(100%,calc(100svh-16rem))] overflow-clip bg-[#eeede7] [container-type:inline-size]">
+          <ReferenceDial {...dialProps} />
         </div>
-        <Dialog.Description className="mt-4 text-center text-sm leading-relaxed text-[#606354]">
-          {kind === "ipod" ? "Drag to seek. Press the center to play or pause." : "Drag around the dial to explore."}
+        <ReferenceAudioToolbar />
+        <Dialog.Description className="mt-2 text-center text-xs leading-relaxed text-[#606354]">
+          {kind === "ipod" ? "Drag to seek. Press the center to play or pause." : kind === "braun" ? "Turn to explore eight live stations around the world." : kind === "espresso" ? "Turn clockwise to open the steam valve." : kind === "fellow" ? "Turn up the temperature to preview a rolling boil." : "Drag around the dial to hear the difference."}
         </Dialog.Description>
       </Dialog.Popup>
     </Dialog.Portal>

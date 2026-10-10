@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ReferenceControl } from "./reference-controls";
+import { ReferenceAudioProvider } from "./reference-audio";
 import { Newsreader } from "next/font/google";
 
 const newsreader = Newsreader({ subsets: ["latin"], weight: "400" });
@@ -40,6 +41,7 @@ export function DesignReflection() {
           </p>
         </div>
 
+        <ReferenceAudioProvider>
         <div className="grid min-w-0 grid-cols-3 gap-1.5 min-[761px]:gap-2.5" aria-label="Details of everyday rotary controls">
           {objects.map(({ kind, file, width, height, crop: [x, y, size], alt }) => (
             <ReferenceControl key={file} kind={kind}>
@@ -60,8 +62,8 @@ export function DesignReflection() {
               />
             </ReferenceControl>
           ))}
-          <p className="col-span-3 mt-2 text-center text-sm text-[#606354] [@media(min-width:761px)_and_(hover:hover)]:hidden">Tap a photo to try the dial</p>
         </div>
+        </ReferenceAudioProvider>
       </div>
     </section>
   );
