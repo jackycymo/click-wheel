@@ -207,6 +207,7 @@ export const PAGES: DocPageDef[] = [
               ["haptics", "boolean", "true", "Pulse the motor when detents are crossed, where supported. Multiple crossings in one update share a pulse."],
               ["inertia", "boolean", "false", "Continue spinning after release. Touch resumes dragging; scroll and keyboard input stop coasting."],
               ["decelerationRate", "number", "0.998", "Velocity retained per millisecond while coasting. Lower values stop sooner."],
+              ["hubSize", "number", "0.05", "Fraction of the ring's size, around the center, where the finger's angle is ignored. Raise it for small knobs a thumb can cover, so a thumb on the center can't jerk the value."],
               ["disabled", "boolean", "false", "Inert. Cancels an active interaction without committing, sets data-disabled on every part, and omits the hidden input from form submission."],
               ["name", "string", "—", "Renders a hidden input with this name, for forms."],
               ["onValueChange", "(value: number, details: ChangeDetails) => void", "—", "Fires on every change while dragging, coasting, scrolling or keying."],

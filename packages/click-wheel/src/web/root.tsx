@@ -63,6 +63,13 @@ export interface RootProps extends Omit<PartProps<ClickWheelState, "div">, "defa
   inertia?: boolean;
   /** Velocity kept per millisecond while coasting. 0.998 is iOS normal; 0.99 stops fast. */
   decelerationRate?: number;
+  /**
+   * Size of the hub, as a fraction of the ring's size, where a finger's angle
+   * is ignored. Near the center a few pixels swing the angle wildly, so a thumb
+   * resting on a small knob jerks the value; a finger in the hub turns nothing
+   * until it is back out. Presses inside `HUB_DEAD_ZONE` are always ignored.
+   */
+  hubSize?: number;
   disabled?: boolean;
   /** Renders a hidden input with this name, for forms. */
   name?: string;
@@ -90,6 +97,7 @@ export function Root(props: RootProps) {
     haptics = true,
     inertia = false,
     decelerationRate = DEFAULT_DECELERATION_RATE,
+    hubSize = HUB_DEAD_ZONE,
     disabled = false,
     name,
     children,
@@ -115,7 +123,9 @@ export function Root(props: RootProps) {
     pointerId: -1,
     cx: 0,
     cy: 0,
-    lastAngle: 0,
+    /** Null while the finger is over the hub. */
+    lastAngle: null as number | null,
+    hubRadius: 0,
     float: 0,
     rotation: 0,
     emitted: NaN,
@@ -144,6 +154,7 @@ export function Root(props: RootProps) {
     haptics,
     inertia,
     decelerationRate,
+    hubSize,
     disabled,
     onValueChange,
     onValueCommitted,
@@ -341,7 +352,9 @@ export function Root(props: RootProps) {
   };
 
   const angleOf = (e: { clientX: number; clientY: number }) =>
-    angleAt(g.current.cx, g.current.cy, e.clientX, e.clientY);
+    Math.hypot(e.clientX - g.current.cx, e.clientY - g.current.cy) < g.current.hubRadius
+      ? null
+      : angleAt(g.current.cx, g.current.cy, e.clientX, e.clientY);
 
   const onPointerDown = (e: React.PointerEvent) => {
     const L = latest.current;
@@ -371,6 +384,7 @@ export function Root(props: RootProps) {
       pointerId: e.pointerId,
       cx,
       cy,
+      hubRadius: (Math.min(rect.width, rect.height) * L.hubSize) / 2,
       float: wasCoasting ? g.current.float : L.value,
       emitted: wasCoasting ? g.current.emitted : L.value,
     });
@@ -392,9 +406,10 @@ export function Root(props: RootProps) {
   const onPointerMove = (e: React.PointerEvent) => {
     if (latest.current.disabled || g.current.pointerId !== e.pointerId) return;
     const angle = angleOf(e);
-    const delta = arcDelta(g.current.lastAngle, angle);
+    const last = g.current.lastAngle;
     g.current.lastAngle = angle;
-    turnBy(delta);
+    // Entering the hub, or coming back out of it on any side, turns nothing.
+    if (angle !== null && last !== null) turnBy(arcDelta(last, angle));
     const samples = g.current.samples;
     samples.push({ t: e.timeStamp, rotation: g.current.rotation });
     while (samples.length > 1 && e.timeStamp - samples[0].t > VELOCITY_WINDOW_MS) samples.shift();

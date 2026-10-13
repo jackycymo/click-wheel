@@ -85,7 +85,7 @@ ${ANATOMY}
 \`\`\`
 
 - Parts have no default visual styles. State: \`data-dragging\` (a pointer holds the ring), \`data-coasting\` (coasting after release), \`data-disabled\`, \`--click-wheel-fraction\` (0–1), \`--click-wheel-turns\` (laps from min), \`--click-wheel-rotation\` (deg). \`className\` and \`style\` may be functions of \`{ value, dragging, coasting, disabled }\`. Every part takes a \`render\` prop.
-- Gearing: \`unitsPerTurn\` sets how far one revolution moves the value. \`detent\` sets the units between haptic ticks. \`inertia\` (off by default) keeps the wheel spinning after a flick; \`decelerationRate\` (0.998) is the velocity kept per millisecond.
+- Gearing: \`unitsPerTurn\` sets how far one revolution moves the value. \`detent\` sets the units between haptic ticks. \`inertia\` (off by default) keeps the wheel spinning after a flick; \`decelerationRate\` (0.998) is the velocity kept per millisecond. \`hubSize\` (0.05) is the share of the ring around the center where the finger's angle is ignored; raise it for small knobs.
 - Callbacks: \`onValueChange\` on every change, \`onValueCommitted\` once per completed interaction, \`onInteractionChange\` across pointer, scroll, keyboard and coasting (including cancellation), \`onDraggingChange\` when a pointer starts or stops dragging, \`onTick\` per detent.
 - Haptics: Vibration API on Android; the switch trick on iOS 17.4–26.4; on iOS 26.5+ only real taps vibrate, so put \`<HapticTap />\` inside the center button.
 `;

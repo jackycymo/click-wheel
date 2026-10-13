@@ -341,3 +341,38 @@ describe("composition and forms", () => {
     expect(cleaned.toSorted()).toEqual(["part", "render", "root"]);
   });
 });
+
+describe("hub", () => {
+  // Ring is 100px with its center at (50, 50); unitsPerTurn defaults to 100.
+  test("a thumb sliding across the hub does not swing the value half a turn", async () => {
+    const wheel = await mount({ defaultValue: 50, hubSize: 0.3 });
+    await wheel.pointer("pointerdown", 80, 50);
+    await wheel.pointer("pointermove", 58, 50); // into the hub
+    await wheel.pointer("pointermove", 42, 50);
+    await wheel.pointer("pointermove", 20, 50); // out the other side
+    expect(wheel.value()).toBe(50);
+    await wheel.pointer("pointermove", 50, 20); // a real quarter turn, clockwise
+    await wheel.pointer("pointerup", 50, 20);
+    expect(wheel.value()).toBe(75);
+  });
+
+  test("without a hub the same slide lurches", async () => {
+    const wheel = await mount({ defaultValue: 50, hubSize: 0 });
+    await wheel.pointer("pointerdown", 80, 50);
+    await wheel.pointer("pointermove", 58, 50);
+    await wheel.pointer("pointermove", 42, 50);
+    await wheel.pointer("pointermove", 20, 50);
+    await wheel.pointer("pointerup", 20, 50);
+    expect(Math.abs(wheel.value() - 50)).toBeGreaterThan(40);
+  });
+
+  test("a press inside a large hub grabs the ring and turns once the finger is out", async () => {
+    const wheel = await mount({ defaultValue: 50, hubSize: 0.5 });
+    await wheel.pointer("pointerdown", 60, 50);
+    await wheel.pointer("pointermove", 95, 50);
+    expect(wheel.value()).toBe(50);
+    await wheel.pointer("pointermove", 50, 95);
+    await wheel.pointer("pointerup", 50, 95);
+    expect(wheel.value()).toBe(75);
+  });
+});
